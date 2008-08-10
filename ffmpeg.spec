@@ -6,7 +6,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.4.9
-Release:        0.47.%{svn}%{?dist}
+Release:        0.47.%{svn}%{?dist}.1
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
@@ -157,6 +157,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Aug 10 2008 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info - 0.4.9-0.47.20080614.1
+- rebuild
+
 * Sun Aug 03 2008 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info - 0.4.9-0.47.20080614
 - rebuild
 
