@@ -1,12 +1,12 @@
 # TODO: add make test to %%check section
 
-%define svn     20080614
+%define svn     20080825
 %define faad2min 1:2.6.1
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.4.9
-Release:        0.47.%{svn}%{?dist}
+Release:        0.48.%{svn}%{?dist}
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
@@ -30,6 +30,8 @@ BuildRequires:  imlib2-devel
 BuildRequires:  texi2html
 BuildRequires:  faac-devel
 BuildRequires:  x264-devel >= 0.0.0-0.14.20080613
+#don't enable until PIC issues on x86_64 are fixed ('ff_imdct_half_sse' in libavcodec/i386/fft_sse.c)
+#BuildRequires:  yasm
 
 %description
 FFMpeg is a complete and free Internet live audio and video
@@ -76,7 +78,7 @@ This package contains development files for %{name}
     --shlibdir=%{_libdir} \
     --mandir=%{_mandir} \
     --arch=%{_target_cpu} \
-    --extra-cflags="$RPM_OPT_FLAGS" \
+    --extra-cflags="$RPM_OPT_FLAGS -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -fasm -std=c99 -fno-math-errno" \
     %{?_with_amr:--enable-libamr-nb --enable-libamr-wb} \
     --enable-libdc1394 \
     --enable-liba52 \
@@ -88,6 +90,9 @@ This package contains development files for %{name}
     --enable-libvorbis \
     --enable-libx264 \
     --enable-libxvid \
+    --enable-x11grab \
+    --enable-avfilter \
+    --enable-avfilter-lavf \
     --enable-postproc \
     --enable-swscale \
     --enable-pthreads \
@@ -132,6 +137,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %{_libdir}/libavcodec.so.*
 %{_libdir}/libavdevice.so.*
+%{_libdir}/libavfilter.so.*
 %{_libdir}/libavformat.so.*
 %{_libdir}/libavutil.so.*
 %{_libdir}/libpostproc.so.*
@@ -144,6 +150,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/ffmpeg
 %{_libdir}/libavcodec.so
 %{_libdir}/libavdevice.so
+%{_libdir}/libavfilter.so
 %{_libdir}/libavformat.so
 %{_libdir}/libavutil.so
 %{_libdir}/libpostproc.so
@@ -151,12 +158,19 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/libswscale.pc
 %{_libdir}/pkgconfig/libavcodec.pc
 %{_libdir}/pkgconfig/libavdevice.pc
+%{_libdir}/pkgconfig/libavfilter.pc
 %{_libdir}/pkgconfig/libavformat.pc
 %{_libdir}/pkgconfig/libavutil.pc
 %{_libdir}/pkgconfig/libpostproc.pc
 
 
 %changelog
+* Mon Aug 25 2008 Dominik Mierzejewski <rpm at greysector.net> - 0.4.9-0.48.20080825
+- 20080825 snapshot
+- use CFLAGS more similar to upstream
+- enable X11 grabbing input
+- enable libavfilter
+
 * Sun Aug 03 2008 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info - 0.4.9-0.47.20080614
 - rebuild
 
