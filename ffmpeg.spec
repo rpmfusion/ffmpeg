@@ -1,12 +1,12 @@
 # TODO: add make test to %%check section
 
-%define svn     20080825
+%define svn     20080905
 %define faad2min 1:2.6.1
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.4.9
-Release:        0.48.%{svn}%{?dist}
+Release:        0.49.%{svn}%{?dist}
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
@@ -15,7 +15,6 @@ Source1:        %{name}-snapshot.sh
 Patch4:         %{name}-asmreg.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  a52dec-devel
 %{?_with_amr:BuildRequires: amrnb-devel amrwb-devel}
 BuildRequires:  zlib-devel
 BuildRequires:  lame-devel
@@ -79,9 +78,8 @@ This package contains development files for %{name}
     --mandir=%{_mandir} \
     --arch=%{_target_cpu} \
     --extra-cflags="$RPM_OPT_FLAGS -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -fasm -std=c99 -fno-math-errno" \
-    %{?_with_amr:--enable-libamr-nb --enable-libamr-wb} \
+    %{?_with_amr:--enable-libamr-nb --enable-libamr-wb --enable-nonfree} \
     --enable-libdc1394 \
-    --enable-liba52 \
     --enable-libfaac \
     --enable-libfaad \
     --enable-libgsm \
@@ -165,6 +163,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Sep 05 2008 Dominik Mierzejewski <rpm at greysector.net> - 0.4.9-0.49.20080905
+- 20080905 snapshot
+- fix build --with amr
+- update snapshot.sh
+- drop liba52 support, native ac3 decoder is better in every way
+
 * Mon Aug 25 2008 Dominik Mierzejewski <rpm at greysector.net> - 0.4.9-0.48.20080825
 - 20080825 snapshot
 - use CFLAGS more similar to upstream
