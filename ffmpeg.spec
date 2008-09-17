@@ -1,12 +1,12 @@
 # TODO: add make test to %%check section
 
-%define svn     20080905
+%define svn     20080908
 %define faad2min 1:2.6.1
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.4.9
-Release:        0.49.%{svn}%{?dist}
+Release:        0.50.%{svn}%{?dist}
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
@@ -163,6 +163,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Sep 18 2008 Dominik Mierzejewski <rpm at greysector.net> - 0.4.9-0.50.20080908
+- 20080908 snapshot (r25261), last before ABI change
+
 * Fri Sep 05 2008 Dominik Mierzejewski <rpm at greysector.net> - 0.4.9-0.49.20080905
 - 20080905 snapshot
 - fix build --with amr
