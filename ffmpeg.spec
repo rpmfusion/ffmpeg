@@ -60,15 +60,6 @@ Summary:        Development package for %{name}
 Group:          Development/Libraries
 Requires:       %{name}-libs = %{version}-%{release}
 Requires:       pkgconfig
-%ifarch %{ix86}
-Requires:       %{name}-libs-sse2 = %{version}-%{release}
-%endif
-%ifarch ppc ppc64
-Requires:       %{name}-libs-altivec = %{version}-%{release}
-%endif
-%ifarch sparc sparc64
-Requires:       %{name}-libs-vis = %{version}-%{release}
-%endif
 
 %description    devel
 FFMpeg is a complete and free Internet live audio and video
@@ -76,46 +67,6 @@ broadcasting solution for Linux/Unix. It also includes a digital
 VCR. It can encode in real time in many formats including MPEG1 audio
 and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
 This package contains development files for %{name}
-
-%ifarch %{ix86}
-%package        libs-sse2
-Summary:        SSE2-enabled Libraries for %{name}
-Group:          System Environment/Libraries
-Requires:       faad2-libs >= %{faad2min}
-
-%description    libs-sse2
-FFMpeg is a complete and free Internet live audio and video
-broadcasting solution for Linux/Unix. It also includes a digital
-VCR. It can encode in real time in many formats including MPEG1 audio
-and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
-This package contains the SSE2-enabled libraries for %{name}
-%endif
-%ifarch ppc ppc64
-%package        libs-altivec
-Summary:        AltiVec-enabled Libraries for %{name}
-Group:          System Environment/Libraries
-Requires:       faad2-libs >= %{faad2min}
-
-%description    libs-altivec
-FFMpeg is a complete and free Internet live audio and video
-broadcasting solution for Linux/Unix. It also includes a digital
-VCR. It can encode in real time in many formats including MPEG1 audio
-and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
-This package contains the AltiVec-enabled libraries for %{name}
-%endif
-%ifarch sparc sparc64
-%package        libs-vis
-Summary:        VIS-enabled Libraries for %{name}
-Group:          System Environment/Libraries
-Requires:       faad2-libs >= %{faad2min}
-
-%description    libs-vis
-FFMpeg is a complete and free Internet live audio and video
-broadcasting solution for Linux/Unix. It also includes a digital
-VCR. It can encode in real time in many formats including MPEG1 audio
-and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
-This package contains the VIS-enabled libraries for %{name}
-%endif
 
 %define ff_configure \
 ../configure \\\
@@ -266,24 +217,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %postun libs -p /sbin/ldconfig
 
-%ifarch %{ix86}
-%post libs-sse2 -p /sbin/ldconfig
-
-%postun libs-sse2 -p /sbin/ldconfig
-%endif
-
-%ifarch ppc ppc64
-%post libs-altivec -p /sbin/ldconfig
-
-%postun libs-altivec -p /sbin/ldconfig
-%endif
-
-%ifarch sparc sparc64
-%post libs-vis -p /sbin/ldconfig
-
-%postun libs-vis -p /sbin/ldconfig
-%endif
-
 %files
 %defattr(-,root,root,-)
 %doc COPYING.GPL CREDITS Changelog README __doc/*.*
@@ -299,22 +232,15 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %{_libdir}/lib*.so.*
 %{_libdir}/vhook/
-
 %ifarch %{ix86}
-%files libs-sse2
-%defattr(-,root,root,-)
 %{_libdir}/sse2/lib*.so.*
 %{_libdir}/sse2/vhook/
 %endif
 %ifarch ppc ppc64
-%files libs-altivec
-%defattr(-,root,root,-)
 %{_libdir}/altivec/lib*.so.*
 %{_libdir}/altivec/vhook/
 %endif
 %ifarch sparc sparc64
-%files libs-vis
-%defattr(-,root,root,-)
 %{_libdir}/v9/lib*.so.*
 %{_libdir}/v9/vhook/
 %endif
