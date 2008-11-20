@@ -6,7 +6,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.4.9
-Release:        0.51.%{svn}%{?dist}
+Release:        0.52.%{svn}%{?dist}
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
@@ -47,6 +47,7 @@ Summary:        Libraries for %{name}
 Group:          System Environment/Libraries
 Requires:       faad2-libs >= %{faad2min}
 Obsoletes:      ffmpeg-libpostproc < 0.4.9-0.11
+Obsoletes:      ffmpeg-compat < 0.4.9-0.49
 
 %description    libs
 FFMpeg is a complete and free Internet live audio and video
@@ -262,6 +263,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Nov 20 2008 Dominik Mierzejewski <rpm at greysector.net> - 0.4.9-0.52.20080908
+- add obsoletes for -compat package (RPMFusion bug #173)
+
 * Sat Nov 01 2008 Dominik Mierzejewski <rpm at greysector.net> - 0.4.9-0.51.20080908
 - reworked build system
 - build optimized versions where it makes sense
