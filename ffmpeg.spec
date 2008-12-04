@@ -1,20 +1,17 @@
 # TODO: add make test to %%check section
 
-%define svn     20080908
+%define svn     20081202
 %define faad2min 1:2.6.1
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.4.9
-Release:        0.52.%{svn}%{?dist}
+Release:        0.53.%{svn}%{?dist}
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
 Source0:        http://rpm.greysector.net/livna/%{name}-%{svn}.tar.bz2
 Source1:        %{name}-snapshot.sh
-Patch0:         %{name}-cpu.patch
-Patch1:         %{name}-cmov.patch
-Patch4:         %{name}-asmreg.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 %{?_with_amr:BuildRequires: amrnb-devel amrwb-devel}
@@ -103,9 +100,6 @@ This package contains development files for %{name}
 
 %prep
 %setup -q -n %{name}-%{svn}
-%patch0 -p1 -b .cpu
-%patch1 -p1 -b .cmov
-%patch4 -p1 -b .asmreg
 
 %build
 mkdir generic
@@ -114,18 +108,13 @@ pushd generic
     --shlibdir=%{_libdir} \
 %ifarch %{ix86}
     --cpu=%{_target_cpu} \
-    --disable-amd3dnow \
     --disable-mmx \
-    --disable-sse \
 %endif
 %ifarch ppc ppc64
     --disable-altivec \
 %endif
 %ifarch sparc sparc64
     --disable-vis \
-%endif
-%ifarch x86_64
-    --disable-amd3dnow \
 %endif
 
 make %{?_smp_mflags}
@@ -137,8 +126,6 @@ pushd sse2
 %{ff_configure}\
     --shlibdir=%{_libdir}/sse2 \
     --cpu=i686 \
-    --disable-amd3dnow \
-    --disable-ssse3 \
     --disable-ffmpeg \
     --disable-ffserver \
     --disable-ffplay \
@@ -263,6 +250,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Dec 04 2008 Dominik Mierzejewski <rpm at greysector.net> - 0.4.9-0.53.20081202
+- 20081202 snapshot
+- drop upstreamed/obsolete patches
+
 * Thu Nov 20 2008 Dominik Mierzejewski <rpm at greysector.net> - 0.4.9-0.52.20080908
 - add obsoletes for -compat package (RPMFusion bug #173)
 
