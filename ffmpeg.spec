@@ -12,7 +12,6 @@ Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
 Source0:        http://rpm.greysector.net/livna/%{name}-%{svn}.tar.bz2
 Source1:        %{name}-snapshot.sh
-Patch0:         %{name}-pkgconfig.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 %{?_with_amr:BuildRequires: amrnb-devel amrwb-devel}
@@ -109,7 +108,6 @@ This package contains development files for %{name}
 
 %prep
 %setup -q -n %{name}-%{svn}
-%patch0 -p1 -b .p
 
 %build
 mkdir generic
