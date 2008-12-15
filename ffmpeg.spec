@@ -6,7 +6,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.4.9
-Release:        0.55.%{svn}%{?dist}
+Release:        0.56.%{svn}%{?dist}
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
@@ -16,7 +16,6 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 %{?_with_amr:BuildRequires: amrnb-devel amrwb-devel}
 BuildRequires:  bzip2-devel
-BuildRequires:  dirac-devel
 BuildRequires:  faac-devel
 BuildRequires:  faad2-devel >= %{faad2min}
 BuildRequires:  gsm-devel
@@ -81,7 +80,6 @@ This package contains development files for %{name}
     %{?_with_amr:--enable-libamr-nb --enable-libamr-wb --enable-nonfree} \\\
     --enable-bzlib \\\
     --enable-libdc1394 \\\
-    --enable-libdirac \\\
     --enable-libfaac \\\
     --enable-libfaad \\\
     --enable-libgsm \\\
@@ -247,6 +245,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Dec 15 2008 Dominik Mierzejewski <rpm at greysector.net> - 0.4.9-0.56.20081214
+- drop libdirac support for now
+
 * Sun Dec 14 2008 Dominik Mierzejewski <rpm at greysector.net> - 0.4.9-0.55.20081214
 - 20081214 snapshot
 - change the lib split on x86, it doesn't work right for P3/AthlonXP
