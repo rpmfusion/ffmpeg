@@ -1,12 +1,12 @@
 # TODO: add make test to %%check section
 
-%define svn     20081214
+%define svn     20081217
 %define faad2min 1:2.6.1
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.4.9
-Release:        0.56.%{svn}%{?dist}
+Release:        0.57.%{svn}%{?dist}
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
@@ -245,6 +245,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Dec 17 2008 Dominik Mierzejewski <rpm at greysector.net> - 0.4.9-0.57.20081217
+- 20081217 snapshot
+- fix pkgconfig files again (broken in 0.4.9-0.55.20081214)
+
 * Mon Dec 15 2008 Dominik Mierzejewski <rpm at greysector.net> - 0.4.9-0.56.20081214
 - drop libdirac support for now
 
