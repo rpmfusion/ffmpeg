@@ -6,12 +6,13 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.4.9
-Release:        0.50.%{svn}%{?dist}
+Release:        0.51.%{svn}%{?dist}
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
 Source0:        http://rpm.greysector.net/livna/%{name}-%{svn}.tar.bz2
 Source1:        %{name}-snapshot.sh
+Patch0:         %{name}-pkgconfig.patch
 Patch4:         %{name}-asmreg.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -66,6 +67,7 @@ This package contains development files for %{name}
 
 %prep
 %setup -q -n %{name}-%{svn}
+%patch0 -p1 -b .pkgconfig
 %patch4 -p1 -b .asmreg
 
 
@@ -163,6 +165,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jan 28 2009 Dominik Mierzejewski <rpm at greysector.net> - 0.4.9-0.51.20080908
+- fix pkgconfig file generation
+
 * Thu Sep 18 2008 Dominik Mierzejewski <rpm at greysector.net> - 0.4.9-0.50.20080908
 - 20080908 snapshot (r25261), last before ABI change
 
