@@ -1,0 +1,36 @@
+diff -up ffmpeg-20080908/libavcodec/indeo3.c.orig ffmpeg-20080908/libavcodec/indeo3.c
+--- ffmpeg-20080908/libavcodec/indeo3.c.orig	2008-06-12 23:50:13.000000000 +0200
++++ ffmpeg-20080908/libavcodec/indeo3.c	2009-01-29 21:15:18.000000000 +0100
+@@ -348,6 +348,10 @@ static void iv_Decode_Chunk(Indeo3Decode
+ 
+     if(cmd == 0) {
+       strip++;
++      if(strip >= strip_tbl + FF_ARRAY_ELEMS(strip_tbl)) {
++           av_log(s->avctx, AV_LOG_WARNING, "out of range strip\n");
++           break;
++      }
+       memcpy(strip, strip-1, sizeof(ustr_t));
+       strip->split_flag = 1;
+       strip->split_direction = 0;
+@@ -355,6 +359,10 @@ static void iv_Decode_Chunk(Indeo3Decode
+       continue;
+     } else if(cmd == 1) {
+       strip++;
++      if(strip >= strip_tbl + FF_ARRAY_ELEMS(strip_tbl)) {
++           av_log(s->avctx, AV_LOG_WARNING, "out of range strip\n");
++           break;
++      }
+       memcpy(strip, strip-1, sizeof(ustr_t));
+       strip->split_flag = 1;
+       strip->split_direction = 1;
+diff -up ffmpeg-20080908/libavutil/common.h.orig ffmpeg-20080908/libavutil/common.h
+--- ffmpeg-20080908/libavutil/common.h.orig	2008-08-31 09:39:47.000000000 +0200
++++ ffmpeg-20080908/libavutil/common.h	2009-01-30 01:13:07.000000000 +0100
+@@ -116,6 +116,7 @@
+ #define FFMIN3(a,b,c) FFMIN(FFMIN(a,b),c)
+ 
+ #define FFSWAP(type,a,b) do{type SWAP_tmp= b; b= a; a= SWAP_tmp;}while(0)
++#define FF_ARRAY_ELEMS(a) (sizeof(a) / sizeof((a)[0]))
+ 
+ /* misc math functions */
+ extern const uint8_t ff_log2_tab[256];

@@ -6,31 +6,34 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.4.9
-Release:        0.52.%{svn}%{?dist}
+Release:        0.53.%{svn}%{?dist}
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
 Source0:        http://rpm.greysector.net/livna/%{name}-%{svn}.tar.bz2
 Source1:        %{name}-snapshot.sh
-Patch0:         %{name}-cpu.patch
 Patch1:         %{name}-cmov.patch
 Patch4:         %{name}-asmreg.patch
+Patch10:        %{name}-r16802.patch
+Patch11:        %{name}-r16846.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 %{?_with_amr:BuildRequires: amrnb-devel amrwb-devel}
-BuildRequires:  zlib-devel
-BuildRequires:  lame-devel
-BuildRequires:  libdc1394-devel
-BuildRequires:  libvorbis-devel
-BuildRequires:  libtheora-devel
+BuildRequires:  bzip2-devel
+BuildRequires:  faac-devel
 BuildRequires:  faad2-devel >= %{faad2min}
-BuildRequires:  xvidcore-devel
-BuildRequires:  SDL-devel
 BuildRequires:  gsm-devel
 BuildRequires:  imlib2-devel
+BuildRequires:  lame-devel
+BuildRequires:  libdc1394-devel
+BuildRequires:  libtheora-devel
+BuildRequires:  libvorbis-devel
+BuildRequires:  schroedinger-devel
+BuildRequires:  SDL-devel
 BuildRequires:  texi2html
-BuildRequires:  faac-devel
 BuildRequires:  x264-devel >= 0.0.0-0.14.20080613
+BuildRequires:  xvidcore-devel
+BuildRequires:  zlib-devel
 #don't enable on x86_64 until PIC issues on are fixed (in libavcodec/i386/fft_mmx.asm)
 %ifarch %{ix86}
 BuildRequires:  yasm
@@ -78,11 +81,13 @@ This package contains development files for %{name}
     --arch=%{_target_cpu} \\\
     --extra-cflags="$RPM_OPT_FLAGS" \\\
     %{?_with_amr:--enable-libamr-nb --enable-libamr-wb --enable-nonfree} \\\
+    --enable-bzlib \\\
     --enable-libdc1394 \\\
     --enable-libfaac \\\
     --enable-libfaad \\\
     --enable-libgsm \\\
     --enable-libmp3lame \\\
+    --enable-libschroedinger \\\
     --enable-libtheora \\\
     --enable-libvorbis \\\
     --enable-libx264 \\\
@@ -103,9 +108,10 @@ This package contains development files for %{name}
 
 %prep
 %setup -q -n %{name}-%{svn}
-%patch0 -p1 -b .cpu
 %patch1 -p1 -b .cmov
 %patch4 -p1 -b .asmreg
+%patch10 -p1
+%patch11 -p1
 
 %build
 mkdir generic
@@ -114,9 +120,6 @@ pushd generic
     --shlibdir=%{_libdir} \
 %ifarch %{ix86}
     --cpu=%{_target_cpu} \
-    --disable-amd3dnow \
-    --disable-mmx \
-    --disable-sse \
 %endif
 %ifarch ppc ppc64
     --disable-altivec \
@@ -124,31 +127,23 @@ pushd generic
 %ifarch sparc sparc64
     --disable-vis \
 %endif
-%ifarch x86_64
-    --disable-amd3dnow \
-%endif
 
 make %{?_smp_mflags}
 popd
 
+mkdir simd
+pushd simd
 %ifarch %{ix86}
-mkdir sse2
-pushd sse2
 %{ff_configure}\
-    --shlibdir=%{_libdir}/sse2 \
+    --shlibdir=%{_libdir}/i686 \
     --cpu=i686 \
-    --disable-amd3dnow \
-    --disable-ssse3 \
     --disable-ffmpeg \
     --disable-ffserver \
     --disable-ffplay \
 
 make %{?_smp_mflags}
-popd
 %endif
 %ifarch ppc
-mkdir altivec
-pushd altivec
 %{ff_configure}\
     --shlibdir=%{_libdir}/altivec \
     --cpu=g4 \
@@ -157,11 +152,9 @@ pushd altivec
     --disable-ffserver \
     --disable-ffplay \
 
-popd
+make %{?_smp_mflags}
 %endif
 %ifarch ppc64
-mkdir altivec
-pushd altivec
 %{ff_configure}\
     --shlibdir=%{_libdir}/altivec \
     --cpu=g5 \
@@ -170,11 +163,9 @@ pushd altivec
     --disable-ffserver \
     --disable-ffplay \
 
-popd
+make %{?_smp_mflags}
 %endif
 %ifarch sparc sparc64
-mkdir vis
-pushd vis
 %{ff_configure}\
     --shlibdir=%{_libdir}/v9 \
     --cpu=v9 \
@@ -183,29 +174,26 @@ pushd vis
     --disable-ffserver \
     --disable-ffplay \
 
-popd
+make %{?_smp_mflags}
 %endif
+popd
 
 %install
 rm -rf $RPM_BUILD_ROOT __doc
 pushd generic
 make install DESTDIR=$RPM_BUILD_ROOT
 popd
+pushd simd
 %ifarch %{ix86}
-pushd sse2
 make install DESTDIR=$RPM_BUILD_ROOT
-popd
 %endif
 %ifarch ppc ppc64
-pushd altivec
 make install DESTDIR=$RPM_BUILD_ROOT
-popd
 %endif
 %ifarch sparc sparc64
-pushd vis
 make install DESTDIR=$RPM_BUILD_ROOT
-popd
 %endif
+popd
 cp -a doc __doc
 rm -f __doc/{Makefile,*.{1,pl,texi}}
 
@@ -234,8 +222,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/lib*.so.*
 %{_libdir}/vhook/
 %ifarch %{ix86}
-%{_libdir}/sse2/lib*.so.*
-%{_libdir}/sse2/vhook/
+%{_libdir}/i686/lib*.so.*
+%{_libdir}/i686/vhook/
 %endif
 %ifarch ppc ppc64
 %{_libdir}/altivec/lib*.so.*
@@ -252,7 +240,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/lib*.pc
 %{_libdir}/lib*.so
 %ifarch %{ix86}
-%{_libdir}/sse2/lib*.so
+%{_libdir}/i686/lib*.so
 %endif
 %ifarch ppc ppc64
 %{_libdir}/altivec/lib*.so
@@ -263,6 +251,14 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jan 29 2009 Dominik Mierzejewski <rpm at greysector.net> - 0.4.9-0.53.20080908
+- drop unnecessary patch
+- change the lib split on x86, it doesn't work right for P3/AthlonXP
+- enable bzlib and dirac support via external libs
+- sort BR list alphabetically
+- fix a couple of exploitable and potentially exploitable vulnerabilities, including
+  http://www.trapkit.de/advisories/TKADV2009-004.txt
+
 * Thu Nov 20 2008 Dominik Mierzejewski <rpm at greysector.net> - 0.4.9-0.52.20080908
 - add obsoletes for -compat package (RPMFusion bug #173)
 
