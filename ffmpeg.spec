@@ -1,12 +1,12 @@
 # TODO: add make test to %%check section
 
-%define svn     20081217
+%define svn     20090131
 %define faad2min 1:2.6.1
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.4.9
-Release:        0.57.%{svn}%{?dist}
+Release:        0.58.%{svn}%{?dist}
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
@@ -210,6 +210,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/ffmpeg.1*
 %{_mandir}/man1/ffplay.1*
 %{_mandir}/man1/ffserver.1*
+%{_datadir}/ffmpeg
 
 %files libs
 %defattr(-,root,root,-)
@@ -245,6 +246,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Jan 31 2009 Dominik Mierzejewski <rpm at greysector.net> - 0.4.9-0.58.20090131
+- 20090131 snapshot
+
 * Wed Dec 17 2008 Dominik Mierzejewski <rpm at greysector.net> - 0.4.9-0.57.20081217
 - 20081217 snapshot
 - fix pkgconfig files again (broken in 0.4.9-0.55.20081214)
