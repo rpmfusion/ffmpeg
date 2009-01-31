@@ -6,31 +6,38 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.4.9
-Release:        0.48.%{svn}%{?dist}
+Release:        0.49.%{svn}%{?dist}
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
 Source0:        http://rpm.greysector.net/livna/%{name}-%{svn}.tar.bz2
 Source1:        %{name}-snapshot.sh
+Patch1:         %{name}-cmov.patch
 Patch4:         %{name}-asmreg.patch
+Patch10:        %{name}-r16802.patch
+Patch11:        %{name}-r16846.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 %{?_with_amr:BuildRequires: amrnb-devel amrwb-devel}
-BuildRequires:  zlib-devel
-BuildRequires:  lame-devel
-BuildRequires:  libdc1394-devel
-BuildRequires:  libvorbis-devel
-BuildRequires:  libtheora-devel
+BuildRequires:  bzip2-devel
+BuildRequires:  faac-devel
 BuildRequires:  faad2-devel >= %{faad2min}
-BuildRequires:  xvidcore-devel
-BuildRequires:  SDL-devel
 BuildRequires:  gsm-devel
 BuildRequires:  imlib2-devel
+BuildRequires:  lame-devel
+BuildRequires:  libdc1394-devel
+BuildRequires:  libtheora-devel
+BuildRequires:  libvorbis-devel
+BuildRequires:  schroedinger-devel
+BuildRequires:  SDL-devel
 BuildRequires:  texi2html
-BuildRequires:  faac-devel
 BuildRequires:  x264-devel >= 0.0.0-0.14.20080613
-#don't enable until PIC issues on x86_64 are fixed ('ff_imdct_half_sse' in libavcodec/i386/fft_sse.c)
-#BuildRequires:  yasm
+BuildRequires:  xvidcore-devel
+BuildRequires:  zlib-devel
+#don't enable on x86_64 until PIC issues on are fixed (in libavcodec/i386/fft_mmx.asm)
+%ifarch %{ix86}
+BuildRequires:  yasm
+%endif
 
 %description
 FFMpeg is a complete and free Internet live audio and video
@@ -42,6 +49,8 @@ and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
 Summary:        Libraries for %{name}
 Group:          System Environment/Libraries
 Requires:       faad2-libs >= %{faad2min}
+Obsoletes:      ffmpeg-libpostproc < 0.4.9-0.11
+Obsoletes:      ffmpeg-compat < 0.4.9-0.49
 
 %description    libs
 FFMpeg is a complete and free Internet live audio and video
@@ -63,50 +72,128 @@ VCR. It can encode in real time in many formats including MPEG1 audio
 and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
 This package contains development files for %{name}
 
+%define ff_configure \
+../configure \\\
+    --prefix=%{_prefix} \\\
+    --incdir=%{_includedir}/ffmpeg \\\
+    --libdir=%{_libdir} \\\
+    --mandir=%{_mandir} \\\
+    --arch=%{_target_cpu} \\\
+    --extra-cflags="$RPM_OPT_FLAGS" \\\
+    %{?_with_amr:--enable-libamr-nb --enable-libamr-wb --enable-nonfree} \\\
+    --enable-bzlib \\\
+    --enable-libdc1394 \\\
+    --enable-libfaac \\\
+    --enable-libfaad \\\
+    --enable-libgsm \\\
+    --enable-libmp3lame \\\
+    --enable-libschroedinger \\\
+    --enable-libtheora \\\
+    --enable-libvorbis \\\
+    --enable-libx264 \\\
+    --enable-libxvid \\\
+    --enable-x11grab \\\
+    --enable-avfilter \\\
+    --enable-avfilter-lavf \\\
+    --enable-postproc \\\
+    --enable-swscale \\\
+    --enable-pthreads \\\
+    --disable-static \\\
+    --enable-shared \\\
+    --enable-gpl \\\
+    --disable-debug \\\
+    --disable-optimizations \\\
+    --disable-stripping
+
 
 %prep
 %setup -q -n %{name}-%{svn}
+%patch1 -p1 -b .cmov
 %patch4 -p1 -b .asmreg
-
+%patch10 -p1
+%patch11 -p1
 
 %build
-./configure \
-    --prefix=%{_prefix} \
-    --incdir=%{_includedir}/ffmpeg \
-    --libdir=%{_libdir} \
+mkdir generic
+pushd generic
+%{ff_configure}\
     --shlibdir=%{_libdir} \
-    --mandir=%{_mandir} \
-    --arch=%{_target_cpu} \
-    --extra-cflags="$RPM_OPT_FLAGS -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -fasm -std=c99 -fno-math-errno" \
-    %{?_with_amr:--enable-libamr-nb --enable-libamr-wb --enable-nonfree} \
-    --enable-libdc1394 \
-    --enable-libfaac \
-    --enable-libfaad \
-    --enable-libgsm \
-    --enable-libmp3lame \
-    --enable-libtheora \
-    --enable-libvorbis \
-    --enable-libx264 \
-    --enable-libxvid \
-    --enable-x11grab \
-    --enable-avfilter \
-    --enable-avfilter-lavf \
-    --enable-postproc \
-    --enable-swscale \
-    --enable-pthreads \
-    --disable-static \
-    --enable-shared \
-    --enable-gpl \
-    --disable-debug \
-    --disable-optimizations \
-    --disable-stripping
+%ifarch %{ix86}
+    --cpu=%{_target_cpu} \
+%endif
+%ifarch ppc ppc64
+    --disable-altivec \
+%endif
+%ifarch sparc sparc64
+    --disable-vis \
+%endif
 
-make %{?_smp_mflags} 
+make %{?_smp_mflags}
+popd
 
+mkdir simd
+pushd simd
+%ifarch %{ix86}
+%{ff_configure}\
+    --shlibdir=%{_libdir}/i686 \
+    --cpu=i686 \
+    --disable-ffmpeg \
+    --disable-ffserver \
+    --disable-ffplay \
+
+make %{?_smp_mflags}
+%endif
+%ifarch ppc
+%{ff_configure}\
+    --shlibdir=%{_libdir}/altivec \
+    --cpu=g4 \
+    --enable-altivec \
+    --disable-ffmpeg \
+    --disable-ffserver \
+    --disable-ffplay \
+
+make %{?_smp_mflags}
+%endif
+%ifarch ppc64
+%{ff_configure}\
+    --shlibdir=%{_libdir}/altivec \
+    --cpu=g5 \
+    --enable-altivec \
+    --disable-ffmpeg \
+    --disable-ffserver \
+    --disable-ffplay \
+
+make %{?_smp_mflags}
+%endif
+%ifarch sparc sparc64
+%{ff_configure}\
+    --shlibdir=%{_libdir}/v9 \
+    --cpu=v9 \
+    --enable-vis \
+    --disable-ffmpeg \
+    --disable-ffserver \
+    --disable-ffplay \
+
+make %{?_smp_mflags}
+%endif
+popd
 
 %install
 rm -rf $RPM_BUILD_ROOT __doc
+pushd generic
 make install DESTDIR=$RPM_BUILD_ROOT
+popd
+pushd simd
+%ifarch %{ix86}
+make install DESTDIR=$RPM_BUILD_ROOT
+%endif
+%ifarch ppc ppc64
+make install DESTDIR=$RPM_BUILD_ROOT
+%endif
+%ifarch sparc sparc64
+make install DESTDIR=$RPM_BUILD_ROOT
+%endif
+popd
 cp -a doc __doc
 rm -f __doc/{Makefile,*.{1,pl,texi}}
 
@@ -118,7 +205,6 @@ rm -rf $RPM_BUILD_ROOT
 %post libs -p /sbin/ldconfig
 
 %postun libs -p /sbin/ldconfig
-
 
 %files
 %defattr(-,root,root,-)
@@ -133,36 +219,52 @@ rm -rf $RPM_BUILD_ROOT
 
 %files libs
 %defattr(-,root,root,-)
-%{_libdir}/libavcodec.so.*
-%{_libdir}/libavdevice.so.*
-%{_libdir}/libavfilter.so.*
-%{_libdir}/libavformat.so.*
-%{_libdir}/libavutil.so.*
-%{_libdir}/libpostproc.so.*
-%{_libdir}/libswscale.so.*
+%{_libdir}/lib*.so.*
 %{_libdir}/vhook/
+%ifarch %{ix86}
+%{_libdir}/i686/lib*.so.*
+%{_libdir}/i686/vhook/
+%endif
+%ifarch ppc ppc64
+%{_libdir}/altivec/lib*.so.*
+%{_libdir}/altivec/vhook/
+%endif
+%ifarch sparc sparc64
+%{_libdir}/v9/lib*.so.*
+%{_libdir}/v9/vhook/
+%endif
 
 %files devel
 %defattr(-,root,root,-)
-# Note: as of 20070204, --incdir doesn't affect postproc.
 %{_includedir}/ffmpeg
-%{_libdir}/libavcodec.so
-%{_libdir}/libavdevice.so
-%{_libdir}/libavfilter.so
-%{_libdir}/libavformat.so
-%{_libdir}/libavutil.so
-%{_libdir}/libpostproc.so
-%{_libdir}/libswscale.so
-%{_libdir}/pkgconfig/libswscale.pc
-%{_libdir}/pkgconfig/libavcodec.pc
-%{_libdir}/pkgconfig/libavdevice.pc
-%{_libdir}/pkgconfig/libavfilter.pc
-%{_libdir}/pkgconfig/libavformat.pc
-%{_libdir}/pkgconfig/libavutil.pc
-%{_libdir}/pkgconfig/libpostproc.pc
+%{_libdir}/pkgconfig/lib*.pc
+%{_libdir}/lib*.so
+%ifarch %{ix86}
+%{_libdir}/i686/lib*.so
+%endif
+%ifarch ppc ppc64
+%{_libdir}/altivec/lib*.so
+%endif
+%ifarch sparc sparc64
+%{_libdir}/v9/lib*.so
+%endif
 
 
 %changelog
+* Sat Jan 31 2009 Dominik Mierzejewski <rpm at greysector.net> - 0.4.9-0.49.20080908
+- drop unnecessary patch
+- change the lib split on x86, it doesn't work right for P3/AthlonXP
+- enable bzlib and dirac support via external libs
+- sort BR list alphabetically
+- fix a couple of exploitable and potentially exploitable vulnerabilities, including
+  http://www.trapkit.de/advisories/TKADV2009-004.txt
+- add obsoletes for -compat package (RPMFusion bug #173)
+- reworked build system
+- build optimized versions where it makes sense
+- specfile cleanups
+- enable yasm for optimized asm routines on x86_32
+- add obsoletes for Freshrpms' libpostproc subpackage
+
 * Thu Sep 18 2008 Dominik Mierzejewski <rpm at greysector.net> - 0.4.9-0.48.20080908
 - 20080908 snapshot (r25261), last before ABI change
 - fix build --with amr
