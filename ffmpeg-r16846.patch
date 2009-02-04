@@ -1,0 +1,16 @@
+diff -up ffmpeg-20080908/libavformat/4xm.c.orig ffmpeg-20080908/libavformat/4xm.c
+--- ffmpeg-20080908/libavformat/4xm.c.orig	2008-06-03 18:20:54.000000000 +0200
++++ ffmpeg-20080908/libavformat/4xm.c	2009-01-29 21:19:17.000000000 +0100
+@@ -163,10 +163,10 @@ static int fourxm_read_header(AVFormatCo
+                 return AVERROR_INVALIDDATA;
+             }
+             current_track = AV_RL32(&header[i + 8]);
++            if((unsigned)fourxm->track_count >= UINT_MAX / sizeof(AudioTrack))
++                return -1;
+             if (current_track + 1 > fourxm->track_count) {
+                 fourxm->track_count = current_track + 1;
+-                if((unsigned)fourxm->track_count >= UINT_MAX / sizeof(AudioTrack))
+-                    return -1;
+                 fourxm->tracks = av_realloc(fourxm->tracks,
+                     fourxm->track_count * sizeof(AudioTrack));
+                 if (!fourxm->tracks) {

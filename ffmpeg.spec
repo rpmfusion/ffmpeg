@@ -6,14 +6,17 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.4.9
-Release:        0.51.%{svn}%{?dist}
+Release:        0.52.%{svn}%{?dist}
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
 Source0:        http://rpm.greysector.net/livna/%{name}-%{svn}.tar.bz2
 Source1:        %{name}-snapshot.sh
 Patch0:         %{name}-pkgconfig.patch
+Patch1:         %{name}-cmov.patch
 Patch4:         %{name}-asmreg.patch
+Patch10:        %{name}-r16802.patch
+Patch11:        %{name}-r16846.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 %{?_with_amr:BuildRequires: amrnb-devel amrwb-devel}
@@ -68,7 +71,10 @@ This package contains development files for %{name}
 %prep
 %setup -q -n %{name}-%{svn}
 %patch0 -p1 -b .pkgconfig
+%patch1 -p1 -b .cmov
 %patch4 -p1 -b .asmreg
+%patch10 -p1
+%patch11 -p1
 
 
 %build
@@ -165,6 +171,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Feb 04 2009 Dominik Mierzejewski <rpm at greysector.net> - 0.4.9-0.52.20080908
+- fix a couple of exploitable and potentially exploitable vulnerabilities, including
+  http://www.trapkit.de/advisories/TKADV2009-004.txt
+- backport a patch to enable cmov on x86_64-class CPUs
+
 * Wed Jan 28 2009 Dominik Mierzejewski <rpm at greysector.net> - 0.4.9-0.51.20080908
 - fix pkgconfig file generation
 
