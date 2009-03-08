@@ -263,11 +263,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Sun Mar 08 2009 Dominik Mierzejewski <rpm at greysector.net> - 0.4.9-0.55.20080908
-- backport av_find_nearest_q_idx() for DVDStyler (bug #398)
-- add missing obsoletes for ffmpeg-compat-devel (really fix bug #173)
 - backport support for Dirac in Matroska
 - add comments for all patches
 - enable yasm on x86_64, fix resulting textrels
+- backport av_find_nearest_q_idx() for DVDStyler (bug #398)
+- add missing obsoletes for ffmpeg-compat-devel (really fix bug #173)
 - drop --disable-optimizations from configure call (loses performance)
 - drop obsolete patch
 
