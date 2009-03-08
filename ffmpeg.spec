@@ -6,17 +6,25 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.4.9
-Release:        0.50.%{svn}%{?dist}
+Release:        0.51.%{svn}%{?dist}
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
 Source0:        http://rpm.greysector.net/livna/%{name}-%{svn}.tar.bz2
 Source1:        %{name}-snapshot.sh
+# backported .pc files generation fix
 Patch0:         %{name}-pkgconfig.patch
+# backported unconditional enabling of cmov on x86_64
 Patch1:         %{name}-cmov.patch
-Patch4:         %{name}-asmreg.patch
+# backported support for Dirac in Matroska
+Patch2:         %{name}-r16080.patch
+# get rid of textrels on x86_64 in yasm code
+Patch3:         %{name}-textrel.patch
+# backported security fixes
 Patch10:        %{name}-r16802.patch
 Patch11:        %{name}-r16846.patch
+# backport av_find_nearest_q_idx for dvdstyler
+Patch12:        %{name}-r15415.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 %{?_with_amr:BuildRequires: amrnb-devel amrwb-devel}
@@ -35,8 +43,7 @@ BuildRequires:  texi2html
 BuildRequires:  x264-devel >= 0.0.0-0.14.20080613
 BuildRequires:  xvidcore-devel
 BuildRequires:  zlib-devel
-#don't enable on x86_64 until PIC issues on are fixed (in libavcodec/i386/fft_mmx.asm)
-%ifarch %{ix86}
+%ifarch %{ix86} x86_64
 BuildRequires:  yasm
 %endif
 
@@ -65,6 +72,7 @@ Summary:        Development package for %{name}
 Group:          Development/Libraries
 Requires:       %{name}-libs = %{version}-%{release}
 Requires:       pkgconfig
+Obsoletes:      ffmpeg-compat-devel < 0.4.9-0.49
 
 %description    devel
 FFMpeg is a complete and free Internet live audio and video
@@ -103,7 +111,6 @@ This package contains development files for %{name}
     --enable-shared \\\
     --enable-gpl \\\
     --disable-debug \\\
-    --disable-optimizations \\\
     --disable-stripping
 
 
@@ -111,9 +118,11 @@ This package contains development files for %{name}
 %setup -q -n %{name}-%{svn}
 %patch0 -p1 -b .pkgconfig
 %patch1 -p1 -b .cmov
-%patch4 -p1 -b .asmreg
+%patch2 -p1
+%patch3 -p1 -b .textrel
 %patch10 -p1
 %patch11 -p1
+%patch12 -p1
 
 %build
 mkdir generic
@@ -253,6 +262,15 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Mar 08 2009 Dominik Mierzejewski <rpm at greysector.net> - 0.4.9-0.51.20080908
+- backport support for Dirac in Matroska
+- add comments for all patches
+- enable yasm on x86_64, fix resulting textrels
+- backport av_find_nearest_q_idx() for DVDStyler (bug #398)
+- add missing obsoletes for ffmpeg-compat-devel (really fix bug #173)
+- drop --disable-optimizations from configure call (loses performance)
+- drop obsolete patch
+
 * Wed Feb 04 2009 Dominik Mierzejewski <rpm at greysector.net> - 0.4.9-0.50.20080908
 - fix pkgconfig file generation
 
