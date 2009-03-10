@@ -1,0 +1,12 @@
+diff -up ffmpeg-0.5/libavcodec/x86/fft_mmx.asm.textrel ffmpeg-0.5/libavcodec/x86/fft_mmx.asm
+--- ffmpeg-0.5/libavcodec/x86/fft_mmx.asm.textrel	2009-02-13 01:57:22.000000000 +0100
++++ ffmpeg-0.5/libavcodec/x86/fft_mmx.asm	2009-03-10 22:09:16.000000000 +0100
+@@ -448,6 +448,8 @@ fft %+ n %+ %3%2:
+ 
+ %ifidn __OUTPUT_FORMAT__,macho64
+ section .rodata
++%else
++section .data
+ %endif
+ 
+ align 8
