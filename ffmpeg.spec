@@ -1,17 +1,17 @@
 # TODO: add make test to %%check section
 
-%define svn     20090131
 %define faad2min 1:2.6.1
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        0.4.9
-Release:        0.58.%{svn}%{?dist}
+Version:        0.5
+Release:        1%{?dist}
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
-Source0:        http://rpm.greysector.net/livna/%{name}-%{svn}.tar.bz2
-Source1:        %{name}-snapshot.sh
+Source0:        http://ffmpeg.org/releases/%{name}-%{version}.tar.bz2
+# get rid of textrels on x86_64 in yasm code
+Patch0:         %{name}-textrel.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 %{?_with_amr:BuildRequires: amrnb-devel amrwb-devel}
@@ -24,6 +24,7 @@ BuildRequires:  lame-devel
 BuildRequires:  libdc1394-devel
 BuildRequires:  libtheora-devel
 BuildRequires:  libvorbis-devel
+BuildRequires:  openjpeg-devel
 BuildRequires:  schroedinger-devel
 BuildRequires:  SDL-devel
 BuildRequires:  speex-devel
@@ -31,8 +32,7 @@ BuildRequires:  texi2html
 BuildRequires:  x264-devel >= 0.0.0-0.14.20080613
 BuildRequires:  xvidcore-devel
 BuildRequires:  zlib-devel
-#don't enable on x86_64 until PIC issues on are fixed (in libavcodec/i386/fft_mmx.asm)
-%ifarch %{ix86}
+%ifarch %{ix86} x86_64
 BuildRequires:  yasm
 %endif
 
@@ -61,6 +61,7 @@ Summary:        Development package for %{name}
 Group:          Development/Libraries
 Requires:       %{name}-libs = %{version}-%{release}
 Requires:       pkgconfig
+Obsoletes:      ffmpeg-compat-devel < 0.4.9-0.49
 
 %description    devel
 FFMpeg is a complete and free Internet live audio and video
@@ -72,11 +73,14 @@ This package contains development files for %{name}
 %define ff_configure \
 ../configure \\\
     --prefix=%{_prefix} \\\
+    --bindir=%{_bindir} \\\
+    --datadir=%{_datadir}/ffmpeg \\\
     --incdir=%{_includedir}/ffmpeg \\\
     --libdir=%{_libdir} \\\
     --mandir=%{_mandir} \\\
     --arch=%{_target_cpu} \\\
-    --extra-cflags="$RPM_OPT_FLAGS" \\\
+    --extra-cflags="$RPM_OPT_FLAGS -I%{_includedir}/openjpeg" \\\
+    --extra-version=rpmfusion \\\
     %{?_with_amr:--enable-libamr-nb --enable-libamr-wb --enable-nonfree} \\\
     --enable-bzlib \\\
     --enable-libdc1394 \\\
@@ -84,6 +88,7 @@ This package contains development files for %{name}
     --enable-libfaad \\\
     --enable-libgsm \\\
     --enable-libmp3lame \\\
+    --enable-libopenjpeg \\\
     --enable-libschroedinger \\\
     --enable-libspeex \\\
     --enable-libtheora \\\
@@ -100,12 +105,12 @@ This package contains development files for %{name}
     --enable-shared \\\
     --enable-gpl \\\
     --disable-debug \\\
-    --disable-optimizations \\\
     --disable-stripping
 
 
 %prep
-%setup -q -n %{name}-%{svn}
+%setup -q
+%patch0 -p1 -b .textrel
 
 %build
 mkdir generic
@@ -114,6 +119,10 @@ pushd generic
     --shlibdir=%{_libdir} \
 %ifarch %{ix86}
     --cpu=%{_target_cpu} \
+    --disable-mmx2 \
+    --disable-sse \
+    --disable-ssse3 \
+    --disable-yasm \
 %endif
 %ifarch ppc ppc64
     --disable-altivec \
@@ -123,6 +132,7 @@ pushd generic
 %endif
 
 make %{?_smp_mflags}
+make documentation
 popd
 
 mkdir simd
@@ -173,24 +183,15 @@ make %{?_smp_mflags}
 popd
 
 %install
-rm -rf $RPM_BUILD_ROOT __doc
+rm -rf $RPM_BUILD_ROOT
 pushd generic
 make install DESTDIR=$RPM_BUILD_ROOT
 popd
 pushd simd
-%ifarch %{ix86}
-make install DESTDIR=$RPM_BUILD_ROOT
-%endif
-%ifarch ppc ppc64
-make install DESTDIR=$RPM_BUILD_ROOT
-%endif
-%ifarch sparc sparc64
+%ifarch %{ix86} ppc ppc64 sparc sparc64
 make install DESTDIR=$RPM_BUILD_ROOT
 %endif
 popd
-cp -a doc __doc
-rm -f __doc/{Makefile,*.{1,pl,texi}}
-
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -202,11 +203,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc COPYING.GPL CREDITS Changelog README __doc/*.*
-# Note: as of 20070204, "configure" doesn't have --bindir.
-%{_prefix}/bin/ffmpeg
-%{_prefix}/bin/ffplay
-%{_prefix}/bin/ffserver
+%doc COPYING.GPL CREDITS Changelog README RELEASE doc/ffserver.conf
+%{_bindir}/ffmpeg
+%{_bindir}/ffplay
+%{_bindir}/ffserver
 %{_mandir}/man1/ffmpeg.1*
 %{_mandir}/man1/ffplay.1*
 %{_mandir}/man1/ffserver.1*
@@ -231,6 +231,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(-,root,root,-)
+%doc MAINTAINERS doc/APIchanges doc/TODO doc/*.txt
 %{_includedir}/ffmpeg
 %{_libdir}/pkgconfig/lib*.pc
 %{_libdir}/lib*.so
@@ -246,6 +247,16 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Mar 10 2009 Dominik Mierzejewski <rpm at greysector.net> - 0.5-1
+- 0.5 release
+- enable yasm on x86_64, fix resulting textrels
+- add missing obsoletes for ffmpeg-compat-devel (really fix bug #173)
+- disable yasm and certain asm optimizations for generic ix86 builds
+- %%{_bindir} is now usable
+- include more docs
+- specfile cleanups
+- add JPEG2000 decoding support via openjpeg
+
 * Sat Jan 31 2009 Dominik Mierzejewski <rpm at greysector.net> - 0.4.9-0.58.20090131
 - 20090131 snapshot
 
