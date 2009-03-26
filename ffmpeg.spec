@@ -5,7 +5,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.5
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
@@ -247,6 +247,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Mar 27 2009 Dominik Mierzejewski <rpm at greysector.net> - 0.5-2
+- rebuild for new faad2 and x264
+
 * Tue Mar 10 2009 Dominik Mierzejewski <rpm at greysector.net> - 0.5-1
 - 0.5 release
 - enable yasm on x86_64, fix resulting textrels
