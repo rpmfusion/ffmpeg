@@ -1,35 +1,39 @@
 # TODO: add make test to %%check section
 
-%define faad2min 1:2.6.1
+%global svn     20091007
+%global faad2min 1:2.6.1
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.5
-Release:        2%{?dist}
+Release:        3.svn%{svn}%{?dist}
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
-Source0:        http://ffmpeg.org/releases/%{name}-%{version}.tar.bz2
+Source0:        http://rpms.kwizart.net/fedora/SOURCES/%{name}-%{svn}.tar.bz2
 # get rid of textrels on x86_64 in yasm code
 Patch0:         %{name}-textrel.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 %{?_with_amr:BuildRequires: amrnb-devel amrwb-devel}
 BuildRequires:  bzip2-devel
-BuildRequires:  faac-devel
+BuildRequires:  dirac-devel
+%{?_with_faac:BuildRequires: faac-devel}
 BuildRequires:  faad2-devel >= %{faad2min}
 BuildRequires:  gsm-devel
 BuildRequires:  imlib2-devel
 BuildRequires:  lame-devel
 BuildRequires:  libdc1394-devel
 BuildRequires:  libtheora-devel
+%{?_with_vaapi:BuildRequires:libva-devel >= 0.31.0}
+BuildRequires:  libvdpau-devel
 BuildRequires:  libvorbis-devel
 BuildRequires:  openjpeg-devel
 BuildRequires:  schroedinger-devel
 BuildRequires:  SDL-devel
 BuildRequires:  speex-devel
 BuildRequires:  texi2html
-BuildRequires:  x264-devel >= 0.0.0-0.14.20080613
+BuildRequires:  x264-devel >= 0.0.0-0.25.20091007
 BuildRequires:  xvidcore-devel
 BuildRequires:  zlib-devel
 %ifarch %{ix86} x86_64
@@ -70,7 +74,7 @@ VCR. It can encode in real time in many formats including MPEG1 audio
 and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
 This package contains development files for %{name}
 
-%define ff_configure \
+%global ff_configure \
 ../configure \\\
     --prefix=%{_prefix} \\\
     --bindir=%{_bindir} \\\
@@ -81,10 +85,11 @@ This package contains development files for %{name}
     --arch=%{_target_cpu} \\\
     --extra-cflags="$RPM_OPT_FLAGS -I%{_includedir}/openjpeg" \\\
     --extra-version=rpmfusion \\\
-    %{?_with_amr:--enable-libamr-nb --enable-libamr-wb --enable-nonfree} \\\
+    %{?_with_amr:--enable-libamr-nb --enable-libamr-wb} \\\
     --enable-bzlib \\\
     --enable-libdc1394 \\\
-    --enable-libfaac \\\
+    --enable-libdirac \\\
+    %{?_with_faac:--enable-libfaac} \\\
     --enable-libfaad \\\
     --enable-libgsm \\\
     --enable-libmp3lame \\\
@@ -99,17 +104,17 @@ This package contains development files for %{name}
     --enable-avfilter \\\
     --enable-avfilter-lavf \\\
     --enable-postproc \\\
-    --enable-swscale \\\
     --enable-pthreads \\\
     --disable-static \\\
     --enable-shared \\\
     --enable-gpl \\\
+    %{?_with_nonfree:--enable-nonfree} \\\
     --disable-debug \\\
     --disable-stripping
 
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{svn}
 %patch0 -p1 -b .textrel
 
 %build
@@ -117,6 +122,9 @@ mkdir generic
 pushd generic
 %{ff_configure}\
     --shlibdir=%{_libdir} \
+%if 0%{?ffmpegsuffix:1}
+    --build-suffix=%{ffmpegsuffix} \
+%else
 %ifarch %{ix86}
     --cpu=%{_target_cpu} \
     --disable-mmx2 \
@@ -130,11 +138,13 @@ pushd generic
 %ifarch sparc sparc64
     --disable-vis \
 %endif
+%endif
 
 make %{?_smp_mflags}
 make documentation
 popd
 
+%if 1%{?ffmpegsuffix:0}
 mkdir simd
 pushd simd
 %ifarch %{ix86}
@@ -181,17 +191,20 @@ make %{?_smp_mflags}
 make %{?_smp_mflags}
 %endif
 popd
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
 pushd generic
 make install DESTDIR=$RPM_BUILD_ROOT
 popd
+%if 1%{?ffmpegsuffix:0}
 pushd simd
 %ifarch %{ix86} ppc ppc64 sparc sparc64
 make install DESTDIR=$RPM_BUILD_ROOT
 %endif
 popd
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -203,7 +216,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc COPYING.GPL CREDITS Changelog README RELEASE doc/ffserver.conf
+%doc COPYING.* CREDITS Changelog README doc/ffserver.conf
 %{_bindir}/ffmpeg
 %{_bindir}/ffplay
 %{_bindir}/ffserver
@@ -215,18 +228,16 @@ rm -rf $RPM_BUILD_ROOT
 %files libs
 %defattr(-,root,root,-)
 %{_libdir}/lib*.so.*
-%{_libdir}/vhook/
+%if 1%{?ffmpegsuffix:0}
 %ifarch %{ix86}
 %{_libdir}/i686/lib*.so.*
-%{_libdir}/i686/vhook/
 %endif
 %ifarch ppc ppc64
 %{_libdir}/altivec/lib*.so.*
-%{_libdir}/altivec/vhook/
 %endif
 %ifarch sparc sparc64
 %{_libdir}/v9/lib*.so.*
-%{_libdir}/v9/vhook/
+%endif
 %endif
 
 %files devel
@@ -235,6 +246,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/ffmpeg
 %{_libdir}/pkgconfig/lib*.pc
 %{_libdir}/lib*.so
+%if 1%{?ffmpegsuffix:0}
 %ifarch %{ix86}
 %{_libdir}/i686/lib*.so
 %endif
@@ -244,9 +256,17 @@ rm -rf $RPM_BUILD_ROOT
 %ifarch sparc sparc64
 %{_libdir}/v9/lib*.so
 %endif
+%endif
 
 
 %changelog
+* Wed Oct  7 2009 kwizart <kwizart at gmail.com > - 0.5-3.svn20091007
+- Update to svn snapshot 20091007
+- Add BR dirac and vdpau.
+- Use --with nonfree as a separate conditional for amr and faac.
+- Don't build faac by default because it's nonfree.
+- Allow to --define 'ffmpegsuffix custom' for special SONAME.
+
 * Fri Mar 27 2009 Dominik Mierzejewski <rpm at greysector.net> - 0.5-2
 - rebuild for new faad2 and x264
 
