@@ -11,6 +11,7 @@ License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
 Source0:        http://rpms.kwizart.net/fedora/SOURCES/%{name}-%{svn}.tar.bz2
+Source1:        ffmpeg-snapshot.sh
 # get rid of textrels on x86_64 in yasm code
 Patch0:         %{name}-textrel.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
