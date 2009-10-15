@@ -28,6 +28,7 @@ BuildRequires:  libtheora-devel
 %{?_with_vaapi:BuildRequires:libva-devel >= 0.31.0}
 BuildRequires:  libvdpau-devel
 BuildRequires:  libvorbis-devel
+{!?_without_opencore-amr: BuildRequires:  opencore-amr-devel}
 BuildRequires:  openjpeg-devel
 BuildRequires:  schroedinger-devel
 BuildRequires:  SDL-devel
@@ -85,6 +86,7 @@ This package contains development files for %{name}
     --arch=%{_target_cpu} \\\
     --extra-cflags="$RPM_OPT_FLAGS -I%{_includedir}/openjpeg" \\\
     --extra-version=rpmfusion \\\
+    %{!?_without_opencore-amr: --enable-libopencore-amrnb --enable-libopencore-amrnb} \\\
     %{?_with_amr:--enable-libamr-nb --enable-libamr-wb} \\\
     --enable-bzlib \\\
     --enable-libdc1394 \\\
@@ -128,9 +130,14 @@ pushd generic
 %ifarch %{ix86}
     --cpu=%{_target_cpu} \
     --disable-mmx2 \
+    --disable-amd3dnow \
+    --disable-amd3dnowext \
     --disable-sse \
     --disable-ssse3 \
     --disable-yasm \
+%endif
+%ifarch x86_64
+    --enable-runtime-cpudetect \
 %endif
 %ifarch ppc ppc64
     --disable-altivec \
@@ -149,8 +156,9 @@ mkdir simd
 pushd simd
 %ifarch %{ix86}
 %{ff_configure}\
-    --shlibdir=%{_libdir}/i686 \
+    --shlibdir=%{_libdir}/sse2 \
     --cpu=i686 \
+    --enable-runtime-cpudetect \
     --disable-ffmpeg \
     --disable-ffserver \
     --disable-ffplay \
@@ -230,7 +238,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/lib*.so.*
 %if 1%{?ffmpegsuffix:0}
 %ifarch %{ix86}
-%{_libdir}/i686/lib*.so.*
+%{_libdir}/sse2/lib*.so.*
 %endif
 %ifarch ppc ppc64
 %{_libdir}/altivec/lib*.so.*
@@ -248,7 +256,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/lib*.so
 %if 1%{?ffmpegsuffix:0}
 %ifarch %{ix86}
-%{_libdir}/i686/lib*.so
+%{_libdir}/sse2/lib*.so
 %endif
 %ifarch ppc ppc64
 %{_libdir}/altivec/lib*.so
@@ -260,9 +268,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Wed Oct  7 2009 kwizart <kwizart at gmail.com > - 0.5-3.svn20091007
+* Thu Oct 15 2009 kwizart <kwizart at gmail.com > - 0.5-3.svn20091007
 - Update to svn snapshot 20091007
-- Add BR dirac and vdpau.
+- Add BR dirac opencoreamr vdpau.
 - Use --with nonfree as a separate conditional for amr and faac.
 - Don't build faac by default because it's nonfree.
 - Allow to --define 'ffmpegsuffix custom' for special SONAME.
