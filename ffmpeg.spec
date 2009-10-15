@@ -28,7 +28,7 @@ BuildRequires:  libtheora-devel
 %{?_with_vaapi:BuildRequires:libva-devel >= 0.31.0}
 BuildRequires:  libvdpau-devel
 BuildRequires:  libvorbis-devel
-{!?_without_opencore-amr: BuildRequires:  opencore-amr-devel}
+%{?_with_opencore-amr:BuildRequires: opencore-amr-devel}
 BuildRequires:  openjpeg-devel
 BuildRequires:  schroedinger-devel
 BuildRequires:  SDL-devel
@@ -86,7 +86,7 @@ This package contains development files for %{name}
     --arch=%{_target_cpu} \\\
     --extra-cflags="$RPM_OPT_FLAGS -I%{_includedir}/openjpeg" \\\
     --extra-version=rpmfusion \\\
-    %{!?_without_opencore-amr: --enable-libopencore-amrnb --enable-libopencore-amrnb} \\\
+    %{?_with_opencore-amr: --enable-libopencore-amrnb --enable-libopencore-amrnb} \\\
     %{?_with_amr:--enable-libamr-nb --enable-libamr-wb} \\\
     --enable-bzlib \\\
     --enable-libdc1394 \\\
@@ -111,6 +111,7 @@ This package contains development files for %{name}
     --enable-shared \\\
     --enable-gpl \\\
     %{?_with_nonfree:--enable-nonfree} \\\
+    %{?_with_gplv3:--enable-version3} \\\
     --disable-debug \\\
     --disable-stripping
 
@@ -270,8 +271,9 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Thu Oct 15 2009 kwizart <kwizart at gmail.com > - 0.5-3.svn20091007
 - Update to svn snapshot 20091007
-- Add BR dirac opencoreamr vdpau.
+- Add BR dirac vdpau.
 - Use --with nonfree as a separate conditional for amr and faac.
+- Use --with gplv3 as a separate conditional for opencore-amr.
 - Don't build faac by default because it's nonfree.
 - Allow to --define 'ffmpegsuffix custom' for special SONAME.
 
