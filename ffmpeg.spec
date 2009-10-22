@@ -1,13 +1,17 @@
 # TODO: add make test to %%check section
 
-%global svn     20091007
+%global svn     20091019
 %global faad2min 1:2.6.1
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.5
-Release:        3.svn%{svn}%{?dist}
+Release:        4.%{svn}svn%{?dist}
+%if 0%{?_with_opencore_amr:1}
+License:        GPLv3+
+%else
 License:        GPLv2+
+%endif
 Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
 Source0:        http://rpms.kwizart.net/fedora/SOURCES/%{name}-%{svn}.tar.bz2
@@ -16,7 +20,6 @@ Source1:        ffmpeg-snapshot.sh
 Patch0:         %{name}-textrel.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-%{?_with_amr:BuildRequires: amrnb-devel amrwb-devel}
 BuildRequires:  bzip2-devel
 BuildRequires:  dirac-devel
 %{?_with_faac:BuildRequires: faac-devel}
@@ -29,7 +32,7 @@ BuildRequires:  libtheora-devel
 %{?_with_vaapi:BuildRequires:libva-devel >= 0.31.0}
 BuildRequires:  libvdpau-devel
 BuildRequires:  libvorbis-devel
-%{?_with_opencore-amr:BuildRequires: opencore-amr-devel}
+%{?_with_opencore_amr:BuildRequires: opencore-amr-devel}
 BuildRequires:  openjpeg-devel
 BuildRequires:  schroedinger-devel
 BuildRequires:  SDL-devel
@@ -85,14 +88,13 @@ This package contains development files for %{name}
     --libdir=%{_libdir} \\\
     --mandir=%{_mandir} \\\
     --arch=%{_target_cpu} \\\
-    --extra-cflags="$RPM_OPT_FLAGS -I%{_includedir}/openjpeg" \\\
+    --extra-cflags="$RPM_OPT_FLAGS" \\\
     --extra-version=rpmfusion \\\
-    %{?_with_opencore-amr: --enable-libopencore-amrnb --enable-libopencore-amrnb} \\\
-    %{?_with_amr:--enable-libamr-nb --enable-libamr-wb} \\\
+    %{?_with_opencore_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-version3} \\\
     --enable-bzlib \\\
     --enable-libdc1394 \\\
     --enable-libdirac \\\
-    %{?_with_faac:--enable-libfaac} \\\
+    %{?_with_faac:--enable-libfaac --enable-nonfree} \\\
     --enable-libfaad \\\
     --enable-libgsm \\\
     --enable-libmp3lame \\\
@@ -111,8 +113,6 @@ This package contains development files for %{name}
     --disable-static \\\
     --enable-shared \\\
     --enable-gpl \\\
-    %{?_with_nonfree:--enable-nonfree} \\\
-    %{?_with_gplv3:--enable-version3} \\\
     --disable-debug \\\
     --disable-stripping
 
@@ -131,14 +131,8 @@ pushd generic
 %else
 %ifarch %{ix86}
     --cpu=%{_target_cpu} \
-    --disable-mmx2 \
-    --disable-amd3dnow \
-    --disable-amd3dnowext \
-    --disable-sse \
-    --disable-ssse3 \
-    --disable-yasm \
 %endif
-%ifarch x86_64
+%ifarch %{ix86} x86_64
     --enable-runtime-cpudetect \
 %endif
 %ifarch ppc ppc64
@@ -156,18 +150,7 @@ popd
 %if 1%{?ffmpegsuffix:0}
 mkdir simd
 pushd simd
-%ifarch %{ix86}
-%{ff_configure}\
-    --shlibdir=%{_libdir}/sse2 \
-    --cpu=i686 \
-    --enable-runtime-cpudetect \
-    --disable-ffmpeg \
-    --disable-ffserver \
-    --disable-ffplay \
-
-make %{?_smp_mflags}
-%endif
-%ifarch ppc
+%ifarch ppc ppc64
 %{ff_configure}\
     --shlibdir=%{_libdir}/altivec \
     --cpu=g4 \
@@ -210,7 +193,7 @@ make install DESTDIR=$RPM_BUILD_ROOT
 popd
 %if 1%{?ffmpegsuffix:0}
 pushd simd
-%ifarch %{ix86} ppc ppc64 sparc sparc64
+%ifarch ppc ppc64 sparc sparc64
 make install DESTDIR=$RPM_BUILD_ROOT
 %endif
 popd
@@ -239,9 +222,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %{_libdir}/lib*.so.*
 %if 1%{?ffmpegsuffix:0}
-%ifarch %{ix86}
-%{_libdir}/sse2/lib*.so.*
-%endif
 %ifarch ppc ppc64
 %{_libdir}/altivec/lib*.so.*
 %endif
@@ -257,9 +237,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/lib*.pc
 %{_libdir}/lib*.so
 %if 1%{?ffmpegsuffix:0}
-%ifarch %{ix86}
-%{_libdir}/sse2/lib*.so
-%endif
 %ifarch ppc ppc64
 %{_libdir}/altivec/lib*.so
 %endif
@@ -270,6 +247,14 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Oct 22 2009 Dominik Mierzejewski <rpm at greysector.net> - 0.5-4.20091019svn
+- 20091019 snapshot
+- dropped support for old amr libs (not supported upstream since July)
+- don't disable yasm for generic builds
+- fixed opencore amr support
+- dropped workaround for non-standard openjpeg headers location
+- dropped separate SIMDified libs for x86, runtime CPU detection should be enough
+
 * Thu Oct 15 2009 kwizart <kwizart at gmail.com > - 0.5-3.svn20091007
 - Update to svn snapshot 20091007
 - Add BR dirac vdpau.
