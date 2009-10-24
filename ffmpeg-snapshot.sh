@@ -17,6 +17,9 @@ svn=$(date +%Y%m%d)
 cd "$tmp"
 svn checkout -r {$svn} svn://svn.mplayerhq.hu/ffmpeg/trunk ffmpeg-$svn
 cd ffmpeg-$svn
+pushd libswscale
+svn update -r {$svn} libswscale
+popd
 ./version.sh . version.h
 find . -type d -name .svn -print0 | xargs -0r rm -rf
 sed -i -e '/^\.PHONY: version\.h$/d' Makefile
