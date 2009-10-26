@@ -5,24 +5,29 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.5
-Release:        2%{?dist}
+Release:        3%{?dist}
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
 Source0:        http://ffmpeg.org/releases/%{name}-%{version}.tar.bz2
 # get rid of textrels on x86_64 in yasm code
 Patch0:         %{name}-textrel.patch
+# fix ppc builds
+Patch1:         %{name}-ppc.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 %{?_with_amr:BuildRequires: amrnb-devel amrwb-devel}
 BuildRequires:  bzip2-devel
-BuildRequires:  faac-devel
+BuildRequires:  dirac-devel
+%{?_with_faac:BuildRequires: faac-devel}
 BuildRequires:  faad2-devel >= %{faad2min}
 BuildRequires:  gsm-devel
 BuildRequires:  imlib2-devel
 BuildRequires:  lame-devel
 BuildRequires:  libdc1394-devel
 BuildRequires:  libtheora-devel
+%{?_with_vaapi:BuildRequires:libva-devel >= 0.31.0}
+BuildRequires:  libvdpau-devel
 BuildRequires:  libvorbis-devel
 BuildRequires:  openjpeg-devel
 BuildRequires:  schroedinger-devel
@@ -79,12 +84,13 @@ This package contains development files for %{name}
     --libdir=%{_libdir} \\\
     --mandir=%{_mandir} \\\
     --arch=%{_target_cpu} \\\
-    --extra-cflags="$RPM_OPT_FLAGS -I%{_includedir}/openjpeg" \\\
+    --extra-cflags="$RPM_OPT_FLAGS" \\\
     --extra-version=rpmfusion \\\
     %{?_with_amr:--enable-libamr-nb --enable-libamr-wb --enable-nonfree} \\\
     --enable-bzlib \\\
     --enable-libdc1394 \\\
-    --enable-libfaac \\\
+    --enable-libdirac \\\
+    %{?_with_faac:--enable-libfaac --enable-nonfree} \\\
     --enable-libfaad \\\
     --enable-libgsm \\\
     --enable-libmp3lame \\\
@@ -95,6 +101,7 @@ This package contains development files for %{name}
     --enable-libvorbis \\\
     --enable-libx264 \\\
     --enable-libxvid \\\
+    --enable-vdpau \\\
     --enable-x11grab \\\
     --enable-avfilter \\\
     --enable-avfilter-lavf \\\
@@ -111,6 +118,7 @@ This package contains development files for %{name}
 %prep
 %setup -q
 %patch0 -p1 -b .textrel
+%patch1 -p1 -b .ppc
 
 %build
 mkdir generic
@@ -247,6 +255,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Oct 22 2009 Dominik Mierzejewski <rpm at greysector.net> - 0.5-3
+- dropped workaround for non-standard openjpeg headers location
+- Add BR dirac vdpau. (kwizart)
+- Don't build faac by default because it's nonfree. (kwizart)
+- fixed PowerPC builds (bug 808)
+
 * Fri Mar 27 2009 Dominik Mierzejewski <rpm at greysector.net> - 0.5-2
 - rebuild for new faad2 and x264
 
