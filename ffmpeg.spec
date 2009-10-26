@@ -6,7 +6,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.4.9
-Release:        0.55.%{svn}%{?dist}
+Release:        0.56.%{svn}%{?dist}
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
@@ -25,8 +25,15 @@ Patch10:        %{name}-r16802.patch
 Patch11:        %{name}-r16846.patch
 # backport av_find_nearest_q_idx for dvdstyler
 Patch12:        %{name}-r15415.patch
+# backport presets
+Patch13:        %{name}-r15348.patch
+# backport audio resampling fix
+Patch14:        %{name}-r17163-17311.patch
+# backport presets installation
+Patch15:        %{name}-r16791-16793.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
+Requires:       %{name}-libs = %{version}-%{release}
 %{?_with_amr:BuildRequires: amrnb-devel amrwb-devel}
 BuildRequires:  bzip2-devel
 BuildRequires:  faac-devel
@@ -84,6 +91,8 @@ This package contains development files for %{name}
 %define ff_configure \
 ../configure \\\
     --prefix=%{_prefix} \\\
+    --bindir=%{_bindir} \\\
+    --datadir=%{_datadir}/ffmpeg \\\
     --incdir=%{_includedir}/ffmpeg \\\
     --libdir=%{_libdir} \\\
     --mandir=%{_mandir} \\\
@@ -123,6 +132,9 @@ This package contains development files for %{name}
 %patch10 -p1
 %patch11 -p1
 %patch12 -p1
+%patch13 -p0
+%patch14 -p0
+%patch15 -p0
 
 %build
 mkdir generic
@@ -220,10 +232,10 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %doc COPYING.GPL CREDITS Changelog README __doc/*.*
-# Note: as of 20070204, "configure" doesn't have --bindir.
-%{_prefix}/bin/ffmpeg
-%{_prefix}/bin/ffplay
-%{_prefix}/bin/ffserver
+%{_bindir}/ffmpeg
+%{_bindir}/ffplay
+%{_bindir}/ffserver
+%{_datadir}/ffmpeg
 %{_mandir}/man1/ffmpeg.1*
 %{_mandir}/man1/ffplay.1*
 %{_mandir}/man1/ffserver.1*
@@ -262,6 +274,13 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Oct 26 2009 Dominik Mierzejewski <rpm at greysector.net> - 0.4.9-0.56.20080908
+- backport audio resampler fixes (bug #426)
+- add a requirement on exact EVR between main package and -libs
+  so that "yum update ffmpeg" works as expected
+- install presets (backport)
+- use bindir instead of prefix/bin
+
 * Sun Mar 08 2009 Dominik Mierzejewski <rpm at greysector.net> - 0.4.9-0.55.20080908
 - backport support for Dirac in Matroska
 - add comments for all patches

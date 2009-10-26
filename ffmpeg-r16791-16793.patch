@@ -1,0 +1,104 @@
+Index: configure
+===================================================================
+--- configure	(revision 16790)
++++ configure	(revision 16793)
+@@ -64,6 +64,7 @@
+   echo "  --disable-logging        do not log configure debug information"
+   echo "  --prefix=PREFIX          install in PREFIX [$prefix]"
+   echo "  --bindir=DIR             install binaries in DIR [PREFIX/bin]"
++  echo "  --datadir=DIR            install data files in DIR [PREFIX/share/ffmpeg]"
+   echo "  --libdir=DIR             install libs in DIR [PREFIX/lib]"
+   echo "  --shlibdir=DIR           install shared libs in DIR [PREFIX/lib]"
+   echo "  --incdir=DIR             install includes in DIR [PREFIX/include]"
+@@ -264,6 +265,10 @@
+     echo "$@" | tr ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz
+ }
+ 
++c_escape(){
++    echo "$*" | sed 's/["\\]/\\\0/g'
++}
++
+ set_all(){
+     value=$1
+     shift
+@@ -914,6 +919,7 @@
+ 
+ PATHS_LIST='
+     bindir
++    datadir
+     incdir
+     libdir
+     mandir
+@@ -1113,6 +1119,7 @@
+ # installation paths
+ prefix_default="/usr/local"
+ bindir_default='${prefix}/bin'
++datadir_default='${prefix}/share/ffmpeg'
+ incdir_default='${prefix}/include'
+ libdir_default='${prefix}/lib'
+ mandir_default='${prefix}/share/man'
+@@ -2258,6 +2265,7 @@
+ echo "#ifndef FFMPEG_CONFIG_H" >> $TMPH
+ echo "#define FFMPEG_CONFIG_H" >> $TMPH
+ echo "#define FFMPEG_CONFIGURATION \"$FFMPEG_CONFIGURATION\"" >> $TMPH
++echo "#define FFMPEG_DATADIR \"$(eval c_escape $datadir)\"" >> $TMPH
+ 
+ echo "FFMPEG_CONFIGURATION=$FFMPEG_CONFIGURATION" >> config.mak
+ echo "prefix=$prefix" >> config.mak
+@@ -2265,6 +2273,7 @@
+ echo "SHLIBDIR=\$(DESTDIR)$shlibdir" >> config.mak
+ echo "INCDIR=\$(DESTDIR)$incdir" >> config.mak
+ echo "BINDIR=\$(DESTDIR)$bindir" >> config.mak
++echo "DATADIR=\$(DESTDIR)$datadir" >> config.mak
+ echo "MANDIR=\$(DESTDIR)$mandir" >> config.mak
+ echo "CC=$cc" >> config.mak
+ echo "YASM=$yasmexe" >> config.mak
+Index: Makefile
+===================================================================
+--- Makefile	(revision 16790)
++++ Makefile	(revision 16793)
+@@ -24,6 +24,8 @@
+ 
+ FFLIBS := avdevice avformat avcodec avutil
+ 
++DATA_FILES := $(wildcard $(SRC_DIR)/ffpresets/*.ffpreset)
++
+ include common.mak
+ 
+ FF_LDFLAGS   := $(FFLDFLAGS)
+@@ -35,7 +37,7 @@
+ 
+ INSTALL_TARGETS-$(CONFIG_VHOOK) += install-vhook
+ ifneq ($(PROGS),)
+-INSTALL_TARGETS-yes             += install-progs
++INSTALL_TARGETS-yes             += install-progs install-data
+ INSTALL_TARGETS-$(BUILD_DOC)    += install-man
+ endif
+ INSTALL_PROGS_TARGETS-$(BUILD_SHARED) = install-libs
+@@ -129,6 +131,10 @@
+ 	install -d "$(BINDIR)"
+ 	install -c -m 755 $(PROGS) "$(BINDIR)"
+ 
++install-data: $(DATA_FILES)
++	install -d "$(DATADIR)"
++	install -m 644 $(DATA_FILES) "$(DATADIR)"
++
+ install-man: $(MANPAGES)
+ 	install -d "$(MANDIR)/man1"
+ 	install -m 644 $(MANPAGES) "$(MANDIR)/man1"
+@@ -137,11 +143,14 @@
+ 	install -d "$(SHLIBDIR)/vhook"
+ 	install -m 755 $(HOOKS) "$(SHLIBDIR)/vhook"
+ 
+-uninstall: uninstall-progs uninstall-man uninstall-vhook
++uninstall: uninstall-progs uninstall-data uninstall-man uninstall-vhook
+ 
+ uninstall-progs:
+ 	rm -f $(addprefix "$(BINDIR)/", $(ALLPROGS))
+ 
++uninstall-data:
++	rm -rf "$(DATADIR)"
++
+ uninstall-man:
+ 	rm -f $(addprefix "$(MANDIR)/man1/",$(ALLMANPAGES))
+ 
