@@ -1,6 +1,6 @@
 # TODO: add make test to %%check section
 
-%global svn     20091019
+%global svn     20091026
 %global faad2min 1:2.6.1
 
 Summary:        Digital VCR and streaming server
@@ -38,7 +38,7 @@ BuildRequires:  schroedinger-devel
 BuildRequires:  SDL-devel
 BuildRequires:  speex-devel
 BuildRequires:  texi2html
-BuildRequires:  x264-devel >= 0.0.0-0.25.20091007
+BuildRequires:  x264-devel >= 0.0.0-0.26.20091026
 BuildRequires:  xvidcore-devel
 BuildRequires:  zlib-devel
 %ifarch %{ix86} x86_64
@@ -247,8 +247,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Thu Oct 22 2009 Dominik Mierzejewski <rpm at greysector.net> - 0.5-4.20091019svn
-- 20091019 snapshot
+* Thu Oct 22 2009 Dominik Mierzejewski <rpm at greysector.net> - 0.5-4.20091026svn
+- 20091026 snapshot, requires recent x264
 - dropped support for old amr libs (not supported upstream since July)
 - don't disable yasm for generic builds
 - fixed opencore amr support
