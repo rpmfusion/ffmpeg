@@ -135,8 +135,13 @@ pushd generic
 %ifarch %{ix86} x86_64
     --enable-runtime-cpudetect \
 %endif
-%ifarch ppc ppc64
-    --disable-altivec \
+%ifarch ppc
+    --cpu=g3 \
+    --enable-runtime-cpudetect \
+%endif
+%ifarch ppc64
+    --cpu=g5 \
+    --enable-runtime-cpudetect \
 %endif
 %ifarch sparc sparc64
     --disable-vis \
@@ -150,28 +155,6 @@ popd
 %if 1%{?ffmpegsuffix:0}
 mkdir simd
 pushd simd
-%ifarch ppc ppc64
-%{ff_configure}\
-    --shlibdir=%{_libdir}/altivec \
-    --cpu=g4 \
-    --enable-altivec \
-    --disable-ffmpeg \
-    --disable-ffserver \
-    --disable-ffplay \
-
-make %{?_smp_mflags}
-%endif
-%ifarch ppc64
-%{ff_configure}\
-    --shlibdir=%{_libdir}/altivec \
-    --cpu=g5 \
-    --enable-altivec \
-    --disable-ffmpeg \
-    --disable-ffserver \
-    --disable-ffplay \
-
-make %{?_smp_mflags}
-%endif
 %ifarch sparc sparc64
 %{ff_configure}\
     --shlibdir=%{_libdir}/v9 \
@@ -193,7 +176,7 @@ make install DESTDIR=$RPM_BUILD_ROOT
 popd
 %if 1%{?ffmpegsuffix:0}
 pushd simd
-%ifarch ppc ppc64 sparc sparc64
+%ifarch sparc sparc64
 make install DESTDIR=$RPM_BUILD_ROOT
 %endif
 popd
@@ -222,9 +205,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %{_libdir}/lib*.so.*
 %if 1%{?ffmpegsuffix:0}
-%ifarch ppc ppc64
-%{_libdir}/altivec/lib*.so.*
-%endif
 %ifarch sparc sparc64
 %{_libdir}/v9/lib*.so.*
 %endif
@@ -237,9 +217,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/lib*.pc
 %{_libdir}/lib*.so
 %if 1%{?ffmpegsuffix:0}
-%ifarch ppc ppc64
-%{_libdir}/altivec/lib*.so
-%endif
 %ifarch sparc sparc64
 %{_libdir}/v9/lib*.so
 %endif
@@ -253,7 +230,8 @@ rm -rf $RPM_BUILD_ROOT
 - don't disable yasm for generic builds
 - fixed opencore amr support
 - dropped workaround for non-standard openjpeg headers location
-- dropped separate SIMDified libs for x86, runtime CPU detection should be enough
+- dropped separate SIMDified libs for x86 and ppc(64),
+  runtime CPU detection should be enough
 
 * Thu Oct 15 2009 kwizart <kwizart at gmail.com > - 0.5-3.svn20091007
 - Update to svn snapshot 20091007
