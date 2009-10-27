@@ -151,7 +151,8 @@ pushd generic
     --disable-vis \
 %endif
 
-make %{?_smp_mflags}
+#make %{?_smp_mflags}
+make
 popd
 
 mkdir simd
@@ -175,7 +176,8 @@ make %{?_smp_mflags}
     --disable-ffserver \
     --disable-ffplay \
 
-make %{?_smp_mflags}
+#make %{?_smp_mflags}
+make
 %endif
 %ifarch ppc64
 %{ff_configure}\
@@ -186,7 +188,8 @@ make %{?_smp_mflags}
     --disable-ffserver \
     --disable-ffplay \
 
-make %{?_smp_mflags}
+#make %{?_smp_mflags}
+make
 %endif
 %ifarch sparc sparc64
 %{ff_configure}\
