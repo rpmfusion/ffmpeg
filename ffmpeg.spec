@@ -6,7 +6,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.5
-Release:        4.%{svn}svn%{?dist}
+Release:        5.%{svn}svn%{?dist}
 %if 0%{?_with_opencore_amr:1}
 License:        GPLv3+
 %else
@@ -18,6 +18,8 @@ Source0:        http://rpms.kwizart.net/fedora/SOURCES/%{name}-%{svn}.tar.bz2
 Source1:        ffmpeg-snapshot.sh
 # get rid of textrels on x86_64 in yasm code
 Patch0:         %{name}-textrel.patch
+# compile with -fPIC on ppc/ppc64 (rf804)
+Patch1:         %{name}-ppc-pic.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  bzip2-devel
@@ -120,6 +122,7 @@ This package contains development files for %{name}
 %prep
 %setup -q -n %{name}-%{svn}
 %patch0 -p1 -b .textrel
+%patch1 -p1 -b .ppc-pic
 
 %build
 mkdir generic
@@ -224,6 +227,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Nov  7 2009 Hans de Goede <j.w.r.degoede@hhs.nl> - 0.5-5.20091026svn
+- Add -fPIC -dPIC when compiling on ppc (rf804)
+
 * Thu Oct 22 2009 Dominik Mierzejewski <rpm at greysector.net> - 0.5-4.20091026svn
 - 20091026 snapshot, requires recent x264
 - dropped support for old amr libs (not supported upstream since July)
