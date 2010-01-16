@@ -12,18 +12,19 @@ cleanup() {
 
 unset CDPATH
 pwd=$(pwd)
-svn=$(date +%Y%m%d)
-svn=20091019
+date=$(date +%Y%m%d)
+svn={$date}
+svn=HEAD
 
 cd "$tmp"
-svn checkout -r {$svn} svn://svn.mplayerhq.hu/ffmpeg/trunk ffmpeg-$svn
-cd ffmpeg-$svn
+svn checkout -r $svn svn://svn.mplayerhq.hu/ffmpeg/trunk ffmpeg-$date
+cd ffmpeg-$date
 pushd libswscale
-svn update -r {$svn} libswscale
+svn update -r $svn libswscale
 popd
 ./version.sh . version.h
 find . -type d -name .svn -print0 | xargs -0r rm -rf
 sed -i -e '/^\.PHONY: version\.h$/d' Makefile
 cd ..
-tar jcf "$pwd"/ffmpeg-$svn.tar.bz2 ffmpeg-$svn
+tar jcf "$pwd"/ffmpeg-$date.tar.bz2 ffmpeg-$date
 cd - >/dev/null
