@@ -1,12 +1,12 @@
 # TODO: add make test to %%check section
 
-%global svn     20100116
+%global svn     20100320
 %global faad2min 1:2.6.1
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        0.5
-Release:        6.%{svn}svn%{?dist}
+Version:        0.6
+Release:        0.1.%{svn}svn%{?dist}
 %if 0%{?_with_opencore_amr:1}
 License:        GPLv3+
 %else
@@ -16,8 +16,6 @@ Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
 Source0:        http://rpms.kwizart.net/fedora/SOURCES/%{name}-%{svn}.tar.bz2
 Source1:        ffmpeg-snapshot.sh
-# get rid of textrels on x86_64 in yasm code
-Patch0:         %{name}-textrel.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  bzip2-devel
@@ -119,7 +117,6 @@ This package contains development files for %{name}
 
 %prep
 %setup -q -n %{name}-%{svn}
-%patch0 -p1 -b .textrel
 
 %build
 %ifarch ppc ppc64
@@ -199,9 +196,11 @@ rm -rf $RPM_BUILD_ROOT
 %doc COPYING.* CREDITS Changelog README doc/ffserver.conf
 %{_bindir}/ffmpeg
 %{_bindir}/ffplay
+%{_bindir}/ffprobe
 %{_bindir}/ffserver
 %{_mandir}/man1/ffmpeg.1*
 %{_mandir}/man1/ffplay.1*
+%{_mandir}/man1/ffprobe.1*
 %{_mandir}/man1/ffserver.1*
 %{_datadir}/ffmpeg
 
@@ -228,6 +227,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Mar 20 2010 Dominik Mierzejewski <rpm at greysector.net> - 0.6-0.1.20100320svn
+- 20100320 snapshot
+- drop upstream'd patch
+- bumped version to pre-0.6
+- added ffprobe to file list
+
 * Sat Jan 16 2010 Dominik Mierzejewski <rpm at greysector.net> - 0.5-6.20100116svn
 - 20100116 snapshot, requires recent x264
 - fix textrels on x86_64 in a different way (patch by Reimar Döffinger)
