@@ -1,12 +1,12 @@
 # TODO: add make test to %%check section
 
-%global svn     20091026
+%global svn     20100425
 %global faad2min 1:2.6.1
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        0.5
-Release:        5.%{svn}svn%{?dist}
+Version:        0.6
+Release:        0.1.%{svn}svn%{?dist}
 %if 0%{?_with_opencore_amr:1}
 License:        GPLv3+
 %else
@@ -16,10 +16,8 @@ Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
 Source0:        http://rpms.kwizart.net/fedora/SOURCES/%{name}-%{svn}.tar.bz2
 Source1:        ffmpeg-snapshot.sh
-# get rid of textrels on x86_64 in yasm code
-Patch0:         %{name}-textrel.patch
-# compile with -fPIC on ppc/ppc64 (rf804)
-Patch1:         %{name}-ppc-pic.patch
+# allow build with libx264.so.78
+Patch0:         ffmpeg-x264.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  bzip2-devel
@@ -27,7 +25,6 @@ BuildRequires:  dirac-devel
 %{?_with_faac:BuildRequires: faac-devel}
 BuildRequires:  faad2-devel >= %{faad2min}
 BuildRequires:  gsm-devel
-BuildRequires:  imlib2-devel
 BuildRequires:  lame-devel
 BuildRequires:  libdc1394-devel
 BuildRequires:  libtheora-devel
@@ -121,10 +118,14 @@ This package contains development files for %{name}
 
 %prep
 %setup -q -n %{name}-%{svn}
-%patch0 -p1 -b .textrel
-%patch1 -p1 -b .ppc-pic
+%patch0 -p1 -b .x264
+find ffpresets -type f -size 0 | xargs rm
 
 %build
+%ifarch ppc ppc64
+# compile with -mlongcall on ppc/ppc64 (rf804)
+export RPM_OPT_FLAGS="$RPM_OPT_FLAGS -mlongcall"
+%endif
 mkdir generic
 pushd generic
 %{ff_configure}\
@@ -198,9 +199,11 @@ rm -rf $RPM_BUILD_ROOT
 %doc COPYING.* CREDITS Changelog README doc/ffserver.conf
 %{_bindir}/ffmpeg
 %{_bindir}/ffplay
+%{_bindir}/ffprobe
 %{_bindir}/ffserver
 %{_mandir}/man1/ffmpeg.1*
 %{_mandir}/man1/ffplay.1*
+%{_mandir}/man1/ffprobe.1*
 %{_mandir}/man1/ffserver.1*
 %{_datadir}/ffmpeg
 
@@ -227,6 +230,15 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Apr 25 2010 Dominik Mierzejewski <rpm at greysector.net> - 0.6-0.1.20100425svn
+- 20100425 snapshot
+- drop upstream'd patch
+- bumped version to pre-0.6
+- added ffprobe to file list
+- dropped unnecessary imlib2-devel BR
+- patch to build with old x264 in F-12
+- use -mlongcall instead of -fPIC to fix rfbz#804, it's faster
+
 * Sat Nov  7 2009 Hans de Goede <j.w.r.degoede@hhs.nl> - 0.5-5.20091026svn
 - Add -fPIC -dPIC when compiling on ppc (rf804)
 
