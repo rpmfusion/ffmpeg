@@ -1,12 +1,12 @@
 # TODO: add make test to %%check section
 
-%global svn     20100320
+%global svn     20100429
 %global faad2min 1:2.6.1
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.6
-Release:        0.1.%{svn}svn%{?dist}
+Release:        0.3.%{svn}svn%{?dist}
 %if 0%{?_with_opencore_amr:1}
 License:        GPLv3+
 %else
@@ -227,6 +227,13 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Apr 29 2010 Dominik Mierzejewski <rpm at greysector.net> - 0.6-0.3.20100429svn
+- 20100429 snapshot
+- dropped unnecessary imlib2-devel BR
+
+* Sat Mar 20 2010 Dominik Mierzejewski <rpm at greysector.net> - 0.6-0.2.20100320svn
+- bump for rebuild
+
 * Sat Mar 20 2010 Dominik Mierzejewski <rpm at greysector.net> - 0.6-0.1.20100320svn
 - 20100320 snapshot
 - drop upstream'd patch
