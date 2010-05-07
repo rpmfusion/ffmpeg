@@ -4,19 +4,24 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        0.5
-Release:        3%{?dist}
+Version:        0.5.1
+Release:        1%{?dist}
+%if 0%{?_with_opencore_amr:1}
+License:        GPLv3+
+%else
+%if 0%{?_with_amr:1} || 0%{?_with_faac:1}
+License:        Non-distributable
+%else
 License:        GPLv2+
+%endif
+%endif
 Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
 Source0:        http://ffmpeg.org/releases/%{name}-%{version}.tar.bz2
 # get rid of textrels on x86_64 in yasm code
 Patch0:         %{name}-textrel.patch
-# fix ppc builds
-Patch1:         %{name}-ppc.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-%{?_with_amr:BuildRequires: amrnb-devel amrwb-devel}
 BuildRequires:  bzip2-devel
 BuildRequires:  dirac-devel
 %{?_with_faac:BuildRequires: faac-devel}
@@ -29,6 +34,7 @@ BuildRequires:  libtheora-devel
 %{?_with_vaapi:BuildRequires:libva-devel >= 0.31.0}
 BuildRequires:  libvdpau-devel
 BuildRequires:  libvorbis-devel
+%{?_with_opencore_amr:BuildRequires: opencore-amr-devel}
 BuildRequires:  openjpeg-devel
 BuildRequires:  schroedinger-devel
 BuildRequires:  SDL-devel
@@ -87,6 +93,7 @@ This package contains development files for %{name}
     --extra-cflags="$RPM_OPT_FLAGS" \\\
     --extra-version=rpmfusion \\\
     %{?_with_amr:--enable-libamr-nb --enable-libamr-wb --enable-nonfree} \\\
+    %{?_with_opencore_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-version3} \\\
     --enable-bzlib \\\
     --enable-libdc1394 \\\
     --enable-libdirac \\\
@@ -118,22 +125,29 @@ This package contains development files for %{name}
 %prep
 %setup -q
 %patch0 -p1 -b .textrel
-%patch1 -p1 -b .ppc
 
 %build
+%ifarch ppc ppc64
+# compile with -mlongcall on ppc/ppc64 (rf804)
+export RPM_OPT_FLAGS="$RPM_OPT_FLAGS -mlongcall"
+%endif
 mkdir generic
 pushd generic
 %{ff_configure}\
     --shlibdir=%{_libdir} \
 %ifarch %{ix86}
     --cpu=%{_target_cpu} \
-    --disable-mmx2 \
-    --disable-sse \
-    --disable-ssse3 \
-    --disable-yasm \
 %endif
-%ifarch ppc ppc64
-    --disable-altivec \
+%ifarch %{ix86} x86_64
+    --enable-runtime-cpudetect \
+%endif
+%ifarch ppc
+    --cpu=g3 \
+    --enable-runtime-cpudetect \
+%endif
+%ifarch ppc64
+    --cpu=g5 \
+    --enable-runtime-cpudetect \
 %endif
 %ifarch sparc sparc64
     --disable-vis \
@@ -145,38 +159,6 @@ popd
 
 mkdir simd
 pushd simd
-%ifarch %{ix86}
-%{ff_configure}\
-    --shlibdir=%{_libdir}/i686 \
-    --cpu=i686 \
-    --disable-ffmpeg \
-    --disable-ffserver \
-    --disable-ffplay \
-
-make %{?_smp_mflags}
-%endif
-%ifarch ppc
-%{ff_configure}\
-    --shlibdir=%{_libdir}/altivec \
-    --cpu=g4 \
-    --enable-altivec \
-    --disable-ffmpeg \
-    --disable-ffserver \
-    --disable-ffplay \
-
-make %{?_smp_mflags}
-%endif
-%ifarch ppc64
-%{ff_configure}\
-    --shlibdir=%{_libdir}/altivec \
-    --cpu=g5 \
-    --enable-altivec \
-    --disable-ffmpeg \
-    --disable-ffserver \
-    --disable-ffplay \
-
-make %{?_smp_mflags}
-%endif
 %ifarch sparc sparc64
 %{ff_configure}\
     --shlibdir=%{_libdir}/v9 \
@@ -196,7 +178,7 @@ pushd generic
 make install DESTDIR=$RPM_BUILD_ROOT
 popd
 pushd simd
-%ifarch %{ix86} ppc ppc64 sparc sparc64
+%ifarch sparc sparc64
 make install DESTDIR=$RPM_BUILD_ROOT
 %endif
 popd
@@ -211,7 +193,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc COPYING.GPL CREDITS Changelog README RELEASE doc/ffserver.conf
+%doc COPYING.GPL* CREDITS Changelog README RELEASE doc/ffserver.conf
 %{_bindir}/ffmpeg
 %{_bindir}/ffplay
 %{_bindir}/ffserver
@@ -224,14 +206,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %{_libdir}/lib*.so.*
 %{_libdir}/vhook/
-%ifarch %{ix86}
-%{_libdir}/i686/lib*.so.*
-%{_libdir}/i686/vhook/
-%endif
-%ifarch ppc ppc64
-%{_libdir}/altivec/lib*.so.*
-%{_libdir}/altivec/vhook/
-%endif
 %ifarch sparc sparc64
 %{_libdir}/v9/lib*.so.*
 %{_libdir}/v9/vhook/
@@ -243,18 +217,20 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/ffmpeg
 %{_libdir}/pkgconfig/lib*.pc
 %{_libdir}/lib*.so
-%ifarch %{ix86}
-%{_libdir}/i686/lib*.so
-%endif
-%ifarch ppc ppc64
-%{_libdir}/altivec/lib*.so
-%endif
 %ifarch sparc sparc64
 %{_libdir}/v9/lib*.so
 %endif
 
 
 %changelog
+* Fri Mar 05 2010 Dominik Mierzejewski <rpm at greysector.net> - 0.5.1-1
+- updated to latest point release
+- fix textrels on x86_64 in a different way (patch by Reimar Döffinger)
+- use -mlongcall instead of -fPIC to fix rfbz#804, it's faster
+- replaced amr.b with opencore-amr
+- dropped separate SIMDified libs for x86 and ppc(64),
+  runtime CPU detection should be enough
+
 * Thu Oct 22 2009 Dominik Mierzejewski <rpm at greysector.net> - 0.5-3
 - dropped workaround for non-standard openjpeg headers location
 - Add BR dirac vdpau. (kwizart)
