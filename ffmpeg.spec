@@ -4,7 +4,7 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        0.5.1
+Version:        0.5.2
 Release:        1%{?dist}
 %if 0%{?_with_opencore_amr:1}
 License:        GPLv3+
@@ -223,6 +223,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Jun 19 2010 Dominik Mierzejewski <rpm at greysector.net> - 0.5.2-1
+- updated to 0.5.2
+
 * Fri Mar 05 2010 Dominik Mierzejewski <rpm at greysector.net> - 0.5.1-1
 - updated to latest point release
 - fix textrels on x86_64 in a different way (patch by Reimar Döffinger)
