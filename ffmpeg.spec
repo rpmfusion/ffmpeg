@@ -1,12 +1,12 @@
 # TODO: add make test to %%check section
 
-%global svn     20100429
+%global svn     20100619
 %global faad2min 1:2.6.1
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.6
-Release:        0.3.%{svn}svn%{?dist}
+Release:        1.%{svn}svn%{?dist}
 %if 0%{?_with_opencore_amr:1}
 License:        GPLv3+
 %else
@@ -14,7 +14,7 @@ License:        GPLv2+
 %endif
 Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
-Source0:        http://rpms.kwizart.net/fedora/SOURCES/%{name}-%{svn}.tar.bz2
+Source0:        %{name}-%{svn}.tar.bz2
 Source1:        ffmpeg-snapshot.sh
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -23,7 +23,6 @@ BuildRequires:  dirac-devel
 %{?_with_faac:BuildRequires: faac-devel}
 BuildRequires:  faad2-devel >= %{faad2min}
 BuildRequires:  gsm-devel
-BuildRequires:  imlib2-devel
 BuildRequires:  lame-devel
 BuildRequires:  libdc1394-devel
 BuildRequires:  libtheora-devel
@@ -227,6 +226,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Jun 19 2010 Dominik Mierzejewski <rpm at greysector.net> - 0.6-1.20100619svn
+- 20100619 snapshot
+
 * Thu Apr 29 2010 Dominik Mierzejewski <rpm at greysector.net> - 0.6-0.3.20100429svn
 - 20100429 snapshot
 - dropped unnecessary imlib2-devel BR
