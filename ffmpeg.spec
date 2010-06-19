@@ -1,12 +1,12 @@
 # TODO: add make test to %%check section
 
-%global svn     20100425
+%global svn     %{nil}
 %global faad2min 1:2.6.1
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.6
-Release:        0.1.%{svn}svn%{?dist}
+Release:        1%{?dist}
 %if 0%{?_with_opencore_amr:1}
 License:        GPLv3+
 %else
@@ -14,9 +14,8 @@ License:        GPLv2+
 %endif
 Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
-Source0:        http://rpms.kwizart.net/fedora/SOURCES/%{name}-%{svn}.tar.bz2
+Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.bz2
 Source1:        ffmpeg-snapshot.sh
-# allow build with libx264.so.78
 Patch0:         ffmpeg-x264.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -117,7 +116,7 @@ This package contains development files for %{name}
 
 
 %prep
-%setup -q -n %{name}-%{svn}
+%setup -q
 %patch0 -p1 -b .x264
 find ffpresets -type f -size 0 | xargs rm
 
@@ -230,6 +229,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Jun 19 2010 Dominik Mierzejewski <rpm at greysector.net> - 0.6-1
+- 0.6 release
+
 * Sun Apr 25 2010 Dominik Mierzejewski <rpm at greysector.net> - 0.6-0.1.20100425svn
 - 20100425 snapshot
 - drop upstream'd patch

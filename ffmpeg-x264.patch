@@ -1,9 +1,9 @@
-diff -up ffmpeg-20100425/configure.x264 ffmpeg-20100425/configure
---- ffmpeg-20100425/configure.x264	2010-04-23 18:41:55.000000000 +0200
-+++ ffmpeg-20100425/configure	2010-04-25 23:31:45.000000000 +0200
-@@ -2615,8 +2615,8 @@ enabled libspeex   && require  libspeex 
- enabled libtheora  && require  libtheora theora/theoraenc.h th_info_init -ltheoraenc -ltheoradec -logg
- enabled libvorbis  && require  libvorbis vorbis/vorbisenc.h vorbis_info_init -lvorbisenc -lvorbis -logg
+diff -up ffmpeg-0.6/configure.x264 ffmpeg-0.6/configure
+--- ffmpeg-0.6/configure.x264	2010-06-15 21:44:30.000000000 +0200
++++ ffmpeg-0.6/configure	2010-06-19 20:44:41.000000000 +0200
+@@ -2626,8 +2626,8 @@ enabled libvorbis  && require  libvorbis
+ enabled libvpx     && require2 libvpx "vpx/vpx_decoder.h vpx/vp8dx.h" "vpx_codec_dec_init_ver" -lvpx &&
+                       require2 libvpx "vpx/vpx_encoder.h vpx/vp8cx.h" "vpx_codec_enc_init_ver" -lvpx
  enabled libx264    && require  libx264 x264.h x264_encoder_encode -lx264 -lm &&
 -                      { check_cpp_condition x264.h "X264_BUILD >= 83" ||
 -                        die "ERROR: libx264 version must be >= 0.83."; }
@@ -12,25 +12,25 @@ diff -up ffmpeg-20100425/configure.x264 ffmpeg-20100425/configure
  enabled libxvid    && require  libxvid xvid.h xvid_global -lxvidcore
  enabled mlib       && require  mediaLib mlib_types.h mlib_VectorSub_S16_U8_Mod -lmlib
  
-diff -up ffmpeg-20100425/ffpresets/libx264-baseline.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-baseline.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-baseline.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
-+++ ffmpeg-20100425/ffpresets/libx264-baseline.ffpreset	2010-04-25 23:31:45.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-baseline.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-baseline.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-baseline.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
++++ ffmpeg-0.6/ffpresets/libx264-baseline.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -1,4 +1,3 @@
  coder=0
  bf=0
  flags2=-wpred-dct8x8
 -wpredp=0
-diff -up ffmpeg-20100425/ffpresets/libx264-default.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-default.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-default.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
-+++ ffmpeg-20100425/ffpresets/libx264-default.ffpreset	2010-04-25 23:31:45.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-default.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-default.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-default.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
++++ ffmpeg-0.6/ffpresets/libx264-default.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -19,4 +19,3 @@ refs=3
  directpred=1
  trellis=1
  flags2=+mixed_refs+wpred+dct8x8+fastpskip
 -wpredp=2
-diff -up ffmpeg-20100425/ffpresets/libx264-faster.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-faster.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-faster.ffpreset.x264	2010-03-29 03:34:33.000000000 +0200
-+++ ffmpeg-20100425/ffpresets/libx264-faster.ffpreset	2010-04-25 23:30:58.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-faster.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-faster.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-faster.ffpreset.x264	2010-03-29 03:34:33.000000000 +0200
++++ ffmpeg-0.6/ffpresets/libx264-faster.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -1,23 +0,0 @@
 -coder=1
 -flags=+loop
@@ -55,9 +55,9 @@ diff -up ffmpeg-20100425/ffpresets/libx264-faster.ffpreset.x264 ffmpeg-20100425/
 -flags2=+bpyramid-mixed_refs+wpred+dct8x8+fastpskip
 -wpredp=1
 -rc_lookahead=20
-diff -up ffmpeg-20100425/ffpresets/libx264-faster_firstpass.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-faster_firstpass.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-faster_firstpass.ffpreset.x264	2010-03-29 03:34:33.000000000 +0200
-+++ ffmpeg-20100425/ffpresets/libx264-faster_firstpass.ffpreset	2010-04-25 23:30:58.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-faster_firstpass.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-faster_firstpass.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-faster_firstpass.ffpreset.x264	2010-03-29 03:34:33.000000000 +0200
++++ ffmpeg-0.6/ffpresets/libx264-faster_firstpass.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -1,23 +0,0 @@
 -coder=1
 -flags=+loop
@@ -82,9 +82,9 @@ diff -up ffmpeg-20100425/ffpresets/libx264-faster_firstpass.ffpreset.x264 ffmpeg
 -flags2=+bpyramid-mixed_refs+wpred-dct8x8+fastpskip
 -wpredp=1
 -rc_lookahead=20
-diff -up ffmpeg-20100425/ffpresets/libx264-fast.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-fast.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-fast.ffpreset.x264	2010-03-26 23:40:55.000000000 +0100
-+++ ffmpeg-20100425/ffpresets/libx264-fast.ffpreset	2010-04-25 23:30:58.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-fast.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-fast.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-fast.ffpreset.x264	2010-03-26 23:40:55.000000000 +0100
++++ ffmpeg-0.6/ffpresets/libx264-fast.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -1,23 +0,0 @@
 -coder=1
 -flags=+loop
@@ -109,9 +109,9 @@ diff -up ffmpeg-20100425/ffpresets/libx264-fast.ffpreset.x264 ffmpeg-20100425/ff
 -flags2=+bpyramid+mixed_refs+wpred+dct8x8+fastpskip
 -wpredp=2
 -rc_lookahead=30
-diff -up ffmpeg-20100425/ffpresets/libx264-fast_firstpass.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-fast_firstpass.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-fast_firstpass.ffpreset.x264	2010-03-26 23:40:55.000000000 +0100
-+++ ffmpeg-20100425/ffpresets/libx264-fast_firstpass.ffpreset	2010-04-25 23:30:58.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-fast_firstpass.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-fast_firstpass.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-fast_firstpass.ffpreset.x264	2010-03-26 23:40:55.000000000 +0100
++++ ffmpeg-0.6/ffpresets/libx264-fast_firstpass.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -1,23 +0,0 @@
 -coder=1
 -flags=+loop
@@ -136,9 +136,9 @@ diff -up ffmpeg-20100425/ffpresets/libx264-fast_firstpass.ffpreset.x264 ffmpeg-2
 -flags2=+bpyramid-mixed_refs+wpred-dct8x8+fastpskip
 -wpredp=2
 -rc_lookahead=30
-diff -up ffmpeg-20100425/ffpresets/libx264-fastfirstpass.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-fastfirstpass.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-fastfirstpass.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
-+++ ffmpeg-20100425/ffpresets/libx264-fastfirstpass.ffpreset	2010-04-25 23:31:45.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-fastfirstpass.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-fastfirstpass.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-fastfirstpass.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
++++ ffmpeg-0.6/ffpresets/libx264-fastfirstpass.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -3,7 +3,7 @@ flags=+loop
  cmp=+chroma
  partitions=-parti8x8-parti4x4-partp8x8-partp4x4-partb8x8
@@ -153,83 +153,81 @@ diff -up ffmpeg-20100425/ffpresets/libx264-fastfirstpass.ffpreset.x264 ffmpeg-20
  trellis=0
  flags2=-bpyramid-wpred-mixed_refs-dct8x8+fastpskip
 -wpredp=2
-diff -up ffmpeg-20100425/ffpresets/libx264-hq.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-hq.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-hq.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
-+++ ffmpeg-20100425/ffpresets/libx264-hq.ffpreset	2010-04-25 23:31:45.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-hq.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-hq.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-hq.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
++++ ffmpeg-0.6/ffpresets/libx264-hq.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -19,4 +19,3 @@ refs=4
  directpred=3
  trellis=1
  flags2=+wpred+mixed_refs+dct8x8+fastpskip
 -wpredp=2
-diff -up ffmpeg-20100425/ffpresets/libx264-ipod320.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-ipod320.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-ipod320.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
-+++ ffmpeg-20100425/ffpresets/libx264-ipod320.ffpreset	2010-04-25 23:31:45.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-ipod320.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-ipod320.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-ipod320.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
++++ ffmpeg-0.6/ffpresets/libx264-ipod320.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -4,4 +4,3 @@ flags2=-wpred-dct8x8
  level=13
  maxrate=768000
  bufsize=3000000
 -wpredp=0
-diff -up ffmpeg-20100425/ffpresets/libx264-ipod640.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-ipod640.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-ipod640.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
-+++ ffmpeg-20100425/ffpresets/libx264-ipod640.ffpreset	2010-04-25 23:31:45.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-ipod640.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-ipod640.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-ipod640.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
++++ ffmpeg-0.6/ffpresets/libx264-ipod640.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -5,4 +5,3 @@ flags2=-wpred-dct8x8
  level=30
  maxrate=10000000
  bufsize=10000000
 -wpredp=0
-diff -up ffmpeg-20100425/ffpresets/libx264-lossless_fast.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-lossless_fast.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-lossless_fast.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
-+++ ffmpeg-20100425/ffpresets/libx264-lossless_fast.ffpreset	2010-04-25 23:31:45.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-lossless_fast.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-lossless_fast.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-lossless_fast.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
++++ ffmpeg-0.6/ffpresets/libx264-lossless_fast.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -17,4 +17,3 @@ qdiff=4
  directpred=1
  flags2=+fastpskip
  cqp=0
 -wpredp=0
-diff -up ffmpeg-20100425/ffpresets/libx264-lossless_max.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-lossless_max.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-lossless_max.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
-+++ ffmpeg-20100425/ffpresets/libx264-lossless_max.ffpreset	2010-04-25 23:31:45.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-lossless_max.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-lossless_max.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-lossless_max.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
++++ ffmpeg-0.6/ffpresets/libx264-lossless_max.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -18,4 +18,3 @@ refs=16
  directpred=1
  flags2=+mixed_refs+dct8x8+fastpskip
  cqp=0
 -wpredp=2
-diff -up ffmpeg-20100425/ffpresets/libx264-lossless_medium.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-lossless_medium.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-lossless_medium.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
-+++ ffmpeg-20100425/ffpresets/libx264-lossless_medium.ffpreset	2010-04-25 23:31:45.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-lossless_medium.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-lossless_medium.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-lossless_medium.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
++++ ffmpeg-0.6/ffpresets/libx264-lossless_medium.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -17,4 +17,3 @@ qdiff=4
  directpred=1
  flags2=+fastpskip
  cqp=0
 -wpredp=2
-diff -up ffmpeg-20100425/ffpresets/libx264-lossless_slower.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-lossless_slower.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-lossless_slower.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
-+++ ffmpeg-20100425/ffpresets/libx264-lossless_slower.ffpreset	2010-04-25 23:31:45.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-lossless_slower.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-lossless_slower.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-lossless_slower.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
++++ ffmpeg-0.6/ffpresets/libx264-lossless_slower.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -18,4 +18,3 @@ refs=4
  directpred=1
  flags2=+mixed_refs+dct8x8+fastpskip
  cqp=0
 -wpredp=2
-diff -up ffmpeg-20100425/ffpresets/libx264-lossless_slow.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-lossless_slow.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-lossless_slow.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
-+++ ffmpeg-20100425/ffpresets/libx264-lossless_slow.ffpreset	2010-04-25 23:31:45.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-lossless_slow.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-lossless_slow.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-lossless_slow.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
++++ ffmpeg-0.6/ffpresets/libx264-lossless_slow.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -18,4 +18,3 @@ refs=2
  directpred=1
  flags2=+dct8x8+fastpskip
  cqp=0
 -wpredp=2
-diff -up ffmpeg-20100425/ffpresets/libx264-lossless_ultrafast.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-lossless_ultrafast.ffpreset
-diff -up ffmpeg-20100425/ffpresets/libx264-main.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-main.ffpreset
-diff -up ffmpeg-20100425/ffpresets/libx264-max.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-max.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-max.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
-+++ ffmpeg-20100425/ffpresets/libx264-max.ffpreset	2010-04-25 23:31:45.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-max.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-max.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-max.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
++++ ffmpeg-0.6/ffpresets/libx264-max.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -19,4 +19,3 @@ refs=16
  directpred=3
  trellis=2
  flags2=+wpred+mixed_refs+dct8x8-fastpskip
 -wpredp=2
-diff -up ffmpeg-20100425/ffpresets/libx264-medium.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-medium.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-medium.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
-+++ ffmpeg-20100425/ffpresets/libx264-medium.ffpreset	2010-04-25 23:30:58.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-medium.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-medium.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-medium.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
++++ ffmpeg-0.6/ffpresets/libx264-medium.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -1,22 +0,0 @@
 -coder=1
 -flags=+loop
@@ -253,9 +251,9 @@ diff -up ffmpeg-20100425/ffpresets/libx264-medium.ffpreset.x264 ffmpeg-20100425/
 -trellis=1
 -flags2=+bpyramid+mixed_refs+wpred+dct8x8+fastpskip
 -wpredp=2
-diff -up ffmpeg-20100425/ffpresets/libx264-medium_firstpass.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-medium_firstpass.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-medium_firstpass.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
-+++ ffmpeg-20100425/ffpresets/libx264-medium_firstpass.ffpreset	2010-04-25 23:30:58.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-medium_firstpass.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-medium_firstpass.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-medium_firstpass.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
++++ ffmpeg-0.6/ffpresets/libx264-medium_firstpass.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -1,22 +0,0 @@
 -coder=1
 -flags=+loop
@@ -279,17 +277,17 @@ diff -up ffmpeg-20100425/ffpresets/libx264-medium_firstpass.ffpreset.x264 ffmpeg
 -trellis=0
 -flags2=+bpyramid-mixed_refs+wpred-dct8x8+fastpskip
 -wpredp=2
-diff -up ffmpeg-20100425/ffpresets/libx264-normal.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-normal.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-normal.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
-+++ ffmpeg-20100425/ffpresets/libx264-normal.ffpreset	2010-04-25 23:31:45.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-normal.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-normal.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-normal.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
++++ ffmpeg-0.6/ffpresets/libx264-normal.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -19,4 +19,3 @@ refs=2
  directpred=3
  trellis=0
  flags2=+wpred+dct8x8+fastpskip
 -wpredp=2
-diff -up ffmpeg-20100425/ffpresets/libx264-placebo.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-placebo.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-placebo.ffpreset.x264	2010-03-26 23:40:55.000000000 +0100
-+++ ffmpeg-20100425/ffpresets/libx264-placebo.ffpreset	2010-04-25 23:30:58.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-placebo.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-placebo.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-placebo.ffpreset.x264	2010-03-26 23:40:55.000000000 +0100
++++ ffmpeg-0.6/ffpresets/libx264-placebo.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -1,23 +0,0 @@
 -coder=1
 -flags=+loop
@@ -314,9 +312,9 @@ diff -up ffmpeg-20100425/ffpresets/libx264-placebo.ffpreset.x264 ffmpeg-20100425
 -flags2=+bpyramid+mixed_refs+wpred+dct8x8-fastpskip
 -wpredp=2
 -rc_lookahead=60
-diff -up ffmpeg-20100425/ffpresets/libx264-placebo_firstpass.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-placebo_firstpass.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-placebo_firstpass.ffpreset.x264	2010-03-26 23:40:55.000000000 +0100
-+++ ffmpeg-20100425/ffpresets/libx264-placebo_firstpass.ffpreset	2010-04-25 23:30:58.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-placebo_firstpass.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-placebo_firstpass.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-placebo_firstpass.ffpreset.x264	2010-03-26 23:40:55.000000000 +0100
++++ ffmpeg-0.6/ffpresets/libx264-placebo_firstpass.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -1,23 +0,0 @@
 -coder=1
 -flags=+loop
@@ -341,9 +339,9 @@ diff -up ffmpeg-20100425/ffpresets/libx264-placebo_firstpass.ffpreset.x264 ffmpe
 -flags2=+bpyramid+mixed_refs+wpred+dct8x8-fastpskip
 -wpredp=2
 -rc_lookahead=60
-diff -up ffmpeg-20100425/ffpresets/libx264-slower.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-slower.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-slower.ffpreset.x264	2010-03-26 23:40:55.000000000 +0100
-+++ ffmpeg-20100425/ffpresets/libx264-slower.ffpreset	2010-04-25 23:30:58.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-slower.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-slower.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-slower.ffpreset.x264	2010-03-26 23:40:55.000000000 +0100
++++ ffmpeg-0.6/ffpresets/libx264-slower.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -1,23 +0,0 @@
 -coder=1
 -flags=+loop
@@ -368,9 +366,9 @@ diff -up ffmpeg-20100425/ffpresets/libx264-slower.ffpreset.x264 ffmpeg-20100425/
 -flags2=+bpyramid+mixed_refs+wpred+dct8x8+fastpskip
 -wpredp=2
 -rc_lookahead=60
-diff -up ffmpeg-20100425/ffpresets/libx264-slower_firstpass.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-slower_firstpass.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-slower_firstpass.ffpreset.x264	2010-03-26 23:40:55.000000000 +0100
-+++ ffmpeg-20100425/ffpresets/libx264-slower_firstpass.ffpreset	2010-04-25 23:30:58.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-slower_firstpass.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-slower_firstpass.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-slower_firstpass.ffpreset.x264	2010-03-26 23:40:55.000000000 +0100
++++ ffmpeg-0.6/ffpresets/libx264-slower_firstpass.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -1,23 +0,0 @@
 -coder=1
 -flags=+loop
@@ -395,9 +393,9 @@ diff -up ffmpeg-20100425/ffpresets/libx264-slower_firstpass.ffpreset.x264 ffmpeg
 -flags2=+bpyramid-mixed_refs+wpred-dct8x8+fastpskip
 -wpredp=2
 -rc_lookahead=60
-diff -up ffmpeg-20100425/ffpresets/libx264-slow.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-slow.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-slow.ffpreset.x264	2010-03-26 23:40:55.000000000 +0100
-+++ ffmpeg-20100425/ffpresets/libx264-slow.ffpreset	2010-04-25 23:30:58.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-slow.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-slow.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-slow.ffpreset.x264	2010-03-26 23:40:55.000000000 +0100
++++ ffmpeg-0.6/ffpresets/libx264-slow.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -1,23 +0,0 @@
 -coder=1
 -flags=+loop
@@ -422,9 +420,9 @@ diff -up ffmpeg-20100425/ffpresets/libx264-slow.ffpreset.x264 ffmpeg-20100425/ff
 -flags2=+bpyramid+mixed_refs+wpred+dct8x8+fastpskip
 -wpredp=2
 -rc_lookahead=50
-diff -up ffmpeg-20100425/ffpresets/libx264-slow_firstpass.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-slow_firstpass.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-slow_firstpass.ffpreset.x264	2010-03-26 23:40:55.000000000 +0100
-+++ ffmpeg-20100425/ffpresets/libx264-slow_firstpass.ffpreset	2010-04-25 23:30:58.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-slow_firstpass.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-slow_firstpass.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-slow_firstpass.ffpreset.x264	2010-03-26 23:40:55.000000000 +0100
++++ ffmpeg-0.6/ffpresets/libx264-slow_firstpass.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -1,23 +0,0 @@
 -coder=1
 -flags=+loop
@@ -449,17 +447,17 @@ diff -up ffmpeg-20100425/ffpresets/libx264-slow_firstpass.ffpreset.x264 ffmpeg-2
 -flags2=+bpyramid-mixed_refs+wpred-dct8x8+fastpskip
 -wpredp=2
 -rc_lookahead=50
-diff -up ffmpeg-20100425/ffpresets/libx264-slowfirstpass.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-slowfirstpass.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-slowfirstpass.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
-+++ ffmpeg-20100425/ffpresets/libx264-slowfirstpass.ffpreset	2010-04-25 23:31:45.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-slowfirstpass.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-slowfirstpass.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-slowfirstpass.ffpreset.x264	2010-03-25 20:39:06.000000000 +0100
++++ ffmpeg-0.6/ffpresets/libx264-slowfirstpass.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -19,4 +19,3 @@ refs=1
  directpred=3
  trellis=0
  flags2=+wpred+dct8x8+fastpskip
 -wpredp=2
-diff -up ffmpeg-20100425/ffpresets/libx264-superfast.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-superfast.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-superfast.ffpreset.x264	2010-03-29 03:34:33.000000000 +0200
-+++ ffmpeg-20100425/ffpresets/libx264-superfast.ffpreset	2010-04-25 23:28:45.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-superfast.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-superfast.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-superfast.ffpreset.x264	2010-03-29 03:34:33.000000000 +0200
++++ ffmpeg-0.6/ffpresets/libx264-superfast.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -1,22 +0,0 @@
 -coder=1
 -flags=+loop
@@ -483,9 +481,9 @@ diff -up ffmpeg-20100425/ffpresets/libx264-superfast.ffpreset.x264 ffmpeg-201004
 -trellis=0
 -flags2=+bpyramid-mixed_refs+wpred+dct8x8+fastpskip-mbtree
 -wpredp=0
-diff -up ffmpeg-20100425/ffpresets/libx264-superfast_firstpass.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-superfast_firstpass.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-superfast_firstpass.ffpreset.x264	2010-03-29 03:34:33.000000000 +0200
-+++ ffmpeg-20100425/ffpresets/libx264-superfast_firstpass.ffpreset	2010-04-25 23:28:45.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-superfast_firstpass.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-superfast_firstpass.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-superfast_firstpass.ffpreset.x264	2010-03-29 03:34:33.000000000 +0200
++++ ffmpeg-0.6/ffpresets/libx264-superfast_firstpass.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -1,22 +0,0 @@
 -coder=1
 -flags=+loop
@@ -509,9 +507,9 @@ diff -up ffmpeg-20100425/ffpresets/libx264-superfast_firstpass.ffpreset.x264 ffm
 -trellis=0
 -flags2=+bpyramid-mixed_refs+wpred-dct8x8+fastpskip-mbtree
 -wpredp=0
-diff -up ffmpeg-20100425/ffpresets/libx264-ultrafast.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-ultrafast.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-ultrafast.ffpreset.x264	2010-03-26 23:40:55.000000000 +0100
-+++ ffmpeg-20100425/ffpresets/libx264-ultrafast.ffpreset	2010-04-25 23:30:58.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-ultrafast.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-ultrafast.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-ultrafast.ffpreset.x264	2010-03-26 23:40:55.000000000 +0100
++++ ffmpeg-0.6/ffpresets/libx264-ultrafast.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -1,23 +0,0 @@
 -coder=0
 -flags=-loop
@@ -536,9 +534,9 @@ diff -up ffmpeg-20100425/ffpresets/libx264-ultrafast.ffpreset.x264 ffmpeg-201004
 -flags2=-bpyramid-mixed_refs-wpred-dct8x8+fastpskip-mbtree
 -wpredp=0
 -aq_mode=0
-diff -up ffmpeg-20100425/ffpresets/libx264-ultrafast_firstpass.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-ultrafast_firstpass.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-ultrafast_firstpass.ffpreset.x264	2010-03-26 23:40:55.000000000 +0100
-+++ ffmpeg-20100425/ffpresets/libx264-ultrafast_firstpass.ffpreset	2010-04-25 23:30:58.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-ultrafast_firstpass.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-ultrafast_firstpass.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-ultrafast_firstpass.ffpreset.x264	2010-03-26 23:40:55.000000000 +0100
++++ ffmpeg-0.6/ffpresets/libx264-ultrafast_firstpass.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -1,23 +0,0 @@
 -coder=0
 -flags=-loop
@@ -563,9 +561,9 @@ diff -up ffmpeg-20100425/ffpresets/libx264-ultrafast_firstpass.ffpreset.x264 ffm
 -flags2=-bpyramid-mixed_refs-wpred-dct8x8+fastpskip-mbtree
 -wpredp=0
 -aq_mode=0
-diff -up ffmpeg-20100425/ffpresets/libx264-veryfast.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-veryfast.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-veryfast.ffpreset.x264	2010-03-29 03:34:33.000000000 +0200
-+++ ffmpeg-20100425/ffpresets/libx264-veryfast.ffpreset	2010-04-25 23:30:58.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-veryfast.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-veryfast.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-veryfast.ffpreset.x264	2010-03-29 03:34:33.000000000 +0200
++++ ffmpeg-0.6/ffpresets/libx264-veryfast.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -1,22 +0,0 @@
 -coder=1
 -flags=+loop
@@ -589,9 +587,9 @@ diff -up ffmpeg-20100425/ffpresets/libx264-veryfast.ffpreset.x264 ffmpeg-2010042
 -trellis=0
 -flags2=+bpyramid-mixed_refs+wpred+dct8x8+fastpskip-mbtree
 -wpredp=0
-diff -up ffmpeg-20100425/ffpresets/libx264-veryfast_firstpass.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-veryfast_firstpass.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-veryfast_firstpass.ffpreset.x264	2010-03-29 03:34:33.000000000 +0200
-+++ ffmpeg-20100425/ffpresets/libx264-veryfast_firstpass.ffpreset	2010-04-25 23:30:58.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-veryfast_firstpass.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-veryfast_firstpass.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-veryfast_firstpass.ffpreset.x264	2010-03-29 03:34:33.000000000 +0200
++++ ffmpeg-0.6/ffpresets/libx264-veryfast_firstpass.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -1,22 +0,0 @@
 -coder=1
 -flags=+loop
@@ -615,9 +613,9 @@ diff -up ffmpeg-20100425/ffpresets/libx264-veryfast_firstpass.ffpreset.x264 ffmp
 -trellis=0
 -flags2=+bpyramid-mixed_refs+wpred-dct8x8+fastpskip-mbtree
 -wpredp=0
-diff -up ffmpeg-20100425/ffpresets/libx264-veryslow.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-veryslow.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-veryslow.ffpreset.x264	2010-03-26 23:40:55.000000000 +0100
-+++ ffmpeg-20100425/ffpresets/libx264-veryslow.ffpreset	2010-04-25 23:30:58.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-veryslow.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-veryslow.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-veryslow.ffpreset.x264	2010-03-26 23:40:55.000000000 +0100
++++ ffmpeg-0.6/ffpresets/libx264-veryslow.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -1,23 +0,0 @@
 -coder=1
 -flags=+loop
@@ -642,9 +640,9 @@ diff -up ffmpeg-20100425/ffpresets/libx264-veryslow.ffpreset.x264 ffmpeg-2010042
 -flags2=+bpyramid+mixed_refs+wpred+dct8x8+fastpskip
 -wpredp=2
 -rc_lookahead=60
-diff -up ffmpeg-20100425/ffpresets/libx264-veryslow_firstpass.ffpreset.x264 ffmpeg-20100425/ffpresets/libx264-veryslow_firstpass.ffpreset
---- ffmpeg-20100425/ffpresets/libx264-veryslow_firstpass.ffpreset.x264	2010-03-26 23:40:55.000000000 +0100
-+++ ffmpeg-20100425/ffpresets/libx264-veryslow_firstpass.ffpreset	2010-04-25 23:30:58.000000000 +0200
+diff -up ffmpeg-0.6/ffpresets/libx264-veryslow_firstpass.ffpreset.x264 ffmpeg-0.6/ffpresets/libx264-veryslow_firstpass.ffpreset
+--- ffmpeg-0.6/ffpresets/libx264-veryslow_firstpass.ffpreset.x264	2010-03-26 23:40:55.000000000 +0100
++++ ffmpeg-0.6/ffpresets/libx264-veryslow_firstpass.ffpreset	2010-06-19 20:43:36.000000000 +0200
 @@ -1,23 +0,0 @@
 -coder=1
 -flags=+loop
@@ -669,10 +667,10 @@ diff -up ffmpeg-20100425/ffpresets/libx264-veryslow_firstpass.ffpreset.x264 ffmp
 -flags2=+bpyramid-mixed_refs+wpred-dct8x8+fastpskip
 -wpredp=2
 -rc_lookahead=60
-diff -up ffmpeg-20100425/libavcodec/avcodec.h.x264 ffmpeg-20100425/libavcodec/avcodec.h
---- ffmpeg-20100425/libavcodec/avcodec.h.x264	2010-04-20 16:45:34.000000000 +0200
-+++ ffmpeg-20100425/libavcodec/avcodec.h	2010-04-25 23:31:45.000000000 +0200
-@@ -594,9 +594,6 @@ typedef struct RcOverride{
+diff -up ffmpeg-0.6/libavcodec/avcodec.h.x264 ffmpeg-0.6/libavcodec/avcodec.h
+--- ffmpeg-0.6/libavcodec/avcodec.h.x264	2010-06-03 23:36:38.000000000 +0200
++++ ffmpeg-0.6/libavcodec/avcodec.h	2010-06-19 20:43:36.000000000 +0200
+@@ -595,9 +595,6 @@ typedef struct RcOverride{
  #define CODEC_FLAG2_CHUNKS        0x00008000 ///< Input bitstream might be truncated at a packet boundaries instead of only at frame boundaries.
  #define CODEC_FLAG2_NON_LINEAR_QUANT 0x00010000 ///< Use MPEG-2 nonlinear quantizer.
  #define CODEC_FLAG2_BIT_RESERVOIR 0x00020000 ///< Use a bit reservoir when encoding if possible
@@ -682,7 +680,7 @@ diff -up ffmpeg-20100425/libavcodec/avcodec.h.x264 ffmpeg-20100425/libavcodec/av
  
  /* Unsupported options :
   *              Syntax Arithmetic coding (SAC)
-@@ -2594,58 +2591,6 @@ typedef struct AVCodecContext {
+@@ -2600,58 +2597,6 @@ typedef struct AVCodecContext {
       * - decoding: Set by libavcodec, user can override.
       */
      int (*execute2)(struct AVCodecContext *c, int (*func)(struct AVCodecContext *c2, void *arg, int jobnr, int threadnr), void *arg2, int *ret, int count);
@@ -741,9 +739,9 @@ diff -up ffmpeg-20100425/libavcodec/avcodec.h.x264 ffmpeg-20100425/libavcodec/av
  } AVCodecContext;
  
  /**
-diff -up ffmpeg-20100425/libavcodec/libx264.c.x264 ffmpeg-20100425/libavcodec/libx264.c
---- ffmpeg-20100425/libavcodec/libx264.c.x264	2010-04-19 23:20:20.000000000 +0200
-+++ ffmpeg-20100425/libavcodec/libx264.c	2010-04-25 23:31:45.000000000 +0200
+diff -up ffmpeg-0.6/libavcodec/libx264.c.x264 ffmpeg-0.6/libavcodec/libx264.c
+--- ffmpeg-0.6/libavcodec/libx264.c.x264	2010-04-19 23:20:20.000000000 +0200
++++ ffmpeg-0.6/libavcodec/libx264.c	2010-06-19 20:43:36.000000000 +0200
 @@ -109,7 +109,7 @@ static int X264_frame(AVCodecContext *ct
      if (bufsize < 0)
          return -1;
@@ -826,9 +824,9 @@ diff -up ffmpeg-20100425/libavcodec/libx264.c.x264 ffmpeg-20100425/libavcodec/li
          avctx->extradata      = av_malloc(s);
          avctx->extradata_size = encode_nals(avctx, avctx->extradata, s, nal, nnal, 1);
      }
-diff -up ffmpeg-20100425/libavcodec/options.c.x264 ffmpeg-20100425/libavcodec/options.c
---- ffmpeg-20100425/libavcodec/options.c.x264	2010-04-20 16:45:34.000000000 +0200
-+++ ffmpeg-20100425/libavcodec/options.c	2010-04-25 23:31:45.000000000 +0200
+diff -up ffmpeg-0.6/libavcodec/options.c.x264 ffmpeg-0.6/libavcodec/options.c
+--- ffmpeg-0.6/libavcodec/options.c.x264	2010-05-19 09:58:17.000000000 +0200
++++ ffmpeg-0.6/libavcodec/options.c	2010-06-19 20:43:36.000000000 +0200
 @@ -124,7 +124,6 @@ static const AVOption options[]={
  {"b_qfactor", "qp factor between p and b frames", OFFSET(b_quant_factor), FF_OPT_TYPE_FLOAT, 1.25, -FLT_MAX, FLT_MAX, V|E},
  {"rc_strategy", "ratecontrol method", OFFSET(rc_strategy), FF_OPT_TYPE_INT, DEFAULT, INT_MIN, INT_MAX, V|E},
