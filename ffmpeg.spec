@@ -35,7 +35,7 @@ BuildRequires:  schroedinger-devel
 BuildRequires:  SDL-devel
 BuildRequires:  speex-devel
 BuildRequires:  texi2html
-BuildRequires:  x264-devel >= 0.0.0-0.27
+BuildRequires:  x264-devel >= 0.0.0-0.28
 BuildRequires:  xvidcore-devel
 BuildRequires:  zlib-devel
 %ifarch %{ix86} x86_64
