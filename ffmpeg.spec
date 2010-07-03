@@ -6,7 +6,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.6
-Release:        1%{?dist}
+Release:        2%{?dist}
 %if 0%{?_with_opencore_amr:1}
 License:        GPLv3+
 %else
@@ -30,6 +30,7 @@ BuildRequires:  libtheora-devel
 %{?_with_vaapi:BuildRequires:libva-devel >= 0.31.0}
 BuildRequires:  libvdpau-devel
 BuildRequires:  libvorbis-devel
+BuildRequires:  libvpx-devel >= 0.9.1
 %{?_with_opencore_amr:BuildRequires: opencore-amr-devel}
 BuildRequires:  openjpeg-devel
 BuildRequires:  schroedinger-devel
@@ -101,6 +102,7 @@ This package contains development files for %{name}
     --enable-libspeex \\\
     --enable-libtheora \\\
     --enable-libvorbis \\\
+    --enable-libvpx \\\
     --enable-libx264 \\\
     --enable-libxvid \\\
     --enable-x11grab \\\
@@ -229,6 +231,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Jul 03 2010 Dominik Mierzejewski <rpm at greysector.net> - 0.6-2
+- enable libvpx (WebM/VP8) support (rfbz#1250)
+
 * Sat Jun 19 2010 Dominik Mierzejewski <rpm at greysector.net> - 0.6-1
 - 0.6 release
 
