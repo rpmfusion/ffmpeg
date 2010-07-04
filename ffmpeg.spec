@@ -1,12 +1,11 @@
 # TODO: add make test to %%check section
 
-%global svn     20100619
-%global faad2min 1:2.6.1
+%global svn     20100704
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.6
-Release:        1.%{svn}svn%{?dist}
+Release:        2.%{svn}svn%{?dist}
 %if 0%{?_with_opencore_amr:1}
 License:        GPLv3+
 %else
@@ -21,14 +20,15 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  bzip2-devel
 BuildRequires:  dirac-devel
 %{?_with_faac:BuildRequires: faac-devel}
-BuildRequires:  faad2-devel >= %{faad2min}
 BuildRequires:  gsm-devel
 BuildRequires:  lame-devel
 BuildRequires:  libdc1394-devel
+BuildRequires:  librtmp-devel
 BuildRequires:  libtheora-devel
 %{?_with_vaapi:BuildRequires:libva-devel >= 0.31.0}
 BuildRequires:  libvdpau-devel
 BuildRequires:  libvorbis-devel
+BuildRequires:  libvpx-devel >= 0.9.1
 %{?_with_opencore_amr:BuildRequires: opencore-amr-devel}
 BuildRequires:  openjpeg-devel
 BuildRequires:  schroedinger-devel
@@ -51,9 +51,6 @@ and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
 %package        libs
 Summary:        Libraries for %{name}
 Group:          System Environment/Libraries
-Requires:       faad2-libs >= %{faad2min}
-Obsoletes:      ffmpeg-libpostproc < 0.4.9-0.11
-Obsoletes:      ffmpeg-compat < 0.4.9-0.49
 
 %description    libs
 FFMpeg is a complete and free Internet live audio and video
@@ -67,7 +64,6 @@ Summary:        Development package for %{name}
 Group:          Development/Libraries
 Requires:       %{name}-libs = %{version}-%{release}
 Requires:       pkgconfig
-Obsoletes:      ffmpeg-compat-devel < 0.4.9-0.49
 
 %description    devel
 FFMpeg is a complete and free Internet live audio and video
@@ -92,14 +88,15 @@ This package contains development files for %{name}
     --enable-libdc1394 \\\
     --enable-libdirac \\\
     %{?_with_faac:--enable-libfaac --enable-nonfree} \\\
-    --enable-libfaad \\\
     --enable-libgsm \\\
     --enable-libmp3lame \\\
     --enable-libopenjpeg \\\
+    --enable-librtmp \\\
     --enable-libschroedinger \\\
     --enable-libspeex \\\
     --enable-libtheora \\\
     --enable-libvorbis \\\
+    --enable-libvpx \\\
     --enable-libx264 \\\
     --enable-libxvid \\\
     --enable-x11grab \\\
@@ -226,6 +223,13 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Jul 04 2010 Dominik Mierzejewski <rpm at greysector.net> - 0.6-2.20100704svn
+- 20100703 snapshot
+- enable libvpx (WebM/VP8) support (rfbz#1250)
+- drop faad2 support (dropped upstream)
+- drop old Obsoletes:
+- enable librtmp support
+
 * Sat Jun 19 2010 Dominik Mierzejewski <rpm at greysector.net> - 0.6-1.20100619svn
 - 20100619 snapshot
 
