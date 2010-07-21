@@ -1,11 +1,14 @@
 # TODO: add make test to %%check section
 
 %global svn     20100704
+%{?_with_amr:
+%global _with_opencore_amr 1
+}
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.6
-Release:        3.%{svn}svn%{?dist}
+Release:        4.%{svn}svn%{?dist}
 %if 0%{?_with_opencore_amr:1}
 License:        GPLv3+
 %else
@@ -227,6 +230,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jul 21 2010 Nicolas Chauvet <kwizart@gmail.com> - 0.6-4.20100704svn
+- rebuilt
+
 * Mon Jul 05 2010 Nicolas Chauvet <kwizart@gmail.com> - 0.6-3.20100704svn
 - Fix build using --define ffmpegsuffix 'foo'
 - Disable FFmpeg binaries when built with suffix.
