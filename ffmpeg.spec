@@ -28,7 +28,7 @@ BuildRequires:  lame-devel
 BuildRequires:  libdc1394-devel
 BuildRequires:  librtmp-devel
 BuildRequires:  libtheora-devel
-%{?_with_vaapi:BuildRequires:libva-devel >= 0.31.0}
+BuildRequires:  libva-devel >= 0.31.0
 BuildRequires:  libvdpau-devel
 BuildRequires:  libvorbis-devel
 BuildRequires:  libvpx-devel >= 0.9.1
@@ -231,7 +231,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Wed Jul 21 2010 Nicolas Chauvet <kwizart@gmail.com> - 0.6-4.20100704svn
-- rebuilt
+- Enable libva
+- Restore compatibility --with amr
 
 * Mon Jul 05 2010 Nicolas Chauvet <kwizart@gmail.com> - 0.6-3.20100704svn
 - Fix build using --define ffmpegsuffix 'foo'
