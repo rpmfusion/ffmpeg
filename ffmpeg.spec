@@ -5,7 +5,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.6
-Release:        2.%{svn}svn%{?dist}
+Release:        3.%{svn}svn%{?dist}
 %if 0%{?_with_opencore_amr:1}
 License:        GPLv3+
 %else
@@ -13,7 +13,7 @@ License:        GPLv2+
 %endif
 Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
-Source0:        %{name}-%{svn}.tar.bz2
+Source0:        ffmpeg-%{svn}.tar.bz2
 Source1:        ffmpeg-snapshot.sh
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -112,7 +112,7 @@ This package contains development files for %{name}
 
 
 %prep
-%setup -q -n %{name}-%{svn}
+%setup -q -n ffmpeg-%{svn}
 
 %build
 %ifarch ppc ppc64
@@ -125,6 +125,8 @@ pushd generic
     --shlibdir=%{_libdir} \
 %if 0%{?ffmpegsuffix:1}
     --build-suffix=%{ffmpegsuffix} \
+    --disable-doc \
+    --disable-ffmpeg --disable-ffplay --disable-ffprobe --disable-ffserver \
 %else
 %ifarch %{ix86}
     --cpu=%{_target_cpu} \
@@ -149,7 +151,7 @@ make %{?_smp_mflags}
 make documentation
 popd
 
-%if 1%{?ffmpegsuffix:0}
+%if 0%{!?ffmpegsuffix:1}
 mkdir simd
 pushd simd
 %ifarch sparc sparc64
@@ -171,7 +173,7 @@ rm -rf $RPM_BUILD_ROOT
 pushd generic
 make install DESTDIR=$RPM_BUILD_ROOT
 popd
-%if 1%{?ffmpegsuffix:0}
+%if 0%{!?ffmpegsuffix:1}
 pushd simd
 %ifarch sparc sparc64
 make install DESTDIR=$RPM_BUILD_ROOT
@@ -187,6 +189,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %postun libs -p /sbin/ldconfig
 
+%if 0%{!?ffmpegsuffix:1}
 %files
 %defattr(-,root,root,-)
 %doc COPYING.* CREDITS Changelog README doc/ffserver.conf
@@ -199,11 +202,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/ffprobe.1*
 %{_mandir}/man1/ffserver.1*
 %{_datadir}/ffmpeg
+%endif
 
 %files libs
 %defattr(-,root,root,-)
 %{_libdir}/lib*.so.*
-%if 1%{?ffmpegsuffix:0}
+%if 0%{!?ffmpegsuffix:1}
 %ifarch sparc sparc64
 %{_libdir}/v9/lib*.so.*
 %endif
@@ -215,7 +219,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/ffmpeg
 %{_libdir}/pkgconfig/lib*.pc
 %{_libdir}/lib*.so
-%if 1%{?ffmpegsuffix:0}
+%if 0%{!?ffmpegsuffix:1}
 %ifarch sparc sparc64
 %{_libdir}/v9/lib*.so
 %endif
@@ -223,6 +227,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jul 05 2010 Nicolas Chauvet <kwizart@gmail.com> - 0.6-3.20100704svn
+- Fix build using --define ffmpegsuffix 'foo'
+- Disable FFmpeg binaries when built with suffix.
+
 * Sun Jul 04 2010 Dominik Mierzejewski <rpm at greysector.net> - 0.6-2.20100704svn
 - 20100703 snapshot
 - enable libvpx (WebM/VP8) support (rfbz#1250)
