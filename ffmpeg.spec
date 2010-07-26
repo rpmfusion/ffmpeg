@@ -2,11 +2,14 @@
 
 %global svn     %{nil}
 %global faad2min 1:2.6.1
+%{?_with_amr:
+%global _with_opencore_amr 1
+}
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.6
-Release:        2%{?dist}
+Release:        3%{?dist}
 %if 0%{?_with_opencore_amr:1}
 License:        GPLv3+
 %else
@@ -26,7 +29,7 @@ BuildRequires:  gsm-devel
 BuildRequires:  lame-devel
 BuildRequires:  libdc1394-devel
 BuildRequires:  libtheora-devel
-%{?_with_vaapi:BuildRequires:libva-devel >= 0.31.0}
+BuildRequires:  libva-devel >= 0.31.0
 BuildRequires:  libvdpau-devel
 BuildRequires:  libvorbis-devel
 BuildRequires:  libvpx-devel >= 0.9.1
@@ -228,6 +231,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jul 26 2010 Nicolas Chauvet <kwizart@gmail.com> - 0.6-3
+- Enable libva
+- Restore compatibility --with amr
+
 * Sat Jul 03 2010 Dominik Mierzejewski <rpm at greysector.net> - 0.6-2
 - enable libvpx (WebM/VP8) support (rfbz#1250)
 
