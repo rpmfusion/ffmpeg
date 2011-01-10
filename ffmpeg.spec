@@ -1,15 +1,12 @@
 # TODO: add make test to %%check section
 
-%global svn     20100704
-%{?_with_amr:
-%global _with_opencore_amr 1
-}
+%global svn     20110110
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        0.6
-Release:        4.%{svn}svn%{?dist}
-%if 0%{?_with_opencore_amr:1}
+Version:        0.6.1
+Release:        1.%{svn}svn%{?dist}
+%if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
 License:        GPLv2+
@@ -32,11 +29,12 @@ BuildRequires:  libva-devel >= 0.31.0
 BuildRequires:  libvdpau-devel
 BuildRequires:  libvorbis-devel
 BuildRequires:  libvpx-devel >= 0.9.1
-%{?_with_opencore_amr:BuildRequires: opencore-amr-devel}
+%{?_with_amr:BuildRequires: opencore-amr-devel}
 BuildRequires:  openjpeg-devel
 BuildRequires:  schroedinger-devel
 BuildRequires:  SDL-devel
 BuildRequires:  speex-devel
+BuildRequires:  subversion
 BuildRequires:  texi2html
 BuildRequires:  x264-devel >= 0.0.0-0.28
 BuildRequires:  xvidcore-devel
@@ -86,7 +84,7 @@ This package contains development files for %{name}
     --arch=%{_target_cpu} \\\
     --extra-cflags="$RPM_OPT_FLAGS" \\\
     --extra-version=rpmfusion \\\
-    %{?_with_opencore_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-version3} \\\
+    %{?_with_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-version3} \\\
     --enable-bzlib \\\
     --enable-libdc1394 \\\
     --enable-libdirac \\\
@@ -104,7 +102,6 @@ This package contains development files for %{name}
     --enable-libxvid \\\
     --enable-x11grab \\\
     --enable-avfilter \\\
-    --enable-avfilter-lavf \\\
     --enable-postproc \\\
     --enable-pthreads \\\
     --disable-static \\\
@@ -152,6 +149,7 @@ pushd generic
 
 make %{?_smp_mflags}
 make documentation
+make alltools
 popd
 
 %if 0%{!?ffmpegsuffix:1}
@@ -175,6 +173,7 @@ popd
 rm -rf $RPM_BUILD_ROOT
 pushd generic
 make install DESTDIR=$RPM_BUILD_ROOT
+install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 popd
 %if 0%{!?ffmpegsuffix:1}
 pushd simd
@@ -200,6 +199,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/ffplay
 %{_bindir}/ffprobe
 %{_bindir}/ffserver
+%{_bindir}/qt-faststart
 %{_mandir}/man1/ffmpeg.1*
 %{_mandir}/man1/ffplay.1*
 %{_mandir}/man1/ffprobe.1*
@@ -230,6 +230,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jan 10 2011 Dominik Mierzejewski <rpm at greysector.net> - 0.6.1-1.20110110svn
+- 20110110 snapshot
+- bump version to post-0.6.1 to allow stable 0.6.1 update in older branches
+- drop --with amr->opencore_amr indirection
+- add qt-faststart tool (bug #1259)
+
 * Wed Jul 21 2010 Nicolas Chauvet <kwizart@gmail.com> - 0.6-4.20100704svn
 - Enable libva
 - Restore compatibility --with amr
