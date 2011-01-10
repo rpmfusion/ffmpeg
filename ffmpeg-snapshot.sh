@@ -22,9 +22,6 @@ cd ffmpeg-$date
 pushd libswscale
 svn update -r $svn libswscale
 popd
-./version.sh . version.h
-find . -type d -name .svn -print0 | xargs -0r rm -rf
-sed -i -e '/^\.PHONY: version\.h$/d' Makefile
 cd ..
 tar jcf "$pwd"/ffmpeg-$date.tar.bz2 ffmpeg-$date
 cd - >/dev/null
