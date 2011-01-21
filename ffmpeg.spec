@@ -8,7 +8,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.6
-Release:        4.%{svn}svn%{?dist}
+Release:        5.%{svn}svn%{?dist}
 %if 0%{?_with_opencore_amr:1}
 License:        GPLv3+
 %else
@@ -230,6 +230,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jan 21 2011 Hans de Goede <j.w.r.degoede@hhs.nl> - 0.6-5.20100704svn
+- Rebuild for new openjpeg
+
 * Wed Jul 21 2010 Nicolas Chauvet <kwizart@gmail.com> - 0.6-4.20100704svn
 - Enable libva
 - Restore compatibility --with amr
