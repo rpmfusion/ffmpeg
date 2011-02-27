@@ -1,11 +1,11 @@
 # TODO: add make test to %%check section
 
-%global svn     20110110
+%global date    20110227
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.6.1
-Release:        1.%{svn}svn%{?dist}
+Release:        1.%{date}git%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -13,7 +13,7 @@ License:        GPLv2+
 %endif
 Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
-Source0:        ffmpeg-%{svn}.tar.bz2
+Source0:        ffmpeg-%{date}.tar.bz2
 Source1:        ffmpeg-snapshot.sh
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -83,7 +83,6 @@ This package contains development files for %{name}
     --mandir=%{_mandir} \\\
     --arch=%{_target_cpu} \\\
     --extra-cflags="$RPM_OPT_FLAGS" \\\
-    --extra-version=rpmfusion \\\
     %{?_with_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-version3} \\\
     --enable-bzlib \\\
     --enable-libdc1394 \\\
@@ -112,13 +111,10 @@ This package contains development files for %{name}
 
 
 %prep
-%setup -q -n ffmpeg-%{svn}
+%setup -q -n ffmpeg-%{date}
+echo "git-snapshot-%{date}-RPMFusion" > VERSION
 
 %build
-%ifarch ppc ppc64
-# compile with -mlongcall on ppc/ppc64 (rf804)
-export RPM_OPT_FLAGS="$RPM_OPT_FLAGS -mlongcall"
-%endif
 mkdir generic
 pushd generic
 %{ff_configure}\
@@ -137,10 +133,12 @@ pushd generic
 %ifarch ppc
     --cpu=g3 \
     --enable-runtime-cpudetect \
+    --enable-pic \
 %endif
 %ifarch ppc64
     --cpu=g5 \
     --enable-runtime-cpudetect \
+    --enable-pic \
 %endif
 %ifarch sparc sparc64
     --disable-vis \
@@ -230,11 +228,13 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Mon Jan 10 2011 Dominik Mierzejewski <rpm at greysector.net> - 0.6.1-1.20110110svn
-- 20110110 snapshot
+* Sun Feb 27 2011 Dominik Mierzejewski <rpm at greysector.net> - 0.6.1-1.20110227git
+- 20110227 snapshot
 - bump version to post-0.6.1 to allow stable 0.6.1 update in older branches
 - drop --with amr->opencore_amr indirection
 - add qt-faststart tool (bug #1259)
+- build PIC objects on PPC (bug #1457)
+- provide custom version string
 
 * Fri Jan 21 2011 Hans de Goede <j.w.r.degoede@hhs.nl> - 0.6-5.20100704svn
 - Rebuild for new openjpeg

@@ -13,15 +13,9 @@ cleanup() {
 unset CDPATH
 pwd=$(pwd)
 date=$(date +%Y%m%d)
-svn={$date}
-svn=HEAD
 
-cd "$tmp"
-svn checkout -r $svn svn://svn.mplayerhq.hu/ffmpeg/trunk ffmpeg-$date
-cd ffmpeg-$date
-pushd libswscale
-svn update -r $svn libswscale
+pushd "$tmp"
+git clone git://git.videolan.org/ffmpeg.git
+cd ffmpeg
+git archive --prefix="ffmpeg-${date}/" --format=tar master | bzip2 > "$pwd"/ffmpeg-${date}.tar.bz2
 popd
-cd ..
-tar jcf "$pwd"/ffmpeg-$date.tar.bz2 ffmpeg-$date
-cd - >/dev/null
