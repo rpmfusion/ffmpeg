@@ -36,7 +36,7 @@ BuildRequires:  SDL-devel
 BuildRequires:  speex-devel
 BuildRequires:  subversion
 BuildRequires:  texi2html
-BuildRequires:  x264-devel >= 0.0.0-0.28
+BuildRequires:  x264-devel >= 0.0.0-0.29
 BuildRequires:  xvidcore-devel
 BuildRequires:  zlib-devel
 %ifarch %{ix86} x86_64
@@ -235,6 +235,7 @@ rm -rf $RPM_BUILD_ROOT
 - add qt-faststart tool (bug #1259)
 - build PIC objects on PPC (bug #1457)
 - provide custom version string
+- require latest x264 build
 
 * Fri Jan 21 2011 Hans de Goede <j.w.r.degoede@hhs.nl> - 0.6-5.20100704svn
 - Rebuild for new openjpeg
