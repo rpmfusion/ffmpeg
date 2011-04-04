@@ -1,11 +1,13 @@
 # TODO: add make test to %%check section
 
+%global git 0
 %global date    20110227
+%global rel     rc0
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        0.6.1
-Release:        1.%{date}git%{?dist}
+Version:        0.6.90
+Release:        0.1.%{rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -13,10 +15,14 @@ License:        GPLv2+
 %endif
 Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
+%if %{git}
 Source0:        ffmpeg-%{date}.tar.bz2
+%else
+Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}-%{rel}.tar.bz2
+%endif
 Source1:        ffmpeg-snapshot.sh
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-
+Requires:       %{name}-libs = %{version}-%{release}
 BuildRequires:  bzip2-devel
 BuildRequires:  dirac-devel
 %{?_with_faac:BuildRequires: faac-devel}
@@ -111,8 +117,12 @@ This package contains development files for %{name}
 
 
 %prep
+%if %{git}
 %setup -q -n ffmpeg-%{date}
 echo "git-snapshot-%{date}-RPMFusion" > VERSION
+%else
+%setup -q -n ffmpeg-%{version}-%{rel}
+%endif
 
 %build
 mkdir generic
@@ -228,6 +238,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Apr 04 2011 Dominik Mierzejewski <rpm at greysector.net> - 0.6.90-0.1.rc0
+- updated to 0.6.90-rc0 release
+- ensure main package is version-locked to the -libs subpackage
+
 * Sun Feb 27 2011 Dominik Mierzejewski <rpm at greysector.net> - 0.6.1-1.20110227git
 - 20110227 snapshot
 - bump version to post-0.6.1 to allow stable 0.6.1 update in older branches
