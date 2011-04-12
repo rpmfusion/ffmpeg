@@ -1,11 +1,11 @@
 # TODO: add make test to %%check section
 
-%global svn     20110110
+#global svn     20110110
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        0.6.1
-Release:        1.%{svn}svn%{?dist}
+Version:        0.6.2
+Release:        1%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -13,7 +13,7 @@ License:        GPLv2+
 %endif
 Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
-Source0:        ffmpeg-%{svn}.tar.bz2
+Source0:        ffmpeg-%{version}.tar.bz2
 Source1:        ffmpeg-snapshot.sh
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -112,7 +112,7 @@ This package contains development files for %{name}
 
 
 %prep
-%setup -q -n ffmpeg-%{svn}
+%setup -q -n ffmpeg-%{version}
 
 %build
 %ifarch ppc ppc64
@@ -148,8 +148,6 @@ pushd generic
 %endif
 
 make %{?_smp_mflags}
-make documentation
-make alltools
 popd
 
 %if 0%{!?ffmpegsuffix:1}
@@ -173,7 +171,7 @@ popd
 rm -rf $RPM_BUILD_ROOT
 pushd generic
 make install DESTDIR=$RPM_BUILD_ROOT
-install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
+#install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 popd
 %if 0%{!?ffmpegsuffix:1}
 pushd simd
@@ -199,7 +197,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/ffplay
 %{_bindir}/ffprobe
 %{_bindir}/ffserver
-%{_bindir}/qt-faststart
+#{_bindir}/qt-faststart
 %{_mandir}/man1/ffmpeg.1*
 %{_mandir}/man1/ffplay.1*
 %{_mandir}/man1/ffprobe.1*
@@ -230,6 +228,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Apr 06 2011 Nicolas Chauvet <kwizart@gmail.com> - 0.6.2-1
+- Update to 0.6.2
+
 * Mon Jan 10 2011 Dominik Mierzejewski <rpm at greysector.net> - 0.6.1-1.20110110svn
 - 20110110 snapshot
 - bump version to post-0.6.1 to allow stable 0.6.1 update in older branches
