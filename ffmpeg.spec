@@ -7,7 +7,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.6.90
-Release:        0.1.%{rel}%{?dist}
+Release:        0.2.%{rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -21,6 +21,8 @@ Source0:        ffmpeg-%{date}.tar.bz2
 Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}-%{rel}.tar.bz2
 %endif
 Source1:        ffmpeg-snapshot.sh
+# http://git.videolan.org/gitweb.cgi?p=ffmpeg.git;a=patch;h=1f6265e011f6e56562b2f58c182bc0261062b3c4
+Patch0:         ffmpeg-av_parser_parse-fix.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires:       %{name}-libs = %{version}-%{release}
 BuildRequires:  bzip2-devel
@@ -123,6 +125,7 @@ echo "git-snapshot-%{date}-RPMFusion" > VERSION
 %else
 %setup -q -n ffmpeg-%{version}-%{rel}
 %endif
+%patch0 -p1 -b .av_parser_parse-fix
 
 %build
 mkdir generic
@@ -238,6 +241,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Apr 12 2011 Dominik Mierzejewski <rpm at greysector.net> - 0.6.90-0.2.rc0
+- fixed missing av_parser_parse symbol (upstream patch)
+
 * Mon Apr 04 2011 Dominik Mierzejewski <rpm at greysector.net> - 0.6.90-0.1.rc0
 - updated to 0.6.90-rc0 release
 - ensure main package is version-locked to the -libs subpackage
