@@ -1,13 +1,13 @@
 # TODO: add make test to %%check section
 
-%global git 0
-%global date    20110227
-%global rel     rc0
+%global branch  oldabi-
+#global date    20110612
+%global rel     rc1
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        0.6.90
-Release:        0.2.%{rel}%{?dist}
+Version:        0.7
+Release:        0.1.%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -15,14 +15,12 @@ License:        GPLv2+
 %endif
 Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
-%if %{git}
-Source0:        ffmpeg-%{date}.tar.bz2
+%if 0%{?date}
+Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 %else
 Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}-%{rel}.tar.bz2
 %endif
 Source1:        ffmpeg-snapshot.sh
-# http://git.videolan.org/gitweb.cgi?p=ffmpeg.git;a=patch;h=1f6265e011f6e56562b2f58c182bc0261062b3c4
-Patch0:         ffmpeg-av_parser_parse-fix.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires:       %{name}-libs = %{version}-%{release}
 BuildRequires:  bzip2-devel
@@ -44,7 +42,7 @@ BuildRequires:  SDL-devel
 BuildRequires:  speex-devel
 BuildRequires:  subversion
 BuildRequires:  texi2html
-BuildRequires:  x264-devel >= 0.0.0-0.29
+%{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.29}
 BuildRequires:  xvidcore-devel
 BuildRequires:  zlib-devel
 %ifarch %{ix86} x86_64
@@ -105,7 +103,7 @@ This package contains development files for %{name}
     --enable-libtheora \\\
     --enable-libvorbis \\\
     --enable-libvpx \\\
-    --enable-libx264 \\\
+    %{!?_without_x264:--enable-libx264} \\\
     --enable-libxvid \\\
     --enable-x11grab \\\
     --enable-avfilter \\\
@@ -119,13 +117,12 @@ This package contains development files for %{name}
 
 
 %prep
-%if %{git}
-%setup -q -n ffmpeg-%{date}
-echo "git-snapshot-%{date}-RPMFusion" > VERSION
+%if 0%{?date}
+%setup -q -n ffmpeg-%{?branch}%{date}
+echo "git-snapshot-%{?branch}%{date}-RPMFusion" > VERSION
 %else
 %setup -q -n ffmpeg-%{version}-%{rel}
 %endif
-%patch0 -p1 -b .av_parser_parse-fix
 
 %build
 mkdir generic
@@ -241,6 +238,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Jun 12 2011 Nicolas Chauvet <kwizart@gmail.com> - 0.7-0.1.rc1
+- Update to 7.0-rc1
+- Remove upstreamed patch
+- Fix flv - rfbz#1743
+- New RPM build conditional --without x264.
+
 * Tue Apr 12 2011 Dominik Mierzejewski <rpm at greysector.net> - 0.6.90-0.2.rc0
 - fixed missing av_parser_parse symbol (upstream patch)
 
