@@ -1,13 +1,13 @@
 # TODO: add make test to %%check section
 
 %global branch  oldabi-
-#global date    20110612
-%global rel     rc1
+%global date    20110612
+#global rel     rc1
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.7
-Release:        0.1.%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        0.2.%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -20,7 +20,7 @@ Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 %else
 Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}-%{rel}.tar.bz2
 %endif
-Source1:        ffmpeg-snapshot.sh
+Source1:        ffmpeg-snapshot-oldabi.sh
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires:       %{name}-libs = %{version}-%{release}
 BuildRequires:  bzip2-devel
@@ -238,6 +238,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Jun 12 2011 Nicolas Chauvet <kwizart@gmail.com> - 0.7-0.2.20110612git
+- Update to 20110612git from oldabi branch
+
 * Sun Jun 12 2011 Nicolas Chauvet <kwizart@gmail.com> - 0.7-0.1.rc1
 - Update to 7.0-rc1
 - Remove upstreamed patch
