@@ -7,7 +7,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.7
-Release:        0.2.%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        0.3.%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -35,6 +35,9 @@ BuildRequires:  libva-devel >= 0.31.0
 BuildRequires:  libvdpau-devel
 BuildRequires:  libvorbis-devel
 BuildRequires:  libvpx-devel >= 0.9.1
+%ifarch %{ix86} x86_64
+BuildRequires:  libXvMC-devel
+%endif
 %{?_with_amr:BuildRequires: opencore-amr-devel}
 BuildRequires:  openjpeg-devel
 BuildRequires:  schroedinger-devel
@@ -238,6 +241,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jul 01 2011 Nicolas Chauvet <kwizart@gmail.com> - 0.7-0.3.20110612git
+- Add XvMC in ffmpeg
+
 * Sun Jun 12 2011 Nicolas Chauvet <kwizart@gmail.com> - 0.7-0.2.20110612git
 - Update to 20110612git from oldabi branch
 
