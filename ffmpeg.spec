@@ -1,13 +1,13 @@
 # TODO: add make test to %%check section
 
 %global branch  oldabi-
-%global date    20110612
+#global date    20110612
 #global rel     rc1
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        0.7
-Release:        0.2.%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        0.7.1
+Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -18,7 +18,7 @@ URL:            http://ffmpeg.org/
 %if 0%{?date}
 Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 %else
-Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}-%{rel}.tar.bz2
+Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.bz2
 %endif
 Source1:        ffmpeg-snapshot-oldabi.sh
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -35,6 +35,9 @@ BuildRequires:  libva-devel >= 0.31.0
 BuildRequires:  libvdpau-devel
 BuildRequires:  libvorbis-devel
 BuildRequires:  libvpx-devel >= 0.9.1
+%ifarch %{ix86} x86_64
+BuildRequires:  libXvMC-devel
+%endif
 %{?_with_amr:BuildRequires: opencore-amr-devel}
 BuildRequires:  openjpeg-devel
 BuildRequires:  schroedinger-devel
@@ -42,7 +45,7 @@ BuildRequires:  SDL-devel
 BuildRequires:  speex-devel
 BuildRequires:  subversion
 BuildRequires:  texi2html
-%{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.29}
+%{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.30}
 BuildRequires:  xvidcore-devel
 BuildRequires:  zlib-devel
 %ifarch %{ix86} x86_64
@@ -121,7 +124,7 @@ This package contains development files for %{name}
 %setup -q -n ffmpeg-%{?branch}%{date}
 echo "git-snapshot-%{?branch}%{date}-RPMFusion" > VERSION
 %else
-%setup -q -n ffmpeg-%{version}-%{rel}
+%setup -q -n ffmpeg-%{version}
 %endif
 
 %build
@@ -202,7 +205,7 @@ rm -rf $RPM_BUILD_ROOT
 %if 0%{!?ffmpegsuffix:1}
 %files
 %defattr(-,root,root,-)
-%doc COPYING.* CREDITS Changelog README doc/ffserver.conf
+%doc COPYING.* CREDITS README doc/ffserver.conf
 %{_bindir}/ffmpeg
 %{_bindir}/ffplay
 %{_bindir}/ffprobe
@@ -238,6 +241,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jul 14 2011 Nicolas Chauvet <kwizart@gmail.com> - 0.7.1-1
+- Update to 0.7.1
+
+* Fri Jul 01 2011 Nicolas Chauvet <kwizart@gmail.com> - 0.7-0.3.20110612git
+- Add XvMC in ffmpeg
+
 * Sun Jun 12 2011 Nicolas Chauvet <kwizart@gmail.com> - 0.7-0.2.20110612git
 - Update to 20110612git from oldabi branch
 
