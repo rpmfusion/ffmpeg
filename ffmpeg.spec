@@ -4,7 +4,7 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        0.6.3
+Version:        0.7.3
 Release:        1%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
@@ -13,13 +13,16 @@ License:        GPLv2+
 %endif
 Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
-Source0:        ffmpeg-%{version}.tar.bz2
+Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.bz2
 Source1:        ffmpeg-snapshot.sh
+Patch0:         ffmpeg-celt.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  bzip2-devel
+BuildRequires:  celt-devel
 BuildRequires:  dirac-devel
 %{?_with_faac:BuildRequires: faac-devel}
+BuildRequires:  freetype-devel
 BuildRequires:  gsm-devel
 BuildRequires:  lame-devel
 BuildRequires:  libdc1394-devel
@@ -29,14 +32,14 @@ BuildRequires:  libva-devel >= 0.31.0
 BuildRequires:  libvdpau-devel
 BuildRequires:  libvorbis-devel
 BuildRequires:  libvpx-devel >= 0.9.1
-%{?_with_amr:BuildRequires: opencore-amr-devel}
+%{?_with_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
 BuildRequires:  openjpeg-devel
 BuildRequires:  schroedinger-devel
 BuildRequires:  SDL-devel
 BuildRequires:  speex-devel
 BuildRequires:  subversion
 BuildRequires:  texi2html
-BuildRequires:  x264-devel >= 0.0.0-0.28
+BuildRequires:  x264-devel >= 0.0.0-0.30
 BuildRequires:  xvidcore-devel
 BuildRequires:  zlib-devel
 %ifarch %{ix86} x86_64
@@ -84,11 +87,13 @@ This package contains development files for %{name}
     --arch=%{_target_cpu} \\\
     --extra-cflags="$RPM_OPT_FLAGS" \\\
     --extra-version=rpmfusion \\\
-    %{?_with_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-version3} \\\
+    %{?_with_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3} \\\
     --enable-bzlib \\\
+    --enable-libcelt \\\
     --enable-libdc1394 \\\
     --enable-libdirac \\\
     %{?_with_faac:--enable-libfaac --enable-nonfree} \\\
+    --enable-libfreetype \\\
     --enable-libgsm \\\
     --enable-libmp3lame \\\
     --enable-libopenjpeg \\\
@@ -112,13 +117,10 @@ This package contains development files for %{name}
 
 
 %prep
-%setup -q -n ffmpeg-%{version}
+%setup -q
+%patch0 -p1 -b .celt
 
 %build
-%ifarch ppc ppc64
-# compile with -mlongcall on ppc/ppc64 (rf804)
-export RPM_OPT_FLAGS="$RPM_OPT_FLAGS -mlongcall"
-%endif
 mkdir generic
 pushd generic
 %{ff_configure}\
@@ -137,10 +139,12 @@ pushd generic
 %ifarch ppc
     --cpu=g3 \
     --enable-runtime-cpudetect \
+    --enable-pic \
 %endif
 %ifarch ppc64
     --cpu=g5 \
     --enable-runtime-cpudetect \
+    --enable-pic \
 %endif
 %ifarch sparc sparc64
     --disable-vis \
@@ -149,6 +153,8 @@ pushd generic
 
 make %{?_smp_mflags}
 popd
+
+gcc -o qt-faststart $RPM_OPT_FLAGS tools/qt-faststart.c
 
 %if 0%{!?ffmpegsuffix:1}
 mkdir simd
@@ -171,8 +177,8 @@ popd
 rm -rf $RPM_BUILD_ROOT
 pushd generic
 make install DESTDIR=$RPM_BUILD_ROOT
-#install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 popd
+install -pm755 qt-faststart $RPM_BUILD_ROOT%{_bindir}
 %if 0%{!?ffmpegsuffix:1}
 pushd simd
 %ifarch sparc sparc64
@@ -192,12 +198,13 @@ rm -rf $RPM_BUILD_ROOT
 %if 0%{!?ffmpegsuffix:1}
 %files
 %defattr(-,root,root,-)
-%doc COPYING.* CREDITS Changelog README doc/ffserver.conf
+%doc COPYING.* CREDITS README doc/ffserver.conf
+#doc Changelog
 %{_bindir}/ffmpeg
 %{_bindir}/ffplay
 %{_bindir}/ffprobe
 %{_bindir}/ffserver
-#{_bindir}/qt-faststart
+%{_bindir}/qt-faststart
 %{_mandir}/man1/ffmpeg.1*
 %{_mandir}/man1/ffplay.1*
 %{_mandir}/man1/ffprobe.1*
@@ -228,6 +235,16 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Aug 12 2011 Dominik Mierzejewski <rpm at greysector.net> - 0.7.3
+- update to 0.7.3
+- build PIC objects on PPC (bug #1457)
+- restore mistakenly dropped qt-faststart tool
+- enable CELT decoding via libcelt
+- support AMR WB encoding via libvo-amrwbenc (optional)
+- enable FreeType support
+- fix build with old celt
+- Changelog seems to be missing from the tarball, don't include it for now
+
 * Wed May 04 2011 Nicolas Chauvet <kwizart@gmail.com> - 0.6.3-1
 - Update to 0.6.3
 

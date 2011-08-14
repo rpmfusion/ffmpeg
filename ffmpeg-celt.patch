@@ -1,0 +1,21 @@
+diff -up ffmpeg-0.7.3/libavcodec/libcelt_dec.c.celt ffmpeg-0.7.3/libavcodec/libcelt_dec.c
+--- ffmpeg-0.7.3/libavcodec/libcelt_dec.c.celt	2011-08-10 14:15:51.000000000 +0200
++++ ffmpeg-0.7.3/libavcodec/libcelt_dec.c	2011-08-12 02:31:20.000000000 +0200
+@@ -52,7 +52,7 @@ static int ff_celt_error_to_averror(int 
+ static int ff_celt_bitstream_version_hack(CELTMode *mode)
+ {
+     CELTHeader header = { .version_id = 0 };
+-    celt_header_init(&header, mode, 960, 2);
++    celt_header_init(&header, mode, 2);
+     return header.version_id;
+ }
+ 
+@@ -68,7 +68,7 @@ static av_cold int libcelt_dec_init(AVCo
+     celt->mode = celt_mode_create(c->sample_rate, c->frame_size, &err);
+     if (!celt->mode)
+         return ff_celt_error_to_averror(err);
+-    celt->dec = celt_decoder_create_custom(celt->mode, c->channels, &err);
++    celt->dec = celt_decoder_create(celt->mode, c->channels, &err);
+     if (!celt->dec) {
+         celt_mode_destroy(celt->mode);
+         return ff_celt_error_to_averror(err);
