@@ -6,7 +6,7 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        0.7.1
+Version:        0.8.2
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
@@ -24,8 +24,10 @@ Source1:        ffmpeg-snapshot-oldabi.sh
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires:       %{name}-libs = %{version}-%{release}
 BuildRequires:  bzip2-devel
+BuildRequires:  celt-devel
 BuildRequires:  dirac-devel
 %{?_with_faac:BuildRequires: faac-devel}
+BuildRequires:  freetype-devel
 BuildRequires:  gsm-devel
 BuildRequires:  lame-devel
 BuildRequires:  libdc1394-devel
@@ -38,14 +40,14 @@ BuildRequires:  libvpx-devel >= 0.9.1
 %ifarch %{ix86} x86_64
 BuildRequires:  libXvMC-devel
 %endif
-%{?_with_amr:BuildRequires: opencore-amr-devel}
+%{?_with_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
 BuildRequires:  openjpeg-devel
 BuildRequires:  schroedinger-devel
 BuildRequires:  SDL-devel
 BuildRequires:  speex-devel
 BuildRequires:  subversion
 BuildRequires:  texi2html
-%{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.30}
+%{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.31}
 BuildRequires:  xvidcore-devel
 BuildRequires:  zlib-devel
 %ifarch %{ix86} x86_64
@@ -92,11 +94,13 @@ This package contains development files for %{name}
     --mandir=%{_mandir} \\\
     --arch=%{_target_cpu} \\\
     --extra-cflags="$RPM_OPT_FLAGS" \\\
-    %{?_with_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-version3} \\\
+    %{?_with_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3} \\\
     --enable-bzlib \\\
+    --enable-libcelt \\\
     --enable-libdc1394 \\\
     --enable-libdirac \\\
     %{?_with_faac:--enable-libfaac --enable-nonfree} \\\
+    --enable-libfreetype \\\
     --enable-libgsm \\\
     --enable-libmp3lame \\\
     --enable-libopenjpeg \\\
@@ -241,6 +245,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Aug 22 2011 Dominik Mierzejewski <rpm at greysector.net> - 0.8.2-1
+- update to 0.8.2
+- enable CELT decoding via libcelt
+- support AMR WB encoding via libvo-amrwbenc (optional)
+- enable FreeType support
+
 * Thu Jul 14 2011 Nicolas Chauvet <kwizart@gmail.com> - 0.7.1-1
 - Update to 0.7.1
 
