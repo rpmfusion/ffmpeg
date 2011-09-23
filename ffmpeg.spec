@@ -56,7 +56,7 @@ BuildRequires:  yasm
 %endif
 
 %description
-FFMpeg is a complete and free Internet live audio and video
+FFmpeg is a complete and free Internet live audio and video
 broadcasting solution for Linux/Unix. It also includes a digital
 VCR. It can encode in real time in many formats including MPEG1 audio
 and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
@@ -66,7 +66,7 @@ Summary:        Libraries for %{name}
 Group:          System Environment/Libraries
 
 %description    libs
-FFMpeg is a complete and free Internet live audio and video
+FFmpeg is a complete and free Internet live audio and video
 broadcasting solution for Linux/Unix. It also includes a digital
 VCR. It can encode in real time in many formats including MPEG1 audio
 and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
@@ -79,7 +79,7 @@ Requires:       %{name}-libs = %{version}-%{release}
 Requires:       pkgconfig
 
 %description    devel
-FFMpeg is a complete and free Internet live audio and video
+FFmpeg is a complete and free Internet live audio and video
 broadcasting solution for Linux/Unix. It also includes a digital
 VCR. It can encode in real time in many formats including MPEG1 audio
 and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
@@ -257,6 +257,7 @@ rm -rf $RPM_BUILD_ROOT
 - support AMR WB encoding via libvo-amrwbenc (optional)
 - enable FreeType support
 - fix build with old celt
+- fix FFmpeg name spelling
 
 * Fri Jul 01 2011 Nicolas Chauvet <kwizart@gmail.com> - 0.7-0.3.20110612git
 - Add XvMC in ffmpeg
