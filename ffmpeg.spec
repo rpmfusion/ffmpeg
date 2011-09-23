@@ -257,7 +257,9 @@ rm -rf $RPM_BUILD_ROOT
 - support AMR WB encoding via libvo-amrwbenc (optional)
 - enable FreeType support
 - fix build with old celt
+- Changelog seems to be missing from the tarball, don't include it for now
 - fix FFmpeg name spelling
+- fix build --with ffmpegsuffix
 
 * Fri Jul 01 2011 Nicolas Chauvet <kwizart@gmail.com> - 0.7-0.3.20110612git
 - Add XvMC in ffmpeg
