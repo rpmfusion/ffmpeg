@@ -188,9 +188,9 @@ popd
 rm -rf $RPM_BUILD_ROOT
 pushd generic
 make install DESTDIR=$RPM_BUILD_ROOT
-install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 popd
 %if 0%{!?ffmpegsuffix:1}
+install -pm755 generic/tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 pushd simd
 %ifarch sparc sparc64
 make install DESTDIR=$RPM_BUILD_ROOT
