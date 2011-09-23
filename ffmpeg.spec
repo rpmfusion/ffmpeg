@@ -4,7 +4,7 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        0.7.3
+Version:        0.7.5
 Release:        1%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
@@ -178,8 +178,8 @@ rm -rf $RPM_BUILD_ROOT
 pushd generic
 make install DESTDIR=$RPM_BUILD_ROOT
 popd
-install -pm755 qt-faststart $RPM_BUILD_ROOT%{_bindir}
 %if 0%{!?ffmpegsuffix:1}
+install -pm755 qt-faststart $RPM_BUILD_ROOT%{_bindir}
 pushd simd
 %ifarch sparc sparc64
 make install DESTDIR=$RPM_BUILD_ROOT
@@ -199,7 +199,6 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %doc COPYING.* CREDITS README doc/ffserver.conf
-#doc Changelog
 %{_bindir}/ffmpeg
 %{_bindir}/ffplay
 %{_bindir}/ffprobe
@@ -235,8 +234,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Fri Aug 12 2011 Dominik Mierzejewski <rpm at greysector.net> - 0.7.3
-- update to 0.7.3
+* Fri Sep 23 2011 Dominik Mierzejewski <rpm at greysector.net> - 0.7.5-1
+- update to 0.7.5
 - build PIC objects on PPC (bug #1457)
 - restore mistakenly dropped qt-faststart tool
 - enable CELT decoding via libcelt
@@ -244,6 +243,7 @@ rm -rf $RPM_BUILD_ROOT
 - enable FreeType support
 - fix build with old celt
 - Changelog seems to be missing from the tarball, don't include it for now
+- fix build --with ffmpegsuffix
 
 * Wed May 04 2011 Nicolas Chauvet <kwizart@gmail.com> - 0.6.3-1
 - Update to 0.6.3
