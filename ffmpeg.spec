@@ -6,7 +6,7 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        0.8.2
+Version:        0.8.4
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
@@ -245,6 +245,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Sep 23 2011 Dominik Mierzejewski <rpm at greysector.net> - 0.8.4-1
+- update to 0.8.4
+
 * Mon Aug 22 2011 Dominik Mierzejewski <rpm at greysector.net> - 0.8.2-1
 - update to 0.8.2
 - enable CELT decoding via libcelt
