@@ -1,13 +1,13 @@
 # TODO: add make test to %%check section
 
-%global branch  oldabi-
-%global date    20110612
-#global rel     rc1
+#global branch  oldabi-
+#global date    20110612
+%global rel     %nil
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        0.7
-Release:        0.3.%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        0.7.5
+Release:        1%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -18,14 +18,17 @@ URL:            http://ffmpeg.org/
 %if 0%{?date}
 Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 %else
-Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}-%{rel}.tar.bz2
+Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}%{rel}.tar.bz2
 %endif
 Source1:        ffmpeg-snapshot-oldabi.sh
+Patch0:         ffmpeg-celt.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires:       %{name}-libs = %{version}-%{release}
 BuildRequires:  bzip2-devel
+BuildRequires:  celt-devel
 BuildRequires:  dirac-devel
 %{?_with_faac:BuildRequires: faac-devel}
+BuildRequires:  freetype-devel
 BuildRequires:  gsm-devel
 BuildRequires:  lame-devel
 BuildRequires:  libdc1394-devel
@@ -38,14 +41,14 @@ BuildRequires:  libvpx-devel >= 0.9.1
 %ifarch %{ix86} x86_64
 BuildRequires:  libXvMC-devel
 %endif
-%{?_with_amr:BuildRequires: opencore-amr-devel}
+%{?_with_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
 BuildRequires:  openjpeg-devel
 BuildRequires:  schroedinger-devel
 BuildRequires:  SDL-devel
 BuildRequires:  speex-devel
 BuildRequires:  subversion
 BuildRequires:  texi2html
-%{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.29}
+%{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.30}
 BuildRequires:  xvidcore-devel
 BuildRequires:  zlib-devel
 %ifarch %{ix86} x86_64
@@ -92,11 +95,14 @@ This package contains development files for %{name}
     --mandir=%{_mandir} \\\
     --arch=%{_target_cpu} \\\
     --extra-cflags="$RPM_OPT_FLAGS" \\\
-    %{?_with_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-version3} \\\
+    --extra-version=rpmfusion \\\
+    %{?_with_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3} \\\
     --enable-bzlib \\\
+    --enable-libcelt \\\
     --enable-libdc1394 \\\
     --enable-libdirac \\\
     %{?_with_faac:--enable-libfaac --enable-nonfree} \\\
+    --enable-libfreetype \\\
     --enable-libgsm \\\
     --enable-libmp3lame \\\
     --enable-libopenjpeg \\\
@@ -124,8 +130,9 @@ This package contains development files for %{name}
 %setup -q -n ffmpeg-%{?branch}%{date}
 echo "git-snapshot-%{?branch}%{date}-RPMFusion" > VERSION
 %else
-%setup -q -n ffmpeg-%{version}-%{rel}
+%setup -q -n ffmpeg-%{version}%{rel}
 %endif
+%patch0 -p1 -b .celt
 
 %build
 mkdir generic
@@ -163,6 +170,8 @@ make documentation
 make alltools
 popd
 
+gcc -o qt-faststart $RPM_OPT_FLAGS tools/qt-faststart.c
+
 %if 0%{!?ffmpegsuffix:1}
 mkdir simd
 pushd simd
@@ -184,9 +193,9 @@ popd
 rm -rf $RPM_BUILD_ROOT
 pushd generic
 make install DESTDIR=$RPM_BUILD_ROOT
-install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 popd
 %if 0%{!?ffmpegsuffix:1}
+install -pm755 qt-faststart $RPM_BUILD_ROOT%{_bindir}
 pushd simd
 %ifarch sparc sparc64
 make install DESTDIR=$RPM_BUILD_ROOT
@@ -205,7 +214,7 @@ rm -rf $RPM_BUILD_ROOT
 %if 0%{!?ffmpegsuffix:1}
 %files
 %defattr(-,root,root,-)
-%doc COPYING.* CREDITS Changelog README doc/ffserver.conf
+%doc COPYING.* CREDITS README doc/ffserver.conf
 %{_bindir}/ffmpeg
 %{_bindir}/ffplay
 %{_bindir}/ffprobe
@@ -241,6 +250,14 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Sep 23 2011 Dominik Mierzejewski <rpm at greysector.net> - 0.7.5-1
+- update to 0.7.5
+- build PIC objects on PPC (bug #1457)
+- enable CELT decoding via libcelt
+- support AMR WB encoding via libvo-amrwbenc (optional)
+- enable FreeType support
+- fix build with old celt
+
 * Fri Jul 01 2011 Nicolas Chauvet <kwizart@gmail.com> - 0.7-0.3.20110612git
 - Add XvMC in ffmpeg
 
