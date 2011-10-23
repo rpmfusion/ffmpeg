@@ -6,7 +6,7 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        0.7.5
+Version:        0.7.6
 Release:        1%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
@@ -250,6 +250,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Oct 23 2011 Dominik Mierzejewski <rpm at greysector.net> - 0.7.6-1
+- update to 0.7.6
+
 * Fri Sep 23 2011 Dominik Mierzejewski <rpm at greysector.net> - 0.7.5-1
 - update to 0.7.5
 - build PIC objects on PPC (bug #1457)
