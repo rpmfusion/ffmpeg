@@ -7,7 +7,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.8.5
-Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -245,6 +245,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Oct 28 2011 Nicolas Chauvet <kwizart@gmail.com> - 0.8.5-2
+- Fix for glibc bug rhbz#747377
+
 * Sun Oct 23 2011 Dominik Mierzejewski <rpm at greysector.net> - 0.8.5-1
 - update to 0.8.5
 
