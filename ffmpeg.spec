@@ -6,7 +6,7 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        0.8.7
+Version:        0.8.8
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
@@ -245,6 +245,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jan 09 2012 Nicolas Chauvet <kwizart@gmail.com> - 0.8.8-1
+- Update to 0.8.8
+
 * Wed Dec 21 2011 Nicolas Chauvet <kwizart@gmail.com> - 0.8.7-1
 - Update to 0.8.7
 
