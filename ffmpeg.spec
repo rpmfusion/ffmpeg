@@ -6,7 +6,7 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        0.8.8
+Version:        0.8.9
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
@@ -29,7 +29,8 @@ BuildRequires:  dirac-devel
 %{?_with_faac:BuildRequires: faac-devel}
 BuildRequires:  freetype-devel
 BuildRequires:  gsm-devel
-BuildRequires:  lame-devel
+BuildRequires:  lame-devel >= 3.98.3
+BuildRequires:  libass-devel
 BuildRequires:  libdc1394-devel
 BuildRequires:  librtmp-devel
 BuildRequires:  libtheora-devel
@@ -245,6 +246,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Feb 01 2012 Nicolas Chauvet <kwizart@gmail.com> - 0.8.9-1
+- Update to 0.8.9
+- Add BR libass-devel
+- Rebuilt for libvpx
+
 * Mon Jan 09 2012 Nicolas Chauvet <kwizart@gmail.com> - 0.8.8-1
 - Update to 0.8.8
 
