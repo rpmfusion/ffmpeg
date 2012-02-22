@@ -1,12 +1,12 @@
 # TODO: add make test to %%check section
 
-%global branch  oldabi-
+#global branch  oldabi-
 #global date    20110612
 #global rel     rc1
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        0.8.9
+Version:        0.10
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
@@ -24,16 +24,23 @@ Source1:        ffmpeg-snapshot-oldabi.sh
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires:       %{name}-libs = %{version}-%{release}
 BuildRequires:  bzip2-devel
-BuildRequires:  celt-devel
-BuildRequires:  dirac-devel
+%{!?_without_celt:BuildRequires: celt-devel}
+%{?_with_dirac:BuildRequires: dirac-devel}
 %{?_with_faac:BuildRequires: faac-devel}
 BuildRequires:  freetype-devel
+%{?_with_frei0r:BuildRequires: frei0r-devel}
+BuildRequires:  gnutls-devel
 BuildRequires:  gsm-devel
 BuildRequires:  lame-devel >= 3.98.3
+%{?_with_jack:BuildRequires: jack-audio-connection-kit-devel}
 BuildRequires:  libass-devel
+%{!?_without_cdio:BuildRequires: libcdio-devel}
+#libcrystalhd is currently broken
+%{?_with_crystalhd:BuildRequires: libcrystalhd-devel}
 BuildRequires:  libdc1394-devel
 BuildRequires:  librtmp-devel
 BuildRequires:  libtheora-devel
+BuildRequires:  libv4l-devel
 BuildRequires:  libva-devel >= 0.31.0
 BuildRequires:  libvdpau-devel
 BuildRequires:  libvorbis-devel
@@ -42,7 +49,10 @@ BuildRequires:  libvpx-devel >= 0.9.1
 BuildRequires:  libXvMC-devel
 %endif
 %{?_with_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
+%{?_with_openal:BuildRequires: openal-soft-devel}
+%{?_with_opencv:BuildRequires: opencv-devel}
 BuildRequires:  openjpeg-devel
+%{!?_without_pulse:BuildRequires: pulseaudio-libs-devel}
 BuildRequires:  schroedinger-devel
 BuildRequires:  SDL-devel
 BuildRequires:  speex-devel
@@ -97,19 +107,28 @@ This package contains development files for %{name}
     --extra-cflags="$RPM_OPT_FLAGS" \\\
     %{?_with_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3} \\\
     --enable-bzlib \\\
-    --enable-libcelt \\\
+    %{!?_with_crystalhd:--disable-crystalhd} \\\
+    %{?_with_frei0r:--enable-frei0r} \\\
+    --enable-gnutls \\\
+    %{!?_without_cdio:--enable-libcdio} \\\
+    %{!?_without_celt:--enable-libcelt} \\\
     --enable-libdc1394 \\\
-    --enable-libdirac \\\
+    %{?_with_dirac:--enable-libdirac} \\\
     %{?_with_faac:--enable-libfaac --enable-nonfree} \\\
+    %{!?_with_jack:--disable-indev=jack} \\\
     --enable-libfreetype \\\
     --enable-libgsm \\\
     --enable-libmp3lame \\\
+    %{?_with_openal:--enable-openal} \\\
+    %{?_with_opencv:--enable-libopencv} \\\
     --enable-libopenjpeg \\\
+    %{!?_without_pulse:--enable-libpulse} \\\
     --enable-librtmp \\\
     --enable-libschroedinger \\\
     --enable-libspeex \\\
     --enable-libtheora \\\
     --enable-libvorbis \\\
+    --enable-libv4l2 \\\
     --enable-libvpx \\\
     %{!?_without_x264:--enable-libx264} \\\
     --enable-libxvid \\\
@@ -234,7 +253,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(-,root,root,-)
-%doc MAINTAINERS doc/APIchanges doc/TODO doc/*.txt
+%doc MAINTAINERS doc/APIchanges doc/*.txt
 %{_includedir}/ffmpeg
 %{_libdir}/pkgconfig/lib*.pc
 %{_libdir}/lib*.so
@@ -246,6 +265,14 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Feb 19 2012 Nicolas Chauvet <kwizart@gmail.com> - 0.10-1
+- Update to 0.10
+- Disable dirac by default - rfbz#1946
+- Enabled by default: libv4l2 gnutls
+- New RPM Conditionals:
+  --with crystalhd dirac jack frei0r openal opencv
+  --without celt cdio pulse
+
 * Wed Feb 01 2012 Nicolas Chauvet <kwizart@gmail.com> - 0.8.9-1
 - Update to 0.8.9
 - Add BR libass-devel
