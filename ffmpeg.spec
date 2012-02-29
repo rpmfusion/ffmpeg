@@ -6,7 +6,7 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        0.8.9
+Version:        0.8.10
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
@@ -246,6 +246,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Feb 29 2012 Julian Sikorski <belegdol@fedoraproject.org> - 0.8.10-1
+- Updated to 0.8.10
+
 * Wed Feb 01 2012 Nicolas Chauvet <kwizart@gmail.com> - 0.8.9-1
 - Update to 0.8.9
 - Add BR libass-devel
