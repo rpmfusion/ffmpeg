@@ -7,7 +7,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.10
-Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -265,6 +265,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Mar 12 2012 root - 0.10-2
+- Rebuilt for x264 ABI 0.120
+
 * Sun Feb 19 2012 Nicolas Chauvet <kwizart@gmail.com> - 0.10-1
 - Update to 0.10
 - Disable dirac by default - rfbz#1946
