@@ -6,8 +6,8 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        0.10
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        0.10.2
+Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -265,6 +265,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Mar 18 2012 Julian Sikorski <belegdol@fedoraproject.org> - 0.10.2-1
+- Updated to 0.10.2
+
 * Mon Mar 12 2012 root - 0.10-2
 - Rebuilt for x264 ABI 0.120
 
