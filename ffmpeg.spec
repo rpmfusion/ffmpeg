@@ -7,7 +7,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.10.2
-Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -134,6 +134,7 @@ This package contains development files for %{name}
     --enable-libxvid \\\
     --enable-x11grab \\\
     --enable-avfilter \\\
+    --enable-avfilter-lavf \\\
     --enable-postproc \\\
     --enable-pthreads \\\
     --disable-static \\\
@@ -179,6 +180,11 @@ pushd generic
 %endif
 %ifarch sparc sparc64
     --disable-vis \
+%endif
+%ifarch %{arm}
+    --disable-runtime-cpudetect --arch=arm \
+%ifnarch armv7hnl
+    --disable-neon \
 %endif
 %endif
 
@@ -265,6 +271,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Apr 10 2012 Nicolas Chauvet <kwizart@gmail.com> - 0.10.2-2
+- Enable avfilter-lavf
+- Explicitely disable neon unless armv7hnl
+
 * Sun Mar 18 2012 Julian Sikorski <belegdol@fedoraproject.org> - 0.10.2-1
 - Updated to 0.10.2
 
