@@ -187,6 +187,7 @@ pushd generic
     --disable-neon \
 %endif
 %endif
+%endif
 
 make %{?_smp_mflags}
 make documentation
