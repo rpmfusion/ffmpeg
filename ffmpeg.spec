@@ -134,7 +134,6 @@ This package contains development files for %{name}
     --enable-libxvid \\\
     --enable-x11grab \\\
     --enable-avfilter \\\
-    --enable-avfilter-lavf \\\
     --enable-postproc \\\
     --enable-pthreads \\\
     --disable-static \\\
@@ -273,7 +272,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Tue Apr 10 2012 Nicolas Chauvet <kwizart@gmail.com> - 0.10.2-2
-- Enable avfilter-lavf
 - Explicitely disable neon unless armv7hnl
 
 * Sun Mar 18 2012 Julian Sikorski <belegdol@fedoraproject.org> - 0.10.2-1
