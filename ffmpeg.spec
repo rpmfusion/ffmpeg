@@ -6,7 +6,7 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        0.7.11
+Version:        0.7.12
 Release:        1%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
@@ -250,6 +250,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue May 01 2012 Nicolas Chauvet <kwizart@gmail.com> - 0.7.12-1
+- Update to 0.7.12
+
 * Wed Feb 01 2012 Nicolas Chauvet <kwizart@gmail.com> - 0.7.11-1
 - Update to 0.7.11
 - Rebuilt for libvpx
