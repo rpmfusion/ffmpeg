@@ -4,10 +4,15 @@
 #global date    20110612
 #global rel     rc1
 
+%if 0%{?rhel}
+%global _without_vpx   1
+%global _without_celt   1
+%endif
+
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.10.2
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -38,18 +43,19 @@ BuildRequires:  libass-devel
 #libcrystalhd is currently broken
 %{?_with_crystalhd:BuildRequires: libcrystalhd-devel}
 BuildRequires:  libdc1394-devel
+Buildrequires:  libmodplug-devel
 BuildRequires:  librtmp-devel
 BuildRequires:  libtheora-devel
 BuildRequires:  libv4l-devel
-BuildRequires:  libva-devel >= 0.31.0
+%{?!_without_vaapi:BuildRequires: libva-devel >= 0.31.0}
 BuildRequires:  libvdpau-devel
 BuildRequires:  libvorbis-devel
-BuildRequires:  libvpx-devel >= 0.9.1
+%{?!_without_vpx:BuildRequires: libvpx-devel >= 0.9.1}
 %ifarch %{ix86} x86_64
 BuildRequires:  libXvMC-devel
 %endif
 %{?_with_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
-%{?_with_openal:BuildRequires: openal-soft-devel}
+%{!?_without_openal:BuildRequires: openal-soft-devel}
 %{?_with_opencv:BuildRequires: opencv-devel}
 BuildRequires:  openjpeg-devel
 %{!?_without_pulse:BuildRequires: pulseaudio-libs-devel}
@@ -85,7 +91,7 @@ This package contains the libraries for %{name}
 %package        devel
 Summary:        Development package for %{name}
 Group:          Development/Libraries
-Requires:       %{name}-libs = %{version}-%{release}
+Requires:       %{name}-libs%{_isa} = %{version}-%{release}
 Requires:       pkgconfig
 
 %description    devel
@@ -99,8 +105,8 @@ This package contains development files for %{name}
 ../configure \\\
     --prefix=%{_prefix} \\\
     --bindir=%{_bindir} \\\
-    --datadir=%{_datadir}/ffmpeg \\\
-    --incdir=%{_includedir}/ffmpeg \\\
+    --datadir=%{_datadir}/%{name} \\\
+    --incdir=%{_includedir}/%{name} \\\
     --libdir=%{_libdir} \\\
     --mandir=%{_mandir} \\\
     --arch=%{_target_cpu} \\\
@@ -110,6 +116,7 @@ This package contains development files for %{name}
     %{!?_with_crystalhd:--disable-crystalhd} \\\
     %{?_with_frei0r:--enable-frei0r} \\\
     --enable-gnutls \\\
+    --enable-libass \\\
     %{!?_without_cdio:--enable-libcdio} \\\
     %{!?_without_celt:--enable-libcelt} \\\
     --enable-libdc1394 \\\
@@ -119,7 +126,7 @@ This package contains development files for %{name}
     --enable-libfreetype \\\
     --enable-libgsm \\\
     --enable-libmp3lame \\\
-    %{?_with_openal:--enable-openal} \\\
+    %{!?_without_openal:--enable-openal} \\\
     %{?_with_opencv:--enable-libopencv} \\\
     --enable-libopenjpeg \\\
     %{!?_without_pulse:--enable-libpulse} \\\
@@ -129,7 +136,7 @@ This package contains development files for %{name}
     --enable-libtheora \\\
     --enable-libvorbis \\\
     --enable-libv4l2 \\\
-    --enable-libvpx \\\
+    %{!?_without_vpx:--enable-libvpx} \\\
     %{!?_without_x264:--enable-libx264} \\\
     --enable-libxvid \\\
     --enable-x11grab \\\
@@ -271,6 +278,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue May 01 2012 Nicolas Chauvet <kwizart@gmail.com> - 0.10.2-3
+- Sync with ffmpeg-compat and EL
+- Add BR libmodplug-devel
+- Enable libass openal-soft
+
 * Tue Apr 10 2012 Nicolas Chauvet <kwizart@gmail.com> - 0.10.2-2
 - Explicitely disable neon unless armv7hnl
 
