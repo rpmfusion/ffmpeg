@@ -1,13 +1,18 @@
 # TODO: add make test to %%check section
 
-%global branch  oldabi-
-%global date    20110612
+#global branch  oldabi-
+#global date    20110612
 #global rel     rc1
+
+%if 0%{?rhel}
+%global _without_vpx   1
+%global _without_celt   1
+%endif
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        0.7
-Release:        0.2.%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        0.10.2
+Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -18,31 +23,48 @@ URL:            http://ffmpeg.org/
 %if 0%{?date}
 Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 %else
-Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}-%{rel}.tar.bz2
+Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.bz2
 %endif
 Source1:        ffmpeg-snapshot-oldabi.sh
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires:       %{name}-libs = %{version}-%{release}
 BuildRequires:  bzip2-devel
-BuildRequires:  dirac-devel
+%{!?_without_celt:BuildRequires: celt-devel}
+%{?_with_dirac:BuildRequires: dirac-devel}
 %{?_with_faac:BuildRequires: faac-devel}
+BuildRequires:  freetype-devel
+%{?_with_frei0r:BuildRequires: frei0r-devel}
+BuildRequires:  gnutls-devel
 BuildRequires:  gsm-devel
-BuildRequires:  lame-devel
+BuildRequires:  lame-devel >= 3.98.3
+%{?_with_jack:BuildRequires: jack-audio-connection-kit-devel}
+BuildRequires:  libass-devel
+%{!?_without_cdio:BuildRequires: libcdio-devel}
+#libcrystalhd is currently broken
+%{?_with_crystalhd:BuildRequires: libcrystalhd-devel}
 BuildRequires:  libdc1394-devel
+Buildrequires:  libmodplug-devel
 BuildRequires:  librtmp-devel
 BuildRequires:  libtheora-devel
-BuildRequires:  libva-devel >= 0.31.0
+BuildRequires:  libv4l-devel
+%{?!_without_vaapi:BuildRequires: libva-devel >= 0.31.0}
 BuildRequires:  libvdpau-devel
 BuildRequires:  libvorbis-devel
-BuildRequires:  libvpx-devel >= 0.9.1
-%{?_with_amr:BuildRequires: opencore-amr-devel}
+%{?!_without_vpx:BuildRequires: libvpx-devel >= 0.9.1}
+%ifarch %{ix86} x86_64
+BuildRequires:  libXvMC-devel
+%endif
+%{?_with_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
+%{!?_without_openal:BuildRequires: openal-soft-devel}
+%{?_with_opencv:BuildRequires: opencv-devel}
 BuildRequires:  openjpeg-devel
+%{!?_without_pulse:BuildRequires: pulseaudio-libs-devel}
 BuildRequires:  schroedinger-devel
 BuildRequires:  SDL-devel
 BuildRequires:  speex-devel
 BuildRequires:  subversion
 BuildRequires:  texi2html
-%{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.29}
+%{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.31}
 BuildRequires:  xvidcore-devel
 BuildRequires:  zlib-devel
 %ifarch %{ix86} x86_64
@@ -50,7 +72,7 @@ BuildRequires:  yasm
 %endif
 
 %description
-FFMpeg is a complete and free Internet live audio and video
+FFmpeg is a complete and free Internet live audio and video
 broadcasting solution for Linux/Unix. It also includes a digital
 VCR. It can encode in real time in many formats including MPEG1 audio
 and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
@@ -60,7 +82,7 @@ Summary:        Libraries for %{name}
 Group:          System Environment/Libraries
 
 %description    libs
-FFMpeg is a complete and free Internet live audio and video
+FFmpeg is a complete and free Internet live audio and video
 broadcasting solution for Linux/Unix. It also includes a digital
 VCR. It can encode in real time in many formats including MPEG1 audio
 and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
@@ -69,11 +91,11 @@ This package contains the libraries for %{name}
 %package        devel
 Summary:        Development package for %{name}
 Group:          Development/Libraries
-Requires:       %{name}-libs = %{version}-%{release}
+Requires:       %{name}-libs%{_isa} = %{version}-%{release}
 Requires:       pkgconfig
 
 %description    devel
-FFMpeg is a complete and free Internet live audio and video
+FFmpeg is a complete and free Internet live audio and video
 broadcasting solution for Linux/Unix. It also includes a digital
 VCR. It can encode in real time in many formats including MPEG1 audio
 and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
@@ -83,26 +105,38 @@ This package contains development files for %{name}
 ../configure \\\
     --prefix=%{_prefix} \\\
     --bindir=%{_bindir} \\\
-    --datadir=%{_datadir}/ffmpeg \\\
-    --incdir=%{_includedir}/ffmpeg \\\
+    --datadir=%{_datadir}/%{name} \\\
+    --incdir=%{_includedir}/%{name} \\\
     --libdir=%{_libdir} \\\
     --mandir=%{_mandir} \\\
     --arch=%{_target_cpu} \\\
     --extra-cflags="$RPM_OPT_FLAGS" \\\
-    %{?_with_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-version3} \\\
+    %{?_with_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3} \\\
     --enable-bzlib \\\
+    %{!?_with_crystalhd:--disable-crystalhd} \\\
+    %{?_with_frei0r:--enable-frei0r} \\\
+    --enable-gnutls \\\
+    --enable-libass \\\
+    %{!?_without_cdio:--enable-libcdio} \\\
+    %{!?_without_celt:--enable-libcelt} \\\
     --enable-libdc1394 \\\
-    --enable-libdirac \\\
+    %{?_with_dirac:--enable-libdirac} \\\
     %{?_with_faac:--enable-libfaac --enable-nonfree} \\\
+    %{!?_with_jack:--disable-indev=jack} \\\
+    --enable-libfreetype \\\
     --enable-libgsm \\\
     --enable-libmp3lame \\\
+    %{!?_without_openal:--enable-openal} \\\
+    %{?_with_opencv:--enable-libopencv} \\\
     --enable-libopenjpeg \\\
+    %{!?_without_pulse:--enable-libpulse} \\\
     --enable-librtmp \\\
     --enable-libschroedinger \\\
     --enable-libspeex \\\
     --enable-libtheora \\\
     --enable-libvorbis \\\
-    --enable-libvpx \\\
+    --enable-libv4l2 \\\
+    %{!?_without_vpx:--enable-libvpx} \\\
     %{!?_without_x264:--enable-libx264} \\\
     --enable-libxvid \\\
     --enable-x11grab \\\
@@ -121,7 +155,7 @@ This package contains development files for %{name}
 %setup -q -n ffmpeg-%{?branch}%{date}
 echo "git-snapshot-%{?branch}%{date}-RPMFusion" > VERSION
 %else
-%setup -q -n ffmpeg-%{version}-%{rel}
+%setup -q -n ffmpeg-%{version}
 %endif
 
 %build
@@ -153,6 +187,12 @@ pushd generic
 %ifarch sparc sparc64
     --disable-vis \
 %endif
+%ifarch %{arm}
+    --disable-runtime-cpudetect --arch=arm \
+%ifnarch armv7hnl
+    --disable-neon \
+%endif
+%endif
 %endif
 
 make %{?_smp_mflags}
@@ -181,9 +221,9 @@ popd
 rm -rf $RPM_BUILD_ROOT
 pushd generic
 make install DESTDIR=$RPM_BUILD_ROOT
-install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 popd
 %if 0%{!?ffmpegsuffix:1}
+install -pm755 generic/tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 pushd simd
 %ifarch sparc sparc64
 make install DESTDIR=$RPM_BUILD_ROOT
@@ -202,7 +242,7 @@ rm -rf $RPM_BUILD_ROOT
 %if 0%{!?ffmpegsuffix:1}
 %files
 %defattr(-,root,root,-)
-%doc COPYING.* CREDITS Changelog README doc/ffserver.conf
+%doc COPYING.* CREDITS README doc/ffserver.conf
 %{_bindir}/ffmpeg
 %{_bindir}/ffplay
 %{_bindir}/ffprobe
@@ -226,7 +266,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(-,root,root,-)
-%doc MAINTAINERS doc/APIchanges doc/TODO doc/*.txt
+%doc MAINTAINERS doc/APIchanges doc/*.txt
 %{_includedir}/ffmpeg
 %{_libdir}/pkgconfig/lib*.pc
 %{_libdir}/lib*.so
@@ -238,6 +278,61 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue May 01 2012 Nicolas Chauvet <kwizart@gmail.com> - 0.10.2-3
+- Sync with ffmpeg-compat and EL
+- Add BR libmodplug-devel
+- Enable libass openal-soft
+
+* Tue Apr 10 2012 Nicolas Chauvet <kwizart@gmail.com> - 0.10.2-2
+- Explicitely disable neon unless armv7hnl
+
+* Sun Mar 18 2012 Julian Sikorski <belegdol@fedoraproject.org> - 0.10.2-1
+- Updated to 0.10.2
+
+* Mon Mar 12 2012 root - 0.10-2
+- Rebuilt for x264 ABI 0.120
+
+* Sun Feb 19 2012 Nicolas Chauvet <kwizart@gmail.com> - 0.10-1
+- Update to 0.10
+- Disable dirac by default - rfbz#1946
+- Enabled by default: libv4l2 gnutls
+- New RPM Conditionals:
+  --with crystalhd dirac jack frei0r openal opencv
+  --without celt cdio pulse
+
+* Wed Feb 01 2012 Nicolas Chauvet <kwizart@gmail.com> - 0.8.9-1
+- Update to 0.8.9
+- Add BR libass-devel
+- Rebuilt for libvpx
+
+* Mon Jan 09 2012 Nicolas Chauvet <kwizart@gmail.com> - 0.8.8-1
+- Update to 0.8.8
+
+* Wed Dec 21 2011 Nicolas Chauvet <kwizart@gmail.com> - 0.8.7-1
+- Update to 0.8.7
+
+* Fri Oct 28 2011 Nicolas Chauvet <kwizart@gmail.com> - 0.8.5-2
+- Fix for glibc bug rhbz#747377
+
+* Sun Oct 23 2011 Dominik Mierzejewski <rpm at greysector.net> - 0.8.5-1
+- update to 0.8.5
+
+* Fri Sep 23 2011 Dominik Mierzejewski <rpm at greysector.net> - 0.8.4-1
+- update to 0.8.4
+- fix FFmpeg name spelling
+
+* Mon Aug 22 2011 Dominik Mierzejewski <rpm at greysector.net> - 0.8.2-1
+- update to 0.8.2
+- enable CELT decoding via libcelt
+- support AMR WB encoding via libvo-amrwbenc (optional)
+- enable FreeType support
+
+* Thu Jul 14 2011 Nicolas Chauvet <kwizart@gmail.com> - 0.7.1-1
+- Update to 0.7.1
+
+* Fri Jul 01 2011 Nicolas Chauvet <kwizart@gmail.com> - 0.7-0.3.20110612git
+- Add XvMC in ffmpeg
+
 * Sun Jun 12 2011 Nicolas Chauvet <kwizart@gmail.com> - 0.7-0.2.20110612git
 - Update to 20110612git from oldabi branch
 
