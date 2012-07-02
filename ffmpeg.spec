@@ -11,8 +11,8 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        0.10.2
-Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        0.10.4
+Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -278,6 +278,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jun 13 2012 Julian Sikorski <belegdol@fedoraproject.org> - 0.10.4-1
+- Updated to 0.10.4
+
+* Mon May 07 2012 Julian Sikorski <belegdol@fedoraproject.org> - 0.10.3-1
+- Updated to 0.10.3
+
 * Tue May 01 2012 Nicolas Chauvet <kwizart@gmail.com> - 0.10.2-3
 - Sync with ffmpeg-compat and EL
 - Add BR libmodplug-devel
