@@ -12,7 +12,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.10.4
-Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -26,6 +26,7 @@ Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.bz2
 %endif
 Source1:        ffmpeg-snapshot-oldabi.sh
+Patch0:         ffmpeg-0.10.4-backport-libv4l2.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires:       %{name}-libs = %{version}-%{release}
 BuildRequires:  bzip2-devel
@@ -157,6 +158,7 @@ echo "git-snapshot-%{?branch}%{date}-RPMFusion" > VERSION
 %else
 %setup -q -n ffmpeg-%{version}
 %endif
+%patch0 -p1
 
 %build
 mkdir generic
@@ -278,6 +280,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jul 20 2012 Nicolas Chauvet <kwizart@gmail.com> - 0.10.4-2
+- Backport fix rfbz#2423
+
 * Wed Jun 13 2012 Julian Sikorski <belegdol@fedoraproject.org> - 0.10.4-1
 - Updated to 0.10.4
 
