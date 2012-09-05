@@ -12,7 +12,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        0.11.1
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -280,6 +280,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Sep 05 2012 Nicolas Chauvet <kwizart@gmail.com> - 0.11.1-3
+- Rebuilt for x264 ABI 125
+
 * Sat Jul 21 2012 Nicolas Chauvet <kwizart@gmail.com> - 0.11.1-2
 - Backport fix rfbz#2423
 
