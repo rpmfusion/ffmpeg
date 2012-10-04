@@ -11,14 +11,13 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        0.11.1
-Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        1.0
+Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
 License:        GPLv2+
 %endif
-Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
 %if 0%{?date}
 Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
@@ -26,8 +25,6 @@ Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.bz2
 %endif
 Source1:        ffmpeg-snapshot-oldabi.sh
-Patch0:         ffmpeg-0.10.4-backport-libv4l2.patch
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires:       %{name}-libs = %{version}-%{release}
 BuildRequires:  bzip2-devel
 %{!?_without_celt:BuildRequires: celt-devel}
@@ -80,7 +77,6 @@ and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
 
 %package        libs
 Summary:        Libraries for %{name}
-Group:          System Environment/Libraries
 
 %description    libs
 FFmpeg is a complete and free Internet live audio and video
@@ -91,7 +87,6 @@ This package contains the libraries for %{name}
 
 %package        devel
 Summary:        Development package for %{name}
-Group:          Development/Libraries
 Requires:       %{name}-libs%{_isa} = %{version}-%{release}
 Requires:       pkgconfig
 
@@ -158,7 +153,6 @@ echo "git-snapshot-%{?branch}%{date}-RPMFusion" > VERSION
 %else
 %setup -q -n ffmpeg-%{version}
 %endif
-%patch0 -p1
 
 %build
 mkdir generic
@@ -233,9 +227,6 @@ make install DESTDIR=$RPM_BUILD_ROOT
 popd
 %endif
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 
 %post libs -p /sbin/ldconfig
 
@@ -243,7 +234,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %if 0%{!?ffmpegsuffix:1}
 %files
-%defattr(-,root,root,-)
 %doc COPYING.* CREDITS README doc/ffserver.conf
 %{_bindir}/ffmpeg
 %{_bindir}/ffplay
@@ -258,7 +248,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files libs
-%defattr(-,root,root,-)
 %{_libdir}/lib*.so.*
 %if 0%{!?ffmpegsuffix:1}
 %ifarch sparc sparc64
@@ -267,7 +256,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files devel
-%defattr(-,root,root,-)
 %doc MAINTAINERS doc/APIchanges doc/*.txt
 %{_includedir}/ffmpeg
 %{_libdir}/pkgconfig/lib*.pc
@@ -280,6 +268,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Oct 04 2012 Julian Sikorski <belegdol@fedoraproject.org> - 1.0-1
+- Updated to 1.0
+- Dropped obsolete Group, Buildroot, %%clean and %%defattr
+- Dropped the included patch
+
 * Wed Sep 05 2012 Nicolas Chauvet <kwizart@gmail.com> - 0.11.1-3
 - Rebuilt for x264 ABI 125
 
