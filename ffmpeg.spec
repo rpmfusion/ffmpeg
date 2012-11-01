@@ -14,7 +14,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        1.0
-Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -272,6 +272,11 @@ popd
 
 
 %changelog
+* Thu Nov 01 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.0-2
+- Add opus
+- Enable opencv frei0r by default
+- Disable librmtp - use builtin implementation rfbz#2399
+
 * Thu Oct 04 2012 Julian Sikorski <belegdol@fedoraproject.org> - 1.0-1
 - Updated to 1.0
 - Dropped obsolete Group, Buildroot, %%clean and %%defattr
