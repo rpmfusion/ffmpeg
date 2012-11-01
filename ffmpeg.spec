@@ -5,8 +5,10 @@
 #global rel     rc1
 
 %if 0%{?rhel}
-%global _without_vpx   1
-%global _without_celt   1
+%global _without_celt     1
+%global _without_frei0r   1
+%global _without_opencv   1
+%global _without_vpx      1
 %endif
 
 Summary:        Digital VCR and streaming server
@@ -31,7 +33,7 @@ BuildRequires:  bzip2-devel
 %{?_with_dirac:BuildRequires: dirac-devel}
 %{?_with_faac:BuildRequires: faac-devel}
 BuildRequires:  freetype-devel
-%{?_with_frei0r:BuildRequires: frei0r-devel}
+%{!?_without_frei0r:BuildRequires: frei0r-devel}
 BuildRequires:  gnutls-devel
 BuildRequires:  gsm-devel
 BuildRequires:  lame-devel >= 3.98.3
@@ -42,7 +44,7 @@ BuildRequires:  libass-devel
 %{?_with_crystalhd:BuildRequires: libcrystalhd-devel}
 BuildRequires:  libdc1394-devel
 Buildrequires:  libmodplug-devel
-BuildRequires:  librtmp-devel
+%{?_with_rtmp:BuildRequires: librtmp-devel}
 BuildRequires:  libtheora-devel
 BuildRequires:  libv4l-devel
 %{?!_without_vaapi:BuildRequires: libva-devel >= 0.31.0}
@@ -54,8 +56,9 @@ BuildRequires:  libXvMC-devel
 %endif
 %{?_with_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
 %{!?_without_openal:BuildRequires: openal-soft-devel}
-%{?_with_opencv:BuildRequires: opencv-devel}
+%{!?_without_opencv:BuildRequires: opencv-devel}
 BuildRequires:  openjpeg-devel
+BuildRequires:  opus-devel
 %{!?_without_pulse:BuildRequires: pulseaudio-libs-devel}
 BuildRequires:  schroedinger-devel
 BuildRequires:  SDL-devel
@@ -110,7 +113,7 @@ This package contains development files for %{name}
     %{?_with_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3} \\\
     --enable-bzlib \\\
     %{!?_with_crystalhd:--disable-crystalhd} \\\
-    %{?_with_frei0r:--enable-frei0r} \\\
+    %{!?_without_frei0r:--enable-frei0r} \\\
     --enable-gnutls \\\
     --enable-libass \\\
     %{!?_without_cdio:--enable-libcdio} \\\
@@ -123,10 +126,11 @@ This package contains development files for %{name}
     --enable-libgsm \\\
     --enable-libmp3lame \\\
     %{!?_without_openal:--enable-openal} \\\
-    %{?_with_opencv:--enable-libopencv} \\\
+    %{!?_without_opencv:--enable-libopencv} \\\
     --enable-libopenjpeg \\\
+    --enable-libopus \\\
     %{!?_without_pulse:--enable-libpulse} \\\
-    --enable-librtmp \\\
+    %{?_with_rtmp:--enable-librtmp} \\\
     --enable-libschroedinger \\\
     --enable-libspeex \\\
     --enable-libtheora \\\
