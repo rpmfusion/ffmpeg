@@ -14,7 +14,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        1.0
-Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        4%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -157,6 +157,8 @@ echo "git-snapshot-%{?branch}%{date}-RPMFusion" > VERSION
 %else
 %setup -q -n ffmpeg-%{version}
 %endif
+# fix -O3 -g in host_cflags
+sed -i "s/-O3 -g/$RPM_OPT_FLAGS/" configure
 
 %build
 mkdir generic
@@ -220,13 +222,13 @@ popd
 %install
 rm -rf $RPM_BUILD_ROOT
 pushd generic
-make install DESTDIR=$RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT V=1
 popd
 %if 0%{!?ffmpegsuffix:1}
 install -pm755 generic/tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 pushd simd
 %ifarch sparc sparc64
-make install DESTDIR=$RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT V=1
 %endif
 popd
 %endif
@@ -272,6 +274,10 @@ popd
 
 
 %changelog
+* Sat Nov 03 2012 Julian Sikorski <belegdol@fedoraproject.org> - 1.0-4
+- Fixed -O3 -g in host_cflags
+- Made the installation verbose too
+
 * Sat Nov 03 2012 Julian Sikorski <belegdol@fedoraproject.org> - 1.0-3
 - Use Fedora %%{optflags}
 - Made the build process verbose
