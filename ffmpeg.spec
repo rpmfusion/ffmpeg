@@ -14,7 +14,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        1.0
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -109,7 +109,7 @@ This package contains development files for %{name}
     --libdir=%{_libdir} \\\
     --mandir=%{_mandir} \\\
     --arch=%{_target_cpu} \\\
-    --extra-cflags="$RPM_OPT_FLAGS" \\\
+    --optflags="$RPM_OPT_FLAGS" \\\
     %{?_with_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3} \\\
     --enable-bzlib \\\
     %{!?_with_crystalhd:--disable-crystalhd} \\\
@@ -195,9 +195,9 @@ pushd generic
 %endif
 %endif
 
-make %{?_smp_mflags}
-make documentation
-make alltools
+make %{?_smp_mflags} V=1
+make documentation V=1
+make alltools V=1
 popd
 
 %if 0%{!?ffmpegsuffix:1}
@@ -212,7 +212,7 @@ pushd simd
     --disable-ffserver \
     --disable-ffplay \
 
-make %{?_smp_mflags}
+make %{?_smp_mflags} V=1
 %endif
 popd
 %endif
@@ -272,6 +272,10 @@ popd
 
 
 %changelog
+* Sat Nov 03 2012 Julian Sikorski <belegdol@fedoraproject.org> - 1.0-3
+- Use Fedora %%{optflags}
+- Made the build process verbose
+
 * Thu Nov 01 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.0-2
 - Add opus
 - Enable opencv frei0r by default
