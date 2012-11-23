@@ -5,20 +5,21 @@
 #global rel     rc1
 
 %if 0%{?rhel}
-%global _without_vpx   1
-%global _without_celt   1
+%global _without_celt     1
+%global _without_frei0r   1
+%global _without_opencv   1
+%global _without_vpx      1
 %endif
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        0.11.2
+Version:        1.0
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
 License:        GPLv2+
 %endif
-Group:          Applications/Multimedia
 URL:            http://ffmpeg.org/
 %if 0%{?date}
 Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
@@ -26,15 +27,13 @@ Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.bz2
 %endif
 Source1:        ffmpeg-snapshot-oldabi.sh
-Patch0:         ffmpeg-0.10.4-backport-libv4l2.patch
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires:       %{name}-libs = %{version}-%{release}
 BuildRequires:  bzip2-devel
 %{!?_without_celt:BuildRequires: celt-devel}
 %{?_with_dirac:BuildRequires: dirac-devel}
 %{?_with_faac:BuildRequires: faac-devel}
 BuildRequires:  freetype-devel
-%{?_with_frei0r:BuildRequires: frei0r-devel}
+%{!?_without_frei0r:BuildRequires: frei0r-devel}
 BuildRequires:  gnutls-devel
 BuildRequires:  gsm-devel
 BuildRequires:  lame-devel >= 3.98.3
@@ -45,7 +44,7 @@ BuildRequires:  libass-devel
 %{?_with_crystalhd:BuildRequires: libcrystalhd-devel}
 BuildRequires:  libdc1394-devel
 Buildrequires:  libmodplug-devel
-BuildRequires:  librtmp-devel
+%{?_with_rtmp:BuildRequires: librtmp-devel}
 BuildRequires:  libtheora-devel
 BuildRequires:  libv4l-devel
 %{?!_without_vaapi:BuildRequires: libva-devel >= 0.31.0}
@@ -57,8 +56,9 @@ BuildRequires:  libXvMC-devel
 %endif
 %{?_with_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
 %{!?_without_openal:BuildRequires: openal-soft-devel}
-%{?_with_opencv:BuildRequires: opencv-devel}
+%{!?_without_opencv:BuildRequires: opencv-devel}
 BuildRequires:  openjpeg-devel
+BuildRequires:  opus-devel
 %{!?_without_pulse:BuildRequires: pulseaudio-libs-devel}
 BuildRequires:  schroedinger-devel
 BuildRequires:  SDL-devel
@@ -80,7 +80,6 @@ and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
 
 %package        libs
 Summary:        Libraries for %{name}
-Group:          System Environment/Libraries
 
 %description    libs
 FFmpeg is a complete and free Internet live audio and video
@@ -91,7 +90,6 @@ This package contains the libraries for %{name}
 
 %package        devel
 Summary:        Development package for %{name}
-Group:          Development/Libraries
 Requires:       %{name}-libs%{_isa} = %{version}-%{release}
 Requires:       pkgconfig
 
@@ -111,11 +109,11 @@ This package contains development files for %{name}
     --libdir=%{_libdir} \\\
     --mandir=%{_mandir} \\\
     --arch=%{_target_cpu} \\\
-    --extra-cflags="$RPM_OPT_FLAGS" \\\
+    --optflags="$RPM_OPT_FLAGS" \\\
     %{?_with_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3} \\\
     --enable-bzlib \\\
     %{!?_with_crystalhd:--disable-crystalhd} \\\
-    %{?_with_frei0r:--enable-frei0r} \\\
+    %{!?_without_frei0r:--enable-frei0r} \\\
     --enable-gnutls \\\
     --enable-libass \\\
     %{!?_without_cdio:--enable-libcdio} \\\
@@ -128,10 +126,11 @@ This package contains development files for %{name}
     --enable-libgsm \\\
     --enable-libmp3lame \\\
     %{!?_without_openal:--enable-openal} \\\
-    %{?_with_opencv:--enable-libopencv} \\\
+    %{!?_without_opencv:--enable-libopencv} \\\
     --enable-libopenjpeg \\\
+    --enable-libopus \\\
     %{!?_without_pulse:--enable-libpulse} \\\
-    --enable-librtmp \\\
+    %{?_with_rtmp:--enable-librtmp} \\\
     --enable-libschroedinger \\\
     --enable-libspeex \\\
     --enable-libtheora \\\
@@ -158,7 +157,8 @@ echo "git-snapshot-%{?branch}%{date}-RPMFusion" > VERSION
 %else
 %setup -q -n ffmpeg-%{version}
 %endif
-%patch0 -p1
+# fix -O3 -g in host_cflags
+sed -i "s/-O3 -g/$RPM_OPT_FLAGS/" configure
 
 %build
 mkdir generic
@@ -197,9 +197,9 @@ pushd generic
 %endif
 %endif
 
-make %{?_smp_mflags}
-make documentation
-make alltools
+make %{?_smp_mflags} V=1
+make documentation V=1
+make alltools V=1
 popd
 
 %if 0%{!?ffmpegsuffix:1}
@@ -214,7 +214,7 @@ pushd simd
     --disable-ffserver \
     --disable-ffplay \
 
-make %{?_smp_mflags}
+make %{?_smp_mflags} V=1
 %endif
 popd
 %endif
@@ -222,19 +222,16 @@ popd
 %install
 rm -rf $RPM_BUILD_ROOT
 pushd generic
-make install DESTDIR=$RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT V=1
 popd
 %if 0%{!?ffmpegsuffix:1}
 install -pm755 generic/tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 pushd simd
 %ifarch sparc sparc64
-make install DESTDIR=$RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT V=1
 %endif
 popd
 %endif
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 
 %post libs -p /sbin/ldconfig
@@ -243,7 +240,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %if 0%{!?ffmpegsuffix:1}
 %files
-%defattr(-,root,root,-)
 %doc COPYING.* CREDITS README doc/ffserver.conf
 %{_bindir}/ffmpeg
 %{_bindir}/ffplay
@@ -258,7 +254,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files libs
-%defattr(-,root,root,-)
 %{_libdir}/lib*.so.*
 %if 0%{!?ffmpegsuffix:1}
 %ifarch sparc sparc64
@@ -267,7 +262,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files devel
-%defattr(-,root,root,-)
 %doc MAINTAINERS doc/APIchanges doc/*.txt
 %{_includedir}/ffmpeg
 %{_libdir}/pkgconfig/lib*.pc
@@ -280,6 +274,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Nov 23 2012 Julian Sikorski <belegdol@fedoraproject.org> - 1.0-1
+- Updated to 1.0
+- Backported .spec improvements from rawhide
+
 * Thu Oct 04 2012 Julian Sikorski <belegdol@fedoraproject.org> - 0.11.2-1
 - Updated to 0.11.2
 
