@@ -6,12 +6,11 @@
 
 %if 0%{?rhel}
 %global _without_vpx   1
-%global _without_celt   1
 %endif
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        0.10.5
+Version:        0.10.6
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
@@ -27,6 +26,7 @@ Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.bz2
 %endif
 Source1:        ffmpeg-snapshot-oldabi.sh
 Patch0:         ffmpeg-0.10.4-backport-libv4l2.patch
+Patch1:         ffmpeg-0.10-celt.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires:       %{name}-libs = %{version}-%{release}
 BuildRequires:  bzip2-devel
@@ -159,6 +159,7 @@ echo "git-snapshot-%{?branch}%{date}-RPMFusion" > VERSION
 %setup -q -n ffmpeg-%{version}
 %endif
 %patch0 -p1
+%patch1 -p1 -b .celt
 
 %build
 mkdir generic
@@ -280,6 +281,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Dec 11 2012 Dominik Mierzejewski <rpm at greysector.net> - 0.10.6-1
+- Updated to 0.10.6
+- Patch to build with older libcelt
+
 * Thu Oct 04 2012 Julian Sikorski <belegdol@fedoraproject.org> - 0.10.5-1
 - Updated to 0.10.5
 

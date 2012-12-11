@@ -1,0 +1,33 @@
+diff -up ffmpeg-0.10/configure.celt ffmpeg-0.10/configure
+--- ffmpeg-0.10/configure.celt	2012-01-26 23:15:59.000000000 +0100
++++ ffmpeg-0.10/configure	2012-03-11 21:49:38.000000000 +0100
+@@ -3128,7 +3128,7 @@ enabled gnutls     && require_pkg_config
+ enabled libaacplus && require  "libaacplus >= 2.0.0" aacplus.h aacplusEncOpen -laacplus
+ enabled libass     && require_pkg_config libass ass/ass.h ass_library_init
+ enabled libcelt    && require libcelt celt/celt.h celt_decode -lcelt0 &&
+-                      { check_lib celt/celt.h celt_decoder_create_custom -lcelt0 ||
++                      { check_lib celt/celt.h celt_decoder_create -lcelt0 ||
+                         die "ERROR: libcelt version must be >= 0.11.0."; }
+ enabled libdc1394  && require_pkg_config libdc1394-2 dc1394/dc1394.h dc1394_new
+ enabled libdirac   && require_pkg_config dirac                          \
+diff -up ffmpeg-0.10/libavcodec/libcelt_dec.c.celt ffmpeg-0.10/libavcodec/libcelt_dec.c
+--- ffmpeg-0.10/libavcodec/libcelt_dec.c.celt	2012-01-26 23:15:59.000000000 +0100
++++ ffmpeg-0.10/libavcodec/libcelt_dec.c	2012-03-11 21:48:21.000000000 +0100
+@@ -52,7 +52,7 @@ static int ff_celt_error_to_averror(int 
+ static int ff_celt_bitstream_version_hack(CELTMode *mode)
+ {
+     CELTHeader header = { .version_id = 0 };
+-    celt_header_init(&header, mode, 960, 2);
++    celt_header_init(&header, mode, 2);
+     return header.version_id;
+ }
+ 
+@@ -67,7 +67,7 @@ static av_cold int libcelt_dec_init(AVCo
+     celt->mode = celt_mode_create(c->sample_rate, c->frame_size, &err);
+     if (!celt->mode)
+         return ff_celt_error_to_averror(err);
+-    celt->dec = celt_decoder_create_custom(celt->mode, c->channels, &err);
++    celt->dec = celt_decoder_create(celt->mode, c->channels, &err);
+     if (!celt->dec) {
+         celt_mode_destroy(celt->mode);
+         return ff_celt_error_to_averror(err);
