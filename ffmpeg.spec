@@ -13,7 +13,7 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        1.0.1
+Version:        1.1
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
@@ -233,6 +233,10 @@ make install DESTDIR=$RPM_BUILD_ROOT V=1
 popd
 %endif
 
+#work around bogus man dir
+install -d $RPM_BUILD_ROOT%{_mandir}/man3
+mv $RPM_BUILD_ROOT%{_mandir}/man1/lib*.3 $RPM_BUILD_ROOT%{_mandir}/man3
+
 
 %post libs -p /sbin/ldconfig
 
@@ -246,7 +250,7 @@ popd
 %{_bindir}/ffprobe
 %{_bindir}/ffserver
 %{_bindir}/qt-faststart
-%{_mandir}/man1/ffmpeg.1*
+%{_mandir}/man1/ffmpeg*.1*
 %{_mandir}/man1/ffplay.1*
 %{_mandir}/man1/ffprobe.1*
 %{_mandir}/man1/ffserver.1*
@@ -255,6 +259,7 @@ popd
 
 %files libs
 %{_libdir}/lib*.so.*
+%{_mandir}/man3/lib*.3.gz
 %if 0%{!?ffmpegsuffix:1}
 %ifarch sparc sparc64
 %{_libdir}/v9/lib*.so.*
@@ -274,6 +279,10 @@ popd
 
 
 %changelog
+* Mon Jan 07 2013 Julian Sikorski <belegdol@fedoraproject.org> - 1.1-1
+- Updated to 1.1
+- Added new man pages
+
 * Tue Dec 04 2012 Julian Sikorski <belegdol@fedoraproject.org> - 1.0.1-1
 - Updated to 1.0.1
 
