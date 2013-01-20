@@ -10,6 +10,9 @@
 %global _without_opencv   1
 %global _without_vpx      1
 %endif
+%if 0%{?fedora} >= 19
+%global _without_cdio     1
+%endif
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
@@ -281,6 +284,7 @@ mv $RPM_BUILD_ROOT%{_mandir}/man1/lib*.3 $RPM_BUILD_ROOT%{_mandir}/man3
 %changelog
 * Sun Jan 20 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.1.1-1
 - Update to 1.1.1
+- Disable libcdio with fedora 19
 
 * Mon Jan 07 2013 Julian Sikorski <belegdol@fedoraproject.org> - 1.1-1
 - Updated to 1.1
