@@ -10,9 +10,6 @@
 %global _without_opencv   1
 %global _without_vpx      1
 %endif
-%if 0%{?fedora} >= 19
-%global _without_cdio     1
-%endif
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
@@ -63,6 +60,7 @@ BuildRequires:  libXvMC-devel
 BuildRequires:  openjpeg-devel
 BuildRequires:  opus-devel
 %{!?_without_pulse:BuildRequires: pulseaudio-libs-devel}
+BuildRequires:  perl(Pod::Man)
 BuildRequires:  schroedinger-devel
 BuildRequires:  SDL-devel
 BuildRequires:  speex-devel
