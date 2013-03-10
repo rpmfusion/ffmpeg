@@ -10,6 +10,9 @@
 %global _without_opencv   1
 %global _without_vpx      1
 %endif
+%if 0%{?fedora} >= 19
+%global _without_cdio     1
+%endif
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
