@@ -6,11 +6,13 @@
 
 %if 0%{?rhel}
 %global _without_vpx   1
+%else
+%global _with_crystalhd 1
 %endif
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        0.10.6
+Version:        0.10.7
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
@@ -41,7 +43,6 @@ BuildRequires:  lame-devel >= 3.98.3
 %{?_with_jack:BuildRequires: jack-audio-connection-kit-devel}
 BuildRequires:  libass-devel
 %{!?_without_cdio:BuildRequires: libcdio-devel}
-#libcrystalhd is currently broken
 %{?_with_crystalhd:BuildRequires: libcrystalhd-devel}
 BuildRequires:  libdc1394-devel
 Buildrequires:  libmodplug-devel
@@ -281,6 +282,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue May 14 2013 Julian Sikorski <belegdol@fedoraproject.org> - 0.10.7-1
+- Updated to 0.10.7
+
 * Tue Dec 11 2012 Dominik Mierzejewski <rpm at greysector.net> - 0.10.6-1
 - Updated to 0.10.6
 - Patch to build with older libcelt
