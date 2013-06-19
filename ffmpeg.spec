@@ -17,7 +17,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        1.2.1
-Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -197,6 +197,8 @@ pushd generic
     --disable-runtime-cpudetect --arch=arm \
 %ifnarch armv7hnl
     --disable-neon \
+%else
+    --enable-neon \
 %endif
 %endif
 %endif
@@ -283,11 +285,17 @@ mv $RPM_BUILD_ROOT%{_mandir}/man1/lib*.3 $RPM_BUILD_ROOT%{_mandir}/man3
 
 
 %changelog
-* Sat May 25 2013 Julian Sikorski <belegdol@fedoraproject.org> - 1.2.1-1
+* Wed Jun 19 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.2.1-2
+- Enable neon on armv7hnl
+
+* Tue May 14 2013 Julian Sikorski <belegdol@fedoraproject.org> - 1.2.1-1
 - Updated to 1.2.1
 
-* Tue May 14 2013 Julian Sikorski <belegdol@fedoraproject.org> - 1.1.5-1
-- Updated to 1.1.5
+* Sun May 05 2013 Julian Sikorski <belegdol@fedoraproject.org> - 1.2-2
+- Rebuilt for x264-0.130
+
+* Mon Mar 18 2013 Julian Sikorski <belegdol@fedoraproject.org> - 1.2-1
+- Updated to 1.2
 
 * Mon Mar 18 2013 Julian Sikorski <belegdol@fedoraproject.org> - 1.1.4-1
 - Updated to 1.1.4
