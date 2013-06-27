@@ -10,6 +10,9 @@
 %global _without_opencv   1
 %global _without_vpx      1
 %endif
+%if 0%{?fedora} >= 19
+%global _without_cdio     1
+%endif
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
@@ -39,7 +42,7 @@ BuildRequires:  gsm-devel
 BuildRequires:  lame-devel >= 3.98.3
 %{?_with_jack:BuildRequires: jack-audio-connection-kit-devel}
 BuildRequires:  libass-devel
-%{!?_without_cdio:BuildRequires: libcdio-devel}
+%{!?_without_cdio:BuildRequires: libcdio-devel cdparanoia-devel}
 #libcrystalhd is currently broken
 %{?_with_crystalhd:BuildRequires: libcrystalhd-devel}
 BuildRequires:  libdc1394-devel
@@ -197,9 +200,7 @@ pushd generic
 %else
     --enable-thumb \
 %endif
-%ifnarch armv7hnl
-    --disable-neon \
-%else
+%ifarch armv7hnl
     --enable-neon \
 %endif
 %endif
@@ -288,7 +289,7 @@ mv $RPM_BUILD_ROOT%{_mandir}/man1/lib*.3 $RPM_BUILD_ROOT%{_mandir}/man3
 
 %changelog
 * Thu Jun 27 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.2.1-4
-- Re-enable libcdio
+- Reverse the logic for neon on arm
 
 * Wed Jun 19 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.2.1-3
 - Enable neon on armv7hnl
