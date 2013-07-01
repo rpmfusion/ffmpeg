@@ -10,14 +10,11 @@
 %global _without_opencv   1
 %global _without_vpx      1
 %endif
-%if 0%{?fedora} >= 19
-%global _without_cdio     1
-%endif
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        1.2.1
-Release:        5%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        6%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -42,7 +39,7 @@ BuildRequires:  gsm-devel
 BuildRequires:  lame-devel >= 3.98.3
 %{?_with_jack:BuildRequires: jack-audio-connection-kit-devel}
 BuildRequires:  libass-devel
-%{!?_without_cdio:BuildRequires: libcdio-devel cdparanoia-devel}
+%{!?_without_cdio:BuildRequires: libcdio-paranoia-devel}
 #libcrystalhd is currently broken
 %{?_with_crystalhd:BuildRequires: libcrystalhd-devel}
 BuildRequires:  libdc1394-devel
@@ -290,6 +287,9 @@ mv $RPM_BUILD_ROOT%{_mandir}/man1/lib*.3 $RPM_BUILD_ROOT%{_mandir}/man3
 
 
 %changelog
+* Tue Jul 02 2013 Dominik Mierzejewski <rpm at greysector.net> - 1.2.1-6
+- fix building with libcdio
+
 * Mon Jul 01 2013 Dominik Mierzejewski <rpm at greysector.net> - 1.2.1-5
 - build with soxr support enabled (rfbz#2853)
 
