@@ -17,7 +17,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        1.2.1
-Release:        4%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        5%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -66,6 +66,7 @@ BuildRequires:  opus-devel
 BuildRequires:  perl(Pod::Man)
 BuildRequires:  schroedinger-devel
 BuildRequires:  SDL-devel
+BuildRequires:  soxr-devel
 BuildRequires:  speex-devel
 BuildRequires:  subversion
 BuildRequires:  texi2html
@@ -136,6 +137,7 @@ This package contains development files for %{name}
     %{!?_without_pulse:--enable-libpulse} \\\
     %{?_with_rtmp:--enable-librtmp} \\\
     --enable-libschroedinger \\\
+    --enable-libsoxr \\\
     --enable-libspeex \\\
     --enable-libtheora \\\
     --enable-libvorbis \\\
@@ -288,6 +290,9 @@ mv $RPM_BUILD_ROOT%{_mandir}/man1/lib*.3 $RPM_BUILD_ROOT%{_mandir}/man3
 
 
 %changelog
+* Mon Jul 01 2013 Dominik Mierzejewski <rpm at greysector.net> - 1.2.1-5
+- build with soxr support enabled (rfbz#2853)
+
 * Thu Jun 27 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.2.1-4
 - Reverse the logic for neon on arm
 
