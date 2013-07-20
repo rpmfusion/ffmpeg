@@ -14,7 +14,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        1.2.1
-Release:        6%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        7%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -287,6 +287,9 @@ mv $RPM_BUILD_ROOT%{_mandir}/man1/lib*.3 $RPM_BUILD_ROOT%{_mandir}/man3
 
 
 %changelog
+* Sat Jul 20 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.2.1-7
+- Rebuilt for x264
+
 * Tue Jul 02 2013 Dominik Mierzejewski <rpm at greysector.net> - 1.2.1-6
 - fix building with libcdio
 
