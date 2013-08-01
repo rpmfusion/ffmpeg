@@ -16,8 +16,8 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        1.2.1
-Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        1.2.2
+Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -290,6 +290,9 @@ mv $RPM_BUILD_ROOT%{_mandir}/man1/lib*.3 $RPM_BUILD_ROOT%{_mandir}/man3
 
 
 %changelog
+* Thu Aug 01 2013 Julian Sikorski <belegdol@fedoraproject.org> - 1.2.2-1
+- Updated to 1.2.2
+
 * Wed Jun 19 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.2.1-3
 - Enable neon on armv7hnl
 - Enable thumb on all arm but armv6hl
