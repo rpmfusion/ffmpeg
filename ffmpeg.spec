@@ -13,7 +13,7 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        1.2.2
+Version:        2.0
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
@@ -241,11 +241,6 @@ make install DESTDIR=$RPM_BUILD_ROOT V=1
 popd
 %endif
 
-#work around bogus man dir
-install -d $RPM_BUILD_ROOT%{_mandir}/man3
-mv $RPM_BUILD_ROOT%{_mandir}/man1/lib*.3 $RPM_BUILD_ROOT%{_mandir}/man3
-
-
 %post libs -p /sbin/ldconfig
 
 %postun libs -p /sbin/ldconfig
@@ -259,9 +254,9 @@ mv $RPM_BUILD_ROOT%{_mandir}/man1/lib*.3 $RPM_BUILD_ROOT%{_mandir}/man3
 %{_bindir}/ffserver
 %{_bindir}/qt-faststart
 %{_mandir}/man1/ffmpeg*.1*
-%{_mandir}/man1/ffplay.1*
-%{_mandir}/man1/ffprobe.1*
-%{_mandir}/man1/ffserver.1*
+%{_mandir}/man1/ffplay*.1*
+%{_mandir}/man1/ffprobe*.1*
+%{_mandir}/man1/ffserver*.1*
 %{_datadir}/ffmpeg
 %endif
 
@@ -287,6 +282,10 @@ mv $RPM_BUILD_ROOT%{_mandir}/man1/lib*.3 $RPM_BUILD_ROOT%{_mandir}/man3
 
 
 %changelog
+* Thu Aug 01 2013 Julian Sikorski <belegdol@fedoraproject.org> - 2.0-1
+- Updated to 2.0
+- Dropped the no longer needed bogus man dir work-around
+
 * Thu Aug 01 2013 Julian Sikorski <belegdol@fedoraproject.org> - 1.2.2-1
 - Updated to 1.2.2
 
