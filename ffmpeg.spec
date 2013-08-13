@@ -26,8 +26,7 @@ Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 %else
 Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.bz2
 %endif
-Source1:        ffmpeg-snapshot-oldabi.sh
-Requires:       %{name}-libs = %{version}-%{release}
+Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 BuildRequires:  bzip2-devel
 %{!?_without_celt:BuildRequires: celt-devel}
 %{?_with_dirac:BuildRequires: dirac-devel}
