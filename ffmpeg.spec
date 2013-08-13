@@ -13,7 +13,7 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        2.0
+Version:        2.0.1
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
@@ -47,12 +47,12 @@ Buildrequires:  libmodplug-devel
 %{?_with_rtmp:BuildRequires: librtmp-devel}
 BuildRequires:  libtheora-devel
 BuildRequires:  libv4l-devel
-%{?!_without_vaapi:BuildRequires: libva-devel >= 0.31.0}
 BuildRequires:  libvdpau-devel
 BuildRequires:  libvorbis-devel
 %{?!_without_vpx:BuildRequires: libvpx-devel >= 0.9.1}
 %ifarch %{ix86} x86_64
 BuildRequires:  libXvMC-devel
+%{?!_without_vaapi:BuildRequires: libva-devel >= 0.31.0}
 %endif
 %{?_with_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
 %{!?_without_openal:BuildRequires: openal-soft-devel}
@@ -282,6 +282,9 @@ popd
 
 
 %changelog
+* Tue Aug 13 2013 Nicolas Chauvet <kwizart@gmail.com> - 2.0.1-1
+- Update to 2.0.1
+
 * Thu Aug 01 2013 Julian Sikorski <belegdol@fedoraproject.org> - 2.0-1
 - Updated to 2.0
 - Dropped the no longer needed bogus man dir work-around
