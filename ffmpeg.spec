@@ -50,12 +50,12 @@ Buildrequires:  libmodplug-devel
 %{?_with_rtmp:BuildRequires: librtmp-devel}
 BuildRequires:  libtheora-devel
 BuildRequires:  libv4l-devel
-%{?!_without_vaapi:BuildRequires: libva-devel >= 0.31.0}
 BuildRequires:  libvdpau-devel
 BuildRequires:  libvorbis-devel
 %{?!_without_vpx:BuildRequires: libvpx-devel >= 0.9.1}
 %ifarch %{ix86} x86_64
 BuildRequires:  libXvMC-devel
+%{?!_without_vaapi:BuildRequires: libva-devel >= 0.31.0}
 %endif
 %{?_with_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
 %{!?_without_openal:BuildRequires: openal-soft-devel}
