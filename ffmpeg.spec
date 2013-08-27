@@ -14,7 +14,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        2.0.1
-Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -143,6 +143,7 @@ This package contains development files for %{name}
     --enable-libxvid \\\
     --enable-x11grab \\\
     --enable-avfilter \\\
+    --enable-avresample \\\
     --enable-postproc \\\
     --enable-pthreads \\\
     --disable-static \\\
@@ -281,6 +282,9 @@ popd
 
 
 %changelog
+* Tue Aug 27 2013 Nicolas Chauvet <kwizart@gmail.com> - 2.0.1-2
+- Enable avresample as noticed by Xavier Bachelot
+
 * Tue Aug 13 2013 Nicolas Chauvet <kwizart@gmail.com> - 2.0.1-1
 - Update to 2.0.1
 
