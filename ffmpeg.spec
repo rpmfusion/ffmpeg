@@ -13,7 +13,7 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        1.0.7
+Version:        1.0.8
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
@@ -141,6 +141,7 @@ This package contains development files for %{name}
     --enable-libxvid \\\
     --enable-x11grab \\\
     --enable-avfilter \\\
+    --enable-avresample \\\
     --enable-postproc \\\
     --enable-pthreads \\\
     --disable-static \\\
@@ -274,6 +275,10 @@ popd
 
 
 %changelog
+* Sat Sep 14 2013 Julian Sikorski <belegdol@fedoraproject.org> - 1.0.8-1
+- Updated to 1.0.8
+- Enabled avresample
+
 * Tue May 14 2013 Julian Sikorski <belegdol@fedoraproject.org> - 1.0.7-1
 - Updated to 1.0.7
 
