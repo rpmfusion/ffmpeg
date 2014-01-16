@@ -16,8 +16,8 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        1.2.4
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        1.2.5
+Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -291,6 +291,9 @@ mv $RPM_BUILD_ROOT%{_mandir}/man1/lib*.3 $RPM_BUILD_ROOT%{_mandir}/man3
 
 
 %changelog
+* Thu Jan 16 2014 Julian Sikorski <belegdol@fedoraproject.org> - 1.2.5-1
+- Updated to 1.2.5
+
 * Wed Oct 16 2013 Julian Sikorski <belegdol@fedoraproject.org> - 1.2.4-2
 - Enabled avresample
 
