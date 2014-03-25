@@ -13,8 +13,8 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        2.1.4
-Release:        4%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        2.2
+Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -282,6 +282,9 @@ popd
 
 
 %changelog
+* Mon Mar 24 2014 Julian Sikorski <belegdol@fedoraproject.org> - 2.2-1
+- Updated to 2.2
+
 * Fri Mar 21 2014 Julian Sikorski <belegdol@fedoraproject.org> - 2.1.4-4
 - Rebuilt for libass-0.10.2
 
