@@ -16,7 +16,7 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        1.2.6
+Version:        1.2.7
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
@@ -291,6 +291,9 @@ mv $RPM_BUILD_ROOT%{_mandir}/man1/lib*.3 $RPM_BUILD_ROOT%{_mandir}/man3
 
 
 %changelog
+* Tue Jun 24 2014 Julian Sikorski <belegdol@fedoraproject.org> - 1.2.7-1
+- Updated to 1.2.7
+
 * Wed Mar 05 2014 Julian Sikorski <belegdol@fedoraproject.org> - 1.2.6-1
 - Updated to 1.2.6
 
