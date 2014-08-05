@@ -13,7 +13,7 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        2.2.5
+Version:        2.3.1
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
@@ -247,7 +247,7 @@ popd
 
 %if 0%{!?ffmpegsuffix:1}
 %files
-%doc COPYING.* CREDITS README doc/ffserver.conf
+%doc COPYING.* CREDITS README.md doc/ffserver.conf
 %{_bindir}/ffmpeg
 %{_bindir}/ffplay
 %{_bindir}/ffprobe
@@ -282,6 +282,10 @@ popd
 
 
 %changelog
+* Sun Aug 03 2014 Julian Sikorski <belegdol@fedoraproject.org> - 2.3.1-1
+- Updated to 2.3.1
+- README → README.md
+
 * Tue Jul 15 2014 Julian Sikorski <belegdol@fedoraproject.org> - 2.2.5-1
 - Updated to 2.2.5
 
