@@ -12,7 +12,7 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        0.10.11
+Version:        0.10.15
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
@@ -282,6 +282,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Aug 13 2014 Nicolas Chauvet <kwizart@gmail.com> - 0.10.15-1
+- Update to 0.10.15
+
 * Tue Mar 04 2014 Nicolas Chauvet <kwizart@gmail.com> - 0.10.11-1
 - Update to 0.10.11
 
