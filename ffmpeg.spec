@@ -5,7 +5,6 @@
 #global rel     rc1
 
 %if 0%{?rhel}
-%global _without_celt     1
 %global _without_frei0r   1
 %global _without_opencv   1
 %global _without_vpx      1
@@ -14,7 +13,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        2.3.3
-Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -28,7 +27,7 @@ Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.bz2
 %endif
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 BuildRequires:  bzip2-devel
-%{!?_without_celt:BuildRequires: celt-devel}
+%{?_with_celt:BuildRequires: celt-devel}
 %{?_with_dirac:BuildRequires: dirac-devel}
 %{?_with_faac:BuildRequires: faac-devel}
 BuildRequires:  freetype-devel
@@ -118,7 +117,7 @@ This package contains development files for %{name}
     --enable-gnutls \\\
     --enable-libass \\\
     %{!?_without_cdio:--enable-libcdio} \\\
-    %{!?_without_celt:--enable-libcelt} \\\
+    %{?_with_celt:--enable-libcelt} \\\
     --enable-libdc1394 \\\
     %{?_with_dirac:--enable-libdirac} \\\
     %{?_with_faac:--enable-libfaac --enable-nonfree} \\\
@@ -282,6 +281,9 @@ popd
 
 
 %changelog
+* Sat Sep 13 2014 Nicolas Chauvet <kwizart@gmail.com> - 2.3.3-2
+- Disable libcelt by default - rfbz#3359
+
 * Tue Sep 02 2014 Julian Sikorski <belegdol@fedoraproject.org> - 2.3.3-1
 - Updated to 2.3.3
 
