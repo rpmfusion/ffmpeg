@@ -12,8 +12,8 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        2.3.3
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        2.4.1
+Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -281,6 +281,12 @@ popd
 
 
 %changelog
+* Thu Sep 25 2014 Julian Sikorski <belegdol@fedoraproject.org> - 2.4.1-1
+- Updated to 2.4.1
+
+* Sun Sep 21 2014 Julian Sikorski <belegdol@fedoraproject.org> - 2.4-1
+- Updated to 2.4
+
 * Sat Sep 13 2014 Nicolas Chauvet <kwizart@gmail.com> - 2.3.3-2
 - Disable libcelt by default - rfbz#3359
 
