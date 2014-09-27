@@ -13,7 +13,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        2.3.3
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -281,6 +281,9 @@ popd
 
 
 %changelog
+* Sat Sep 27 2014 kwizart <kwizart@gmail.com> - 2.3.3-3
+- Rebuild back to ffmpeg 2.3x
+
 * Sat Sep 13 2014 Nicolas Chauvet <kwizart@gmail.com> - 2.3.3-2
 - Disable libcelt by default - rfbz#3359
 
