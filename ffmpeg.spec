@@ -13,7 +13,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        2.4.4
-Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -66,6 +66,7 @@ BuildRequires:  speex-devel
 BuildRequires:  subversion
 BuildRequires:  texi2html
 %{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.31}
+%{!?_without_x265:BuildRequires: x265-devel}
 BuildRequires:  xvidcore-devel
 BuildRequires:  zlib-devel
 %ifarch %{ix86} x86_64
@@ -139,6 +140,7 @@ This package contains development files for %{name}
     --enable-libv4l2 \\\
     %{!?_without_vpx:--enable-libvpx} \\\
     %{!?_without_x264:--enable-libx264} \\\
+    %{!?_without_x265:--enable-libx265} \\\
     --enable-libxvid \\\
     --enable-x11grab \\\
     --enable-avfilter \\\
@@ -281,6 +283,9 @@ popd
 
 
 %changelog
+* Thu Dec 18 2014 Dominik Mierzejewski <rpm at greysector.net> - 2.4.4-2
+- enable support for libx265 by default (rfbz#3421, patch by Nerijus Baliūnas)
+
 * Mon Dec 01 2014 Julian Sikorski <belegdol@fedoraproject.org> - 2.4.4-1
 - Updated to 2.4.4
 
