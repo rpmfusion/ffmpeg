@@ -13,7 +13,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        2.4.6
-Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -54,6 +54,7 @@ BuildRequires:  libXvMC-devel
 %endif
 %{?_with_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
 %{!?_without_openal:BuildRequires: openal-soft-devel}
+%{!?_without_opencl:BuildRequires: opencl-headers ocl-icd-devel}
 %{!?_without_opencv:BuildRequires: opencv-devel}
 BuildRequires:  openjpeg-devel
 BuildRequires:  opus-devel
@@ -64,7 +65,7 @@ BuildRequires:  SDL-devel
 BuildRequires:  soxr-devel
 BuildRequires:  speex-devel
 BuildRequires:  subversion
-BuildRequires:  texi2html
+BuildRequires:  texinfo
 %{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.31}
 %{!?_without_x265:BuildRequires: x265-devel}
 BuildRequires:  xvidcore-devel
@@ -89,9 +90,18 @@ VCR. It can encode in real time in many formats including MPEG1 audio
 and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
 This package contains the libraries for %{name}
 
+%package     -n libavdevice
+Summary:        Special devices muxing/demuxing library
+
+%description -n libavdevice
+Libavdevice is a complementary library to libavf "libavformat". It provides
+various "special" platform-specific muxers and demuxers, e.g. for grabbing
+devices, audio capture and playback etc.
+
 %package        devel
 Summary:        Development package for %{name}
 Requires:       %{name}-libs%{_isa} = %{version}-%{release}
+Requires:       libavdevice%{_isa} = %{version}-%{release}
 Requires:       pkgconfig
 
 %description    devel
@@ -102,7 +112,7 @@ and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
 This package contains development files for %{name}
 
 %global ff_configure \
-../configure \\\
+./configure \\\
     --prefix=%{_prefix} \\\
     --bindir=%{_bindir} \\\
     --datadir=%{_datadir}/%{name} \\\
@@ -127,6 +137,7 @@ This package contains development files for %{name}
     --enable-libgsm \\\
     --enable-libmp3lame \\\
     %{!?_without_openal:--enable-openal} \\\
+    %{!?_without_opencl:--enable-opencl} \\\
     %{!?_without_opencv:--enable-libopencv} \\\
     --enable-libopenjpeg \\\
     --enable-libopus \\\
@@ -165,8 +176,6 @@ echo "git-snapshot-%{?branch}%{date}-RPMFusion" > VERSION
 sed -i "s/-O3 -g/$RPM_OPT_FLAGS/" configure
 
 %build
-mkdir generic
-pushd generic
 %{ff_configure}\
     --shlibdir=%{_libdir} \
 %if 0%{?ffmpegsuffix:1}
@@ -177,21 +186,16 @@ pushd generic
 %ifarch %{ix86}
     --cpu=%{_target_cpu} \
 %endif
-%ifarch %{ix86} x86_64
+%ifarch %{ix86} x86_64 ppc ppc64
     --enable-runtime-cpudetect \
 %endif
 %ifarch ppc
     --cpu=g3 \
-    --enable-runtime-cpudetect \
     --enable-pic \
 %endif
 %ifarch ppc64
     --cpu=g5 \
-    --enable-runtime-cpudetect \
     --enable-pic \
-%endif
-%ifarch sparc sparc64
-    --disable-vis \
 %endif
 %ifarch %{arm}
     --disable-runtime-cpudetect --arch=arm \
@@ -209,37 +213,11 @@ pushd generic
 make %{?_smp_mflags} V=1
 make documentation V=1
 make alltools V=1
-popd
-
-%if 0%{!?ffmpegsuffix:1}
-mkdir simd
-pushd simd
-%ifarch sparc sparc64
-%{ff_configure}\
-    --shlibdir=%{_libdir}/v9 \
-    --cpu=v9 \
-    --enable-vis \
-    --disable-ffmpeg \
-    --disable-ffserver \
-    --disable-ffplay \
-
-make %{?_smp_mflags} V=1
-%endif
-popd
-%endif
 
 %install
-rm -rf $RPM_BUILD_ROOT
-pushd generic
 make install DESTDIR=$RPM_BUILD_ROOT V=1
-popd
 %if 0%{!?ffmpegsuffix:1}
-install -pm755 generic/tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
-pushd simd
-%ifarch sparc sparc64
-make install DESTDIR=$RPM_BUILD_ROOT V=1
-%endif
-popd
+install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 %endif
 
 %post libs -p /sbin/ldconfig
@@ -263,26 +241,26 @@ popd
 
 %files libs
 %{_libdir}/lib*.so.*
+%exclude %{_libdir}/libavdevice.so.*
 %{_mandir}/man3/lib*.3.gz
-%if 0%{!?ffmpegsuffix:1}
-%ifarch sparc sparc64
-%{_libdir}/v9/lib*.so.*
-%endif
-%endif
+
+%files -n libavdevice
+%{_libdir}/libavdevice.so.*
 
 %files devel
 %doc MAINTAINERS doc/APIchanges doc/*.txt
 %{_includedir}/ffmpeg
 %{_libdir}/pkgconfig/lib*.pc
 %{_libdir}/lib*.so
-%if 0%{!?ffmpegsuffix:1}
-%ifarch sparc sparc64
-%{_libdir}/v9/lib*.so
-%endif
-%endif
 
 
 %changelog
+* Sun Feb 01 2015 Dominik Mierzejewski <rpm at greysector.net> - 2.4.6-2
+- enable OpenCL support
+- BR texinfo instead of texi2html to reduce BRs by half
+- drop support for building on SPARC (no longer a Fedora Secondary Arch)
+- move libavdevice to a subpackage (rfbz#3075)
+
 * Wed Jan 14 2015 Julian Sikorski <belegdol@fedoraproject.org> - 2.4.6-1
 - Updated to 2.4.6
 
