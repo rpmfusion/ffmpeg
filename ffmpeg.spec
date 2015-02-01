@@ -13,7 +13,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        2.4.6
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -36,6 +36,7 @@ BuildRequires:  gnutls-devel
 BuildRequires:  gsm-devel
 BuildRequires:  lame-devel >= 3.98.3
 %{?_with_jack:BuildRequires: jack-audio-connection-kit-devel}
+%{!?_without_ladspa:BuildRequires: ladspa-devel}
 BuildRequires:  libass-devel
 %{!?_without_cdio:BuildRequires: libcdio-paranoia-devel}
 #libcrystalhd is currently broken
@@ -65,6 +66,7 @@ BuildRequires:  SDL-devel
 BuildRequires:  soxr-devel
 BuildRequires:  speex-devel
 BuildRequires:  subversion
+#BuildRequires:  texi2html
 BuildRequires:  texinfo
 %{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.31}
 %{!?_without_x265:BuildRequires: x265-devel}
@@ -126,6 +128,7 @@ This package contains development files for %{name}
     %{!?_with_crystalhd:--disable-crystalhd} \\\
     %{!?_without_frei0r:--enable-frei0r} \\\
     --enable-gnutls \\\
+    %{!?_without_ladspa:--enable-ladspa} \\\
     --enable-libass \\\
     %{!?_without_cdio:--enable-libcdio} \\\
     %{?_with_celt:--enable-libcelt} \\\
@@ -255,6 +258,9 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 
 
 %changelog
+* Sun Feb 01 2015 Dominik Mierzejewski <rpm at greysector.net> - 2.4.6-3
+- enable LADSPA support (rfbz#3134)
+
 * Sun Feb 01 2015 Dominik Mierzejewski <rpm at greysector.net> - 2.4.6-2
 - enable OpenCL support
 - BR texinfo instead of texi2html to reduce BRs by half
