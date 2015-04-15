@@ -13,7 +13,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        2.4.8
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -258,6 +258,9 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 
 
 %changelog
+* Wed Apr 15 2015 Dominik Mierzejewski <rpm@greysector.net> - 2.4.8-3
+- rebuilt for new x265
+
 * Mon Apr 13 2015 Nicolas Chauvet <kwizart@gmail.com> - 2.4.8-2
 - Fix sed for f22 where cflags contains a directory path
 
