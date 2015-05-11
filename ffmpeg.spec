@@ -13,7 +13,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        2.6.2
-Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -30,6 +30,7 @@ BuildRequires:  bzip2-devel
 %{?_with_celt:BuildRequires: celt-devel}
 %{?_with_dirac:BuildRequires: dirac-devel}
 %{?_with_faac:BuildRequires: faac-devel}
+%{?_with_fdk-aac:BuildRequires: fdk-aac-devel}
 BuildRequires:  freetype-devel
 %{!?_without_frei0r:BuildRequires: frei0r-devel}
 BuildRequires:  gnutls-devel
@@ -55,7 +56,7 @@ BuildRequires:  libXvMC-devel
 %endif
 %{?_with_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
 %{!?_without_openal:BuildRequires: openal-soft-devel}
-%{!?_without_opencl:BuildRequires: opencl-headers ocl-icd-devel}
+%{?_with_opencl:BuildRequires: opencl-headers ocl-icd-devel}
 %{!?_without_opencv:BuildRequires: opencv-devel}
 BuildRequires:  openjpeg-devel
 BuildRequires:  opus-devel
@@ -135,12 +136,14 @@ This package contains development files for %{name}
     --enable-libdc1394 \\\
     %{?_with_dirac:--enable-libdirac} \\\
     %{?_with_faac:--enable-libfaac --enable-nonfree} \\\
+    %{?_with_fdk-aac:--enable-libfdk-aac --enable-nonfree} \\\
     %{!?_with_jack:--disable-indev=jack} \\\
     --enable-libfreetype \\\
     --enable-libgsm \\\
     --enable-libmp3lame \\\
+    %{?_with_nvenc:--enable-nvenc  --enable-nonfree} \\\
     %{!?_without_openal:--enable-openal} \\\
-    %{!?_without_opencl:--enable-opencl} \\\
+    %{?_with_opencl:--enable-opencl} \\\
     %{!?_without_opencv:--enable-libopencv} \\\
     --enable-libopenjpeg \\\
     --enable-libopus \\\
@@ -258,6 +261,10 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 
 
 %changelog
+* Mon May 11 2015 Nicolas Chauvet <kwizart@gmail.com> - 2.6.2-2
+- Disable opencl by default - rfbz#3640
+- Add with condition for nvenc,fdk_aac
+
 * Tue May 05 2015 Julian Sikorski <belegdol@fedoraproject.org> - 2.6.2-1
 - Updated to 2.6.2
 
