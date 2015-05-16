@@ -13,7 +13,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        2.6.2
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -261,6 +261,9 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 
 
 %changelog
+* Sat May 16 2015 Nicolas Chauvet <kwizart@gmail.com> - 2.6.2-3
+- Rebuilt for x265
+
 * Mon May 11 2015 Nicolas Chauvet <kwizart@gmail.com> - 2.6.2-2
 - Disable opencl by default - rfbz#3640
 - Add with condition for nvenc,fdk_aac
