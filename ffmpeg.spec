@@ -255,6 +255,7 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 
 %files devel
 %doc MAINTAINERS doc/APIchanges doc/*.txt
+%doc %{_docdir}/ffmpeg/*.html
 %{_includedir}/ffmpeg
 %{_libdir}/pkgconfig/lib*.pc
 %{_libdir}/lib*.so
