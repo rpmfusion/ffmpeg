@@ -12,7 +12,7 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        2.6.5
+Version:        2.6.6
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
@@ -30,7 +30,7 @@ BuildRequires:  bzip2-devel
 %{?_with_celt:BuildRequires: celt-devel}
 %{?_with_dirac:BuildRequires: dirac-devel}
 %{?_with_faac:BuildRequires: faac-devel}
-%{?_with_fdk-aac:BuildRequires: fdk-aac-devel}
+%{?_with_fdk_aac:BuildRequires: fdk-aac-devel}
 BuildRequires:  freetype-devel
 %{!?_without_frei0r:BuildRequires: frei0r-devel}
 BuildRequires:  gnutls-devel
@@ -261,6 +261,10 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 
 
 %changelog
+* Wed Dec 23 2015 Julian Sikorski <belegdol@fedoraproject.org> - 2.6.6-1
+- Updated to 2.6.6
+- Fixed Fraunhofer FDK AAC conditional build (RF # 3898)
+
 * Wed Nov 25 2015 Julian Sikorski <belegdol@fedoraproject.org> - 2.6.5-1
 - Updated to 2.6.5
 
