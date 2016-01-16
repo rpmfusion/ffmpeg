@@ -12,7 +12,7 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        2.6.6
+Version:        2.6.7
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
@@ -261,6 +261,9 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 
 
 %changelog
+* Sat Jan 16 2016 Julian Sikorski <belegdol@fedoraproject.org> - 2.6.7-1
+- Updated to 2.6.7
+
 * Wed Dec 23 2015 Julian Sikorski <belegdol@fedoraproject.org> - 2.6.6-1
 - Updated to 2.6.6
 - Fixed Fraunhofer FDK AAC conditional build (RF # 3898)
