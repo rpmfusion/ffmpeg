@@ -13,7 +13,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        3.0.2
-Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -262,6 +262,9 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 
 
 %changelog
+* Sun Jun 12 2016 Leigh Scott <leigh123linux@googlemail.com> - 3.0.2-2
+- rebuilt
+
 * Sat May 14 2016 Michael Kuhn <suraia@ikkoku.de> - 3.0.2-1
 - Update to 3.0.2.
 
