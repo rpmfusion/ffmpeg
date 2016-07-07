@@ -13,7 +13,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        3.0.2
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -25,6 +25,7 @@ Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 %else
 Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 %endif
+Patch0:         0001-configure-add-direct-detection-of-libopencv.patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 BuildRequires:  bzip2-devel
 %{?_with_celt:BuildRequires: celt-devel}
@@ -178,6 +179,7 @@ echo "git-snapshot-%{?branch}%{date}-RPMFusion" > VERSION
 %else
 %setup -q -n ffmpeg-%{version}
 %endif
+%patch0 -p1
 # fix -O3 -g in host_cflags
 sed -i "s|-O3 -g|$RPM_OPT_FLAGS|" configure
 
@@ -262,6 +264,10 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 
 
 %changelog
+* Thu Jul 07 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.0.2-3
+- Fixed build failure on rawhide due to newer opencv using a patch from upstream
+  git
+
 * Sun Jun 12 2016 Leigh Scott <leigh123linux@googlemail.com> - 3.0.2-2
 - rebuilt
 
