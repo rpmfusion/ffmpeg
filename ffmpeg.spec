@@ -13,7 +13,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        3.0.2
-Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        4%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
 %else
@@ -37,7 +37,7 @@ BuildRequires:  freetype-devel
 BuildRequires:  gnutls-devel
 BuildRequires:  gsm-devel
 BuildRequires:  lame-devel >= 3.98.3
-%{?_with_jack:BuildRequires: jack-audio-connection-kit-devel}
+%{!?_without_jack:BuildRequires: jack-audio-connection-kit-devel}
 %{!?_without_ladspa:BuildRequires: ladspa-devel}
 BuildRequires:  libass-devel
 %{!?_without_cdio:BuildRequires: libcdio-paranoia-devel}
@@ -138,7 +138,7 @@ This package contains development files for %{name}
     %{?_with_dirac:--enable-libdirac} \\\
     %{?_with_faac:--enable-libfaac --enable-nonfree} \\\
     %{?_with_fdk-aac:--enable-libfdk-aac --enable-nonfree} \\\
-    %{!?_with_jack:--disable-indev=jack} \\\
+    %{!?_without_jack:--enable-indev=jack} \\\
     --enable-libfreetype \\\
     --enable-libgsm \\\
     --enable-libmp3lame \\\
@@ -264,6 +264,9 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 
 
 %changelog
+* Sun Jul 10 2016 Dominik Mierzejewski <rpm@greysector.net> - 3.0.2-4
+- enable jack by default (rfbz#2156)
+
 * Thu Jul 07 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.0.2-3
 - Fixed build failure on rawhide due to newer opencv using a patch from upstream
   git
