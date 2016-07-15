@@ -28,7 +28,6 @@ Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 Patch0:         0001-configure-add-direct-detection-of-libopencv.patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 BuildRequires:  bzip2-devel
-%{?_with_dirac:BuildRequires: dirac-devel}
 %{?_with_faac:BuildRequires: faac-devel}
 %{?_with_fdk_aac:BuildRequires: fdk-aac-devel}
 BuildRequires:  freetype-devel
@@ -137,7 +136,6 @@ This package contains development files for %{name}
     --enable-libass \\\
     %{!?_without_cdio:--enable-libcdio} \\\
     --enable-libdc1394 \\\
-    %{?_with_dirac:--enable-libdirac} \\\
     %{?_with_faac:--enable-libfaac --enable-nonfree} \\\
     %{?_with_fdk-aac:--enable-libfdk-aac --enable-nonfree} \\\
     %{!?_without_jack:--enable-indev=jack} \\\
@@ -272,6 +270,7 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 - re-enable opencl by default (rfbz#3640 was fixed)
 - add conditional support for QSV via libmfx (rfbz#4043)
 - drop libcelt support (celt 0.11 no longer available in Fedora)
+- drop libdirac support (unsupported by FFmpeg)
 
 * Thu Jul 07 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.0.2-3
 - Fixed build failure on rawhide due to newer opencv using a patch from upstream
