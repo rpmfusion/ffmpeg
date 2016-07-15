@@ -57,7 +57,10 @@ BuildRequires:  libXvMC-devel
 %endif
 %{?_with_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
 %{!?_without_openal:BuildRequires: openal-soft-devel}
-%{?_with_opencl:BuildRequires: opencl-headers ocl-icd-devel}
+%if 0%{!?_without_opencl:1}
+BuildRequires:  opencl-headers ocl-icd-devel
+Recommends:     opencl-icd
+%endif
 %{!?_without_opencv:BuildRequires: opencv-devel}
 BuildRequires:  openjpeg-devel
 BuildRequires:  opus-devel
@@ -144,7 +147,7 @@ This package contains development files for %{name}
     --enable-libmp3lame \\\
     %{?_with_nvenc:--enable-nvenc  --enable-nonfree} \\\
     %{!?_without_openal:--enable-openal} \\\
-    %{?_with_opencl:--enable-opencl} \\\
+    %{!?_without_opencl:--enable-opencl} \\\
     %{!?_without_opencv:--enable-libopencv} \\\
     --enable-libopenjpeg \\\
     --enable-libopus \\\
@@ -266,6 +269,7 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 %changelog
 * Sun Jul 10 2016 Dominik Mierzejewski <rpm@greysector.net> - 3.0.2-4
 - enable jack by default (rfbz#2156)
+- re-enable opencl by default (rfbz#3640 was fixed)
 
 * Thu Jul 07 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.0.2-3
 - Fixed build failure on rawhide due to newer opencv using a patch from upstream
