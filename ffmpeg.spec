@@ -44,6 +44,7 @@ BuildRequires:  libass-devel
 #libcrystalhd is currently broken
 %{?_with_crystalhd:BuildRequires: libcrystalhd-devel}
 BuildRequires:  libdc1394-devel
+%{?_with_mfx:BuildRequires: libmfx-devel}
 Buildrequires:  libmodplug-devel
 %{?_with_rtmp:BuildRequires: librtmp-devel}
 BuildRequires:  libtheora-devel
@@ -144,6 +145,7 @@ This package contains development files for %{name}
     %{!?_without_jack:--enable-indev=jack} \\\
     --enable-libfreetype \\\
     --enable-libgsm \\\
+    %{?_with_qsv:--enable-libmfx} \\\
     --enable-libmp3lame \\\
     %{?_with_nvenc:--enable-nvenc  --enable-nonfree} \\\
     %{!?_without_openal:--enable-openal} \\\
@@ -270,6 +272,7 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 * Sun Jul 10 2016 Dominik Mierzejewski <rpm@greysector.net> - 3.0.2-4
 - enable jack by default (rfbz#2156)
 - re-enable opencl by default (rfbz#3640 was fixed)
+- add conditional support for QSV via libmfx (rfbz#4043)
 
 * Thu Jul 07 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.0.2-3
 - Fixed build failure on rawhide due to newer opencv using a patch from upstream
