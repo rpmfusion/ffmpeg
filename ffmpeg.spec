@@ -74,7 +74,7 @@ BuildRequires:  subversion
 BuildRequires:  texinfo
 %{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.31}
 %{!?_without_x265:BuildRequires: x265-devel}
-BuildRequires:  xvidcore-devel
+%{?_with_xvid:BuildRequires: xvidcore-devel}
 BuildRequires:  zlib-devel
 %ifarch %{ix86} x86_64
 BuildRequires:  yasm
@@ -160,7 +160,7 @@ This package contains development files for %{name}
     %{!?_without_vpx:--enable-libvpx} \\\
     %{!?_without_x264:--enable-libx264} \\\
     %{!?_without_x265:--enable-libx265} \\\
-    --enable-libxvid \\\
+    %{?_with_xvid:--enable-libxvid} \\\
     --enable-x11grab \\\
     --enable-avfilter \\\
     --enable-avresample \\\
@@ -271,6 +271,7 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 - add conditional support for QSV via libmfx (rfbz#4043)
 - drop libcelt support (celt 0.11 no longer available in Fedora)
 - drop libdirac support (unsupported by FFmpeg)
+- make xvidcore support optional
 
 * Thu Jul 07 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.0.2-3
 - Fixed build failure on rawhide due to newer opencv using a patch from upstream
