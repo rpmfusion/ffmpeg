@@ -233,6 +233,10 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 
 %postun libs -p /sbin/ldconfig
 
+%post -n libavdevice -p /sbin/ldconfig
+
+%postun -n libavdevice -p /sbin/ldconfig
+
 %if 0%{!?ffmpegsuffix:1}
 %files
 %doc COPYING.* CREDITS README.md doc/ffserver.conf
@@ -252,9 +256,11 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 %{_libdir}/lib*.so.*
 %exclude %{_libdir}/libavdevice.so.*
 %{_mandir}/man3/lib*.3.gz
+%exclude %{_mandir}/man3/libavdevice.3*
 
 %files -n libavdevice
 %{_libdir}/libavdevice.so.*
+%{_mandir}/man3/libavdevice.3*
 
 %files devel
 %doc MAINTAINERS doc/APIchanges doc/*.txt
@@ -272,6 +278,8 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 - drop libcelt support (celt 0.11 no longer available in Fedora)
 - drop libdirac support (unsupported by FFmpeg)
 - make xvidcore support optional
+- add missing ldconfig calls for libavdevice package
+- move libavdevice manpage to its subpackage
 
 * Thu Jul 07 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.0.2-3
 - Fixed build failure on rawhide due to newer opencv using a patch from upstream
