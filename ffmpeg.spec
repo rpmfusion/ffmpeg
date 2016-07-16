@@ -14,7 +14,7 @@ Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        3.0.2
 Release:        4%{?date}%{?date:git}%{?rel}%{?dist}
-%if 0%{?_with_amr:1}
+%if 0%{?_with_amr} || 0%{?_with_gmp}
 License:        GPLv3+
 %else
 License:        GPLv2+
@@ -30,15 +30,23 @@ Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 BuildRequires:  bzip2-devel
 %{?_with_faac:BuildRequires: faac-devel}
 %{?_with_fdk_aac:BuildRequires: fdk-aac-devel}
+%{?_with_flite:BuildRequires: flite-devel}
+BuildRequires:  fontconfig-devel
 BuildRequires:  freetype-devel
 %{!?_without_frei0r:BuildRequires: frei0r-devel}
+%{?_with_gme:BuildRequires: game-music-emu-devel}
 BuildRequires:  gnutls-devel
 BuildRequires:  gsm-devel
+%{?_with_ilbc:BuildRequires: ilbc-devel}
 BuildRequires:  lame-devel >= 3.98.3
 %{!?_without_jack:BuildRequires: jack-audio-connection-kit-devel}
 %{!?_without_ladspa:BuildRequires: ladspa-devel}
 BuildRequires:  libass-devel
+BuildRequires:  libbluray-devel
+%{?_with_bs2b:BuildRequires: libbs2b-devel}
+%{?_with_caca:BuildRequires: libcaca-devel}
 %{!?_without_cdio:BuildRequires: libcdio-paranoia-devel}
+%{?_with_chromaprint:BuildRequires: libchromaprint-devel}
 #libcrystalhd is currently broken
 %{?_with_crystalhd:BuildRequires: libcrystalhd-devel}
 %if 0%{?_with_ieee1394}
@@ -46,9 +54,13 @@ BuildRequires:  libavc1394-devel
 BuildRequires:  libdc1394-devel
 BuildRequires:  libiec61883-devel
 %endif
+BuildRequires:  libgcrypt-devel
+BuildRequires:  libGL-devel
 %{?_with_mfx:BuildRequires: libmfx-devel}
 Buildrequires:  libmodplug-devel
 %{?_with_rtmp:BuildRequires: librtmp-devel}
+%{?_with_smb:BuildRequires: libsmbclient-devel}
+%{?_with_ssh:BuildRequires: libssh-devel}
 BuildRequires:  libtheora-devel
 BuildRequires:  libv4l-devel
 BuildRequires:  libvdpau-devel
@@ -58,6 +70,8 @@ BuildRequires:  libvorbis-devel
 BuildRequires:  libXvMC-devel
 %{?!_without_vaapi:BuildRequires: libva-devel >= 0.31.0}
 %endif
+%{?_with_webp:BuildRequires: libwebp-devel}
+%{?_with_netcdf:BuildRequires: netcdf-devel}
 %{?_with_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
 %{!?_without_openal:BuildRequires: openal-soft-devel}
 %if 0%{!?_without_opencl:1}
@@ -69,17 +83,24 @@ BuildRequires:  openjpeg-devel
 BuildRequires:  opus-devel
 %{!?_without_pulse:BuildRequires: pulseaudio-libs-devel}
 BuildRequires:  perl(Pod::Man)
+%{?_with_rubberband:BuildRequires: rubberband-devel}
 BuildRequires:  schroedinger-devel
 BuildRequires:  SDL-devel
+%{?_with_snappy:BuildRequires: snappy-devel}
 BuildRequires:  soxr-devel
 BuildRequires:  speex-devel
 BuildRequires:  subversion
+%{?_with_tesseract:BuildRequires: tesseract-devel}
 #BuildRequires:  texi2html
 BuildRequires:  texinfo
+%{?_with_twolame:BuildRequires: twolame-devel}
+%{?_with_wavpack:BuildRequires: wavpack-devel}
 %{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.31}
 %{!?_without_x265:BuildRequires: x265-devel}
 %{?_with_xvid:BuildRequires: xvidcore-devel}
 BuildRequires:  zlib-devel
+%{?_with_zmq:BuildRequires: zeromq-devel}
+%{?_with_zvbi:BuildRequires: zvbi-devel}
 %ifarch %{ix86} x86_64
 BuildRequires:  yasm
 %endif
@@ -133,38 +154,60 @@ This package contains development files for %{name}
     --optflags="$RPM_OPT_FLAGS" \\\
     %{?_with_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3} \\\
     --enable-bzlib \\\
+    %{?_with_chromaprint:--enable-chromaprint} \\\
     %{!?_with_crystalhd:--disable-crystalhd} \\\
+    --enable-fontconfig \\\
     %{!?_without_frei0r:--enable-frei0r} \\\
+    --enable-gcrypt \\\
+    %{?_with_gmp:--enable-gmp --enable-version3} \\\
     --enable-gnutls \\\
     %{!?_without_ladspa:--enable-ladspa} \\\
     --enable-libass \\\
+    --enable-libbluray \\\
+    %{?_with_bs2b:--enable-libbs2b} \\\
+    %{?_with_caca:--enable-libcaca} \\\
     %{!?_without_cdio:--enable-libcdio} \\\
     %{?_with_ieee1394:--enable-libdc1394 --enable-libiec61883} \\\
     %{?_with_faac:--enable-libfaac --enable-nonfree} \\\
     %{?_with_fdk-aac:--enable-libfdk-aac --enable-nonfree} \\\
+    %{?_with_flite:--enable-libflite} \\\
     %{!?_without_jack:--enable-indev=jack} \\\
     --enable-libfreetype \\\
+    --enable-libfribidi \\\
+    %{?_with_gme:--enable-libgme} \\\
     --enable-libgsm \\\
+    %{?_with_ilbc:--enable-libilbc} \\\
     %{?_with_qsv:--enable-libmfx} \\\
     --enable-libmp3lame \\\
+    %{?_with_netcdf:--enable-netcdf} \\\
     %{?_with_nvenc:--enable-nvenc  --enable-nonfree} \\\
     %{!?_without_openal:--enable-openal} \\\
     %{!?_without_opencl:--enable-opencl} \\\
     %{!?_without_opencv:--enable-libopencv} \\\
+    %{!?_without_opengl:--enable-opengl} \\\
     --enable-libopenjpeg \\\
     --enable-libopus \\\
     %{!?_without_pulse:--enable-libpulse} \\\
     %{?_with_rtmp:--enable-librtmp} \\\
+    %{?_with_rubberband:--enable-librubberband} \\\
     --enable-libschroedinger \\\
+    %{?_with_smb:--enable-libsmbclient} \\\
+    %{?_with_snappy:--enable-libsnappy} \\\
     --enable-libsoxr \\\
     --enable-libspeex \\\
+    %{?_with_ssh:--enable-libssh} \\\
+    %{?_with_tesseract:--enable-libtesseract} \\\
     --enable-libtheora \\\
+    %{?_with_twolame:--enable-libtwolame} \\\
     --enable-libvorbis \\\
     --enable-libv4l2 \\\
     %{!?_without_vpx:--enable-libvpx} \\\
+    %{?_with_webp:--enable-libwebp} \\\
     %{!?_without_x264:--enable-libx264} \\\
     %{!?_without_x265:--enable-libx265} \\\
     %{?_with_xvid:--enable-libxvid} \\\
+    %{?_with_zmq:--enable-libzmq} \\\
+    %{?_with_zvbi:--enable-libzvbi} \\\
     --enable-x11grab \\\
     --enable-avfilter \\\
     --enable-avresample \\\
@@ -290,6 +333,7 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 - move libavdevice manpage to its subpackage
 - move examples from main package to -devel as docs
 - add support for libiec61883 and make DV (IEEE 1394) support optional
+- enable optional support for many external libraries (rfbz#4109)
 
 * Thu Jul 07 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.0.2-3
 - Fixed build failure on rawhide due to newer opencv using a patch from upstream
