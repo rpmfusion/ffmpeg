@@ -183,6 +183,8 @@ echo "git-snapshot-%{?branch}%{date}-RPMFusion" > VERSION
 %patch0 -p1
 # fix -O3 -g in host_cflags
 sed -i "s|-O3 -g|$RPM_OPT_FLAGS|" configure
+mkdir -p _doc/examples
+cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
 
 %build
 %{ff_configure}\
@@ -225,6 +227,7 @@ make alltools V=1
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT V=1
+rm -r $RPM_BUILD_ROOT%{_datadir}/ffmpeg/examples
 %if 0%{!?ffmpegsuffix:1}
 install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 %endif
@@ -264,6 +267,7 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 
 %files devel
 %doc MAINTAINERS doc/APIchanges doc/*.txt
+%doc _doc/examples
 %doc %{_docdir}/ffmpeg/*.html
 %{_includedir}/ffmpeg
 %{_libdir}/pkgconfig/lib*.pc
@@ -280,6 +284,7 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 - make xvidcore support optional
 - add missing ldconfig calls for libavdevice package
 - move libavdevice manpage to its subpackage
+- move examples from main package to -devel as docs
 
 * Thu Jul 07 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.0.2-3
 - Fixed build failure on rawhide due to newer opencv using a patch from upstream
