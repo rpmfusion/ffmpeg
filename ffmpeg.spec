@@ -41,7 +41,11 @@ BuildRequires:  libass-devel
 %{!?_without_cdio:BuildRequires: libcdio-paranoia-devel}
 #libcrystalhd is currently broken
 %{?_with_crystalhd:BuildRequires: libcrystalhd-devel}
+%if 0%{?_with_ieee1394}
+BuildRequires:  libavc1394-devel
 BuildRequires:  libdc1394-devel
+BuildRequires:  libiec61883-devel
+%endif
 %{?_with_mfx:BuildRequires: libmfx-devel}
 Buildrequires:  libmodplug-devel
 %{?_with_rtmp:BuildRequires: librtmp-devel}
@@ -135,7 +139,7 @@ This package contains development files for %{name}
     %{!?_without_ladspa:--enable-ladspa} \\\
     --enable-libass \\\
     %{!?_without_cdio:--enable-libcdio} \\\
-    --enable-libdc1394 \\\
+    %{?_with_ieee1394:--enable-libdc1394 --enable-libiec61883} \\\
     %{?_with_faac:--enable-libfaac --enable-nonfree} \\\
     %{?_with_fdk-aac:--enable-libfdk-aac --enable-nonfree} \\\
     %{!?_without_jack:--enable-indev=jack} \\\
@@ -285,6 +289,7 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 - add missing ldconfig calls for libavdevice package
 - move libavdevice manpage to its subpackage
 - move examples from main package to -devel as docs
+- add support for libiec61883 and make DV (IEEE 1394) support optional
 
 * Thu Jul 07 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.0.2-3
 - Fixed build failure on rawhide due to newer opencv using a patch from upstream
