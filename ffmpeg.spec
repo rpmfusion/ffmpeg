@@ -12,8 +12,8 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        3.0.2
-Release:        5%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        3.1.1
+Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr} || 0%{?_with_gmp}
 License:        GPLv3+
 %else
@@ -25,7 +25,7 @@ Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 %else
 Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 %endif
-Patch0:         0001-configure-add-direct-detection-of-libopencv.patch
+Patch0:         %{name}_opj2.patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 BuildRequires:  bzip2-devel
 %{?_with_faac:BuildRequires: faac-devel}
@@ -79,7 +79,7 @@ BuildRequires:  opencl-headers ocl-icd-devel
 Recommends:     opencl-icd
 %endif
 %{!?_without_opencv:BuildRequires: opencv-devel}
-BuildRequires:  openjpeg-devel
+BuildRequires:  openjpeg2-devel
 BuildRequires:  opus-devel
 %{!?_without_pulse:BuildRequires: pulseaudio-libs-devel}
 BuildRequires:  perl(Pod::Man)
@@ -152,6 +152,7 @@ This package contains development files for %{name}
     --mandir=%{_mandir} \\\
     --arch=%{_target_cpu} \\\
     --optflags="$RPM_OPT_FLAGS" \\\
+    --extra-ldflags="$RPM_LD_FLAGS" \\\
     %{?_with_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3} \\\
     --enable-bzlib \\\
     %{?_with_chromaprint:--enable-chromaprint} \\\
@@ -227,7 +228,7 @@ echo "git-snapshot-%{?branch}%{date}-RPMFusion" > VERSION
 %else
 %setup -q -n ffmpeg-%{version}
 %endif
-%patch0 -p1
+%patch0 -p1 -b .opj2
 # fix -O3 -g in host_cflags
 sed -i "s|-O3 -g|$RPM_OPT_FLAGS|" configure
 mkdir -p _doc/examples
@@ -322,6 +323,13 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 
 
 %changelog
+* Wed Jul 27 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.1.1-1
+- Updated to 3.1.1
+- Dropped included patch
+- Added $RPM_LD_FLAGS to %%configure
+- Switched to openjpeg2
+- Fixed build with openjpeg2-2.1.1 (patch by Sandro Mani)
+
 * Sat Jul 23 2016 Igor Gnatenko <ignatenko@redhat.com> - 3.0.2-5
 - Rebuild for libvpx soname bump
 
