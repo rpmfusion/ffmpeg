@@ -8,12 +8,13 @@
 %global _without_frei0r   1
 %global _without_opencv   1
 %global _without_vpx      1
+%global _without_nvenc    1
 %endif
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        3.1.2
-Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr} || 0%{?_with_gmp}
 License:        GPLv3+
 %else
@@ -72,6 +73,7 @@ BuildRequires:  libXvMC-devel
 %endif
 %{?_with_webp:BuildRequires: libwebp-devel}
 %{?_with_netcdf:BuildRequires: netcdf-devel}
+%{!?_without_nvenc:BuildRequires: nvenc-devel}
 %{?_with_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
 %{!?_without_openal:BuildRequires: openal-soft-devel}
 %if 0%{!?_without_opencl:1}
@@ -181,7 +183,7 @@ This package contains development files for %{name}
     %{?_with_qsv:--enable-libmfx} \\\
     --enable-libmp3lame \\\
     %{?_with_netcdf:--enable-netcdf} \\\
-    %{?_with_nvenc:--enable-nvenc  --enable-nonfree} \\\
+    %{!?_without_nvenc:--enable-nvenc --extra-cflags="-I%{_includedir}/nvenc"} \\\
     %{!?_without_openal:--enable-openal} \\\
     %{!?_without_opencl:--enable-opencl} \\\
     %{!?_without_opencv:--enable-libopencv} \\\
@@ -323,6 +325,9 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 
 
 %changelog
+* Thu Aug 25 2016 Leigh Scott <leigh123linux@googlemail.com> - 3.1.2-2
+- enable support for nvenc
+
 * Wed Aug 10 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.1.2-1
 - Updated to 3.1.2
 
