@@ -13,8 +13,8 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        3.1.2
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        3.1.3
+Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr} || 0%{?_with_gmp}
 License:        GPLv3+
 %else
@@ -325,6 +325,9 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 
 
 %changelog
+* Sat Aug 27 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.1.3-1
+- Updated to 3.1.3
+
 * Thu Aug 25 2016 Leigh Scott <leigh123linux@googlemail.com> - 3.1.2-2
 - enable support for nvenc
 
