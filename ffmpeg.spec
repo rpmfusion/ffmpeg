@@ -14,7 +14,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        3.1.3
-Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr} || 0%{?_with_gmp}
 License:        GPLv3+
 %else
@@ -57,7 +57,7 @@ BuildRequires:  libiec61883-devel
 %endif
 BuildRequires:  libgcrypt-devel
 BuildRequires:  libGL-devel
-%{?_with_mfx:BuildRequires: libmfx-devel}
+%{!?_without_mfx:BuildRequires: libmfx-devel}
 Buildrequires:  libmodplug-devel
 %{?_with_rtmp:BuildRequires: librtmp-devel}
 %{?_with_smb:BuildRequires: libsmbclient-devel}
@@ -180,7 +180,7 @@ This package contains development files for %{name}
     %{?_with_gme:--enable-libgme} \\\
     --enable-libgsm \\\
     %{?_with_ilbc:--enable-libilbc} \\\
-    %{?_with_qsv:--enable-libmfx} \\\
+    %{!?_without_qsv:--enable-libmfx} \\\
     --enable-libmp3lame \\\
     %{?_with_netcdf:--enable-netcdf} \\\
     %{!?_without_nvenc:--enable-nvenc --extra-cflags="-I%{_includedir}/nvenc"} \\\
@@ -325,6 +325,9 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 
 
 %changelog
+* Sat Sep 03 2016 Dominik Mierzejewski <rpm@greysector.net> - 3.1.3-2
+- enable QSV support by default, since libmfx is in Fedora now
+
 * Sat Aug 27 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.1.3-1
 - Updated to 3.1.3
 
