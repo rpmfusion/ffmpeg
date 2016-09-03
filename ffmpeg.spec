@@ -57,7 +57,6 @@ BuildRequires:  libiec61883-devel
 %endif
 BuildRequires:  libgcrypt-devel
 BuildRequires:  libGL-devel
-%{!?_without_mfx:BuildRequires: libmfx-devel}
 Buildrequires:  libmodplug-devel
 %{?_with_rtmp:BuildRequires: librtmp-devel}
 %{?_with_smb:BuildRequires: libsmbclient-devel}
@@ -68,8 +67,10 @@ BuildRequires:  libvdpau-devel
 BuildRequires:  libvorbis-devel
 %{?!_without_vpx:BuildRequires: libvpx-devel >= 0.9.1}
 %ifarch %{ix86} x86_64
+%{!?_without_mfx:BuildRequires: libmfx-devel}
 BuildRequires:  libXvMC-devel
 %{?!_without_vaapi:BuildRequires: libva-devel >= 0.31.0}
+BuildRequires:  yasm
 %endif
 %{?_with_webp:BuildRequires: libwebp-devel}
 %{?_with_netcdf:BuildRequires: netcdf-devel}
@@ -103,9 +104,6 @@ BuildRequires:  texinfo
 BuildRequires:  zlib-devel
 %{?_with_zmq:BuildRequires: zeromq-devel}
 %{?_with_zvbi:BuildRequires: zvbi-devel}
-%ifarch %{ix86} x86_64
-BuildRequires:  yasm
-%endif
 
 %description
 FFmpeg is a complete and free Internet live audio and video
@@ -327,6 +325,8 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 %changelog
 * Sat Sep 03 2016 Dominik Mierzejewski <rpm@greysector.net> - 3.1.3-2
 - enable QSV support by default, since libmfx is in Fedora now
+- QSV is x86 only
+- put x86-specific BRs in one place
 
 * Sat Aug 27 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.1.3-1
 - Updated to 3.1.3
