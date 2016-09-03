@@ -178,7 +178,6 @@ This package contains development files for %{name}
     %{?_with_gme:--enable-libgme} \\\
     --enable-libgsm \\\
     %{?_with_ilbc:--enable-libilbc} \\\
-    %{!?_without_qsv:--enable-libmfx} \\\
     --enable-libmp3lame \\\
     %{?_with_netcdf:--enable-netcdf} \\\
     %{!?_without_nvenc:--enable-nvenc --extra-cflags="-I%{_includedir}/nvenc"} \\\
@@ -244,6 +243,9 @@ cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
 %else
 %ifarch %{ix86}
     --cpu=%{_target_cpu} \
+%endif
+%ifarch %{ix86} x86_64
+    %{!?_without_qsv:--enable-libmfx} \\\
 %endif
 %ifarch %{ix86} x86_64 ppc ppc64
     --enable-runtime-cpudetect \
