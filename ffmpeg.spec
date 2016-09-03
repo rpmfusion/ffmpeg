@@ -245,7 +245,7 @@ cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
     --cpu=%{_target_cpu} \
 %endif
 %ifarch %{ix86} x86_64
-    %{!?_without_qsv:--enable-libmfx} \\\
+    %{!?_without_qsv:--enable-libmfx} \
 %endif
 %ifarch %{ix86} x86_64 ppc ppc64
     --enable-runtime-cpudetect \
