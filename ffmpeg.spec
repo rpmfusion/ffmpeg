@@ -12,8 +12,8 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        3.0.2
-Release:        4%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        3.0.3
+Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr} || 0%{?_with_gmp}
 License:        GPLv3+
 %else
@@ -322,6 +322,9 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 
 
 %changelog
+* Mon Sep 05 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.0.3-1
+- Updated to 3.0.3
+
 * Sun Jul 10 2016 Dominik Mierzejewski <rpm@greysector.net> - 3.0.2-4
 - enable jack by default (rfbz#2156)
 - re-enable opencl by default (rfbz#3640 was fixed)
