@@ -20,7 +20,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        3.1.3
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr} || 0%{?_with_gmp}
 License:        GPLv3+
 %else
@@ -331,6 +331,9 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 
 
 %changelog
+* Thu Sep 08 2016 Nicolas Chauvet <nicolas.chauvet@kwizart.fr> - 3.1.3-3
+- Disable OpenCV for Fedora >= 25
+
 * Sat Sep 03 2016 Dominik Mierzejewski <rpm@greysector.net> - 3.1.3-2
 - enable QSV support by default, since libmfx is in Fedora now
 - QSV is x86 only
