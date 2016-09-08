@@ -4,6 +4,12 @@
 #global date    20110612
 #global rel     rc1
 
+%if 0%{?fedora} >= 25
+# OpenCV 3.X has an overlinking issue - unsuitable for core libraries
+# Reported as https://github.com/opencv/opencv/issues/7001
+%global _without_opencv   1
+%endif
+
 %if 0%{?rhel}
 %global _without_frei0r   1
 %global _without_opencv   1
