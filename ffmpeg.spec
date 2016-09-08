@@ -331,7 +331,7 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 
 
 %changelog
-* Thu Sep 08 2016 Nicolas Chauvet <nicolas.chauvet@kwizart.fr> - 3.1.3-3
+* Thu Sep 08 2016 Nicolas Chauvet <kwizart@gmail.com> - 3.1.3-3
 - Disable OpenCV for Fedora >= 25
 
 * Sat Sep 03 2016 Dominik Mierzejewski <rpm@greysector.net> - 3.1.3-2
