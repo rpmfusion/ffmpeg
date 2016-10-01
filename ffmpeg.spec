@@ -20,7 +20,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        3.1.4
-Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr} || 0%{?_with_gmp}
 License:        GPLv3+
 %else
@@ -106,7 +106,7 @@ BuildRequires:  texinfo
 %{?_with_wavpack:BuildRequires: wavpack-devel}
 %{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.31}
 %{!?_without_x265:BuildRequires: x265-devel}
-%{?_with_xvid:BuildRequires: xvidcore-devel}
+%{!?_without_xvid:BuildRequires: xvidcore-devel}
 BuildRequires:  zlib-devel
 %{?_with_zmq:BuildRequires: zeromq-devel}
 %{?_with_zvbi:BuildRequires: zvbi-devel}
@@ -211,7 +211,7 @@ This package contains development files for %{name}
     %{?_with_webp:--enable-libwebp} \\\
     %{!?_without_x264:--enable-libx264} \\\
     %{!?_without_x265:--enable-libx265} \\\
-    %{?_with_xvid:--enable-libxvid} \\\
+    %{!?_without_xvid:--enable-libxvid} \\\
     %{?_with_zmq:--enable-libzmq} \\\
     %{?_with_zvbi:--enable-libzvbi} \\\
     --enable-x11grab \\\
@@ -331,6 +331,9 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 
 
 %changelog
+* Sat Oct 01 2016 Leigh Scott <leigh123linux@googlemail.com> - 3.1.4-2
+- Fix missing libxvid (rfbz#4274)
+
 * Sat Oct 01 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.1.4-1
 - Updated to 3.1.4
 
