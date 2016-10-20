@@ -12,8 +12,8 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        3.0.3
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        3.0.4
+Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr} || 0%{?_with_gmp}
 License:        GPLv3+
 %else
@@ -322,6 +322,9 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 
 
 %changelog
+* Thu Oct 20 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.0.4-1
+- Updated to 3.0.4
+
 * Sat Oct 01 2016 Leigh Scott <leigh123linux@googlemail.com> - 3.0.3-2
 - Fix missing libxvid (rfbz#4274)
 
