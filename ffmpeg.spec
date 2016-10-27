@@ -32,7 +32,6 @@ Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 %else
 Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 %endif
-Patch0:         %{name}_opj2.patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 BuildRequires:  bzip2-devel
 %{?_with_faac:BuildRequires: faac-devel}
@@ -233,7 +232,6 @@ echo "git-snapshot-%{?branch}%{date}-RPMFusion" > VERSION
 %else
 %setup -q -n ffmpeg-%{version}
 %endif
-%patch0 -p1 -b .opj2
 # fix -O3 -g in host_cflags
 sed -i "s|-O3 -g|$RPM_OPT_FLAGS|" configure
 mkdir -p _doc/examples
