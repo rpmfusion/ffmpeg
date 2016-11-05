@@ -4,15 +4,22 @@
 #global date    20110612
 #global rel     rc1
 
+%if 0%{?fedora} >= 25
+# OpenCV 3.X has an overlinking issue - unsuitable for core libraries
+# Reported as https://github.com/opencv/opencv/issues/7001
+%global _without_opencv   1
+%endif
+
 %if 0%{?rhel}
 %global _without_frei0r   1
 %global _without_opencv   1
 %global _without_vpx      1
+%global _without_nvenc    1
 %endif
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        3.0.4
+Version:        3.1.5
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr} || 0%{?_with_gmp}
 License:        GPLv3+
@@ -25,7 +32,6 @@ Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 %else
 Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 %endif
-Patch0:         0001-configure-add-direct-detection-of-libopencv.patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 BuildRequires:  bzip2-devel
 %{?_with_faac:BuildRequires: faac-devel}
@@ -56,7 +62,6 @@ BuildRequires:  libiec61883-devel
 %endif
 BuildRequires:  libgcrypt-devel
 BuildRequires:  libGL-devel
-%{?_with_mfx:BuildRequires: libmfx-devel}
 Buildrequires:  libmodplug-devel
 %{?_with_rtmp:BuildRequires: librtmp-devel}
 %{?_with_smb:BuildRequires: libsmbclient-devel}
@@ -67,11 +72,14 @@ BuildRequires:  libvdpau-devel
 BuildRequires:  libvorbis-devel
 %{?!_without_vpx:BuildRequires: libvpx-devel >= 0.9.1}
 %ifarch %{ix86} x86_64
+%{!?_without_mfx:BuildRequires: libmfx-devel}
 BuildRequires:  libXvMC-devel
 %{?!_without_vaapi:BuildRequires: libva-devel >= 0.31.0}
+BuildRequires:  yasm
 %endif
 %{?_with_webp:BuildRequires: libwebp-devel}
 %{?_with_netcdf:BuildRequires: netcdf-devel}
+%{!?_without_nvenc:BuildRequires: nvenc-devel}
 %{?_with_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
 %{!?_without_openal:BuildRequires: openal-soft-devel}
 %if 0%{!?_without_opencl:1}
@@ -79,7 +87,7 @@ BuildRequires:  opencl-headers ocl-icd-devel
 Recommends:     opencl-icd
 %endif
 %{!?_without_opencv:BuildRequires: opencv-devel}
-BuildRequires:  openjpeg-devel
+BuildRequires:  openjpeg2-devel
 BuildRequires:  opus-devel
 %{!?_without_pulse:BuildRequires: pulseaudio-libs-devel}
 BuildRequires:  perl(Pod::Man)
@@ -101,9 +109,6 @@ BuildRequires:  texinfo
 BuildRequires:  zlib-devel
 %{?_with_zmq:BuildRequires: zeromq-devel}
 %{?_with_zvbi:BuildRequires: zvbi-devel}
-%ifarch %{ix86} x86_64
-BuildRequires:  yasm
-%endif
 
 %description
 FFmpeg is a complete and free Internet live audio and video
@@ -152,6 +157,7 @@ This package contains development files for %{name}
     --mandir=%{_mandir} \\\
     --arch=%{_target_cpu} \\\
     --optflags="$RPM_OPT_FLAGS" \\\
+    --extra-ldflags="$RPM_LD_FLAGS" \\\
     %{?_with_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3} \\\
     --enable-bzlib \\\
     %{?_with_chromaprint:--enable-chromaprint} \\\
@@ -177,10 +183,9 @@ This package contains development files for %{name}
     %{?_with_gme:--enable-libgme} \\\
     --enable-libgsm \\\
     %{?_with_ilbc:--enable-libilbc} \\\
-    %{?_with_qsv:--enable-libmfx} \\\
     --enable-libmp3lame \\\
     %{?_with_netcdf:--enable-netcdf} \\\
-    %{?_with_nvenc:--enable-nvenc  --enable-nonfree} \\\
+    %{!?_without_nvenc:--enable-nvenc --extra-cflags="-I%{_includedir}/nvenc"} \\\
     %{!?_without_openal:--enable-openal} \\\
     %{!?_without_opencl:--enable-opencl} \\\
     %{!?_without_opencv:--enable-libopencv} \\\
@@ -227,7 +232,6 @@ echo "git-snapshot-%{?branch}%{date}-RPMFusion" > VERSION
 %else
 %setup -q -n ffmpeg-%{version}
 %endif
-%patch0 -p1
 # fix -O3 -g in host_cflags
 sed -i "s|-O3 -g|$RPM_OPT_FLAGS|" configure
 mkdir -p _doc/examples
@@ -243,6 +247,9 @@ cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
 %else
 %ifarch %{ix86}
     --cpu=%{_target_cpu} \
+%endif
+%ifarch %{ix86} x86_64
+    %{!?_without_qsv:--enable-libmfx} \
 %endif
 %ifarch %{ix86} x86_64 ppc ppc64
     --enable-runtime-cpudetect \
@@ -322,6 +329,9 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 
 
 %changelog
+* Sat Nov 05 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.1.5-1
+- Updated to 3.1.5
+
 * Thu Oct 20 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.0.4-1
 - Updated to 3.0.4
 
