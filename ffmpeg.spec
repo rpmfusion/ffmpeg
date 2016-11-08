@@ -20,7 +20,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        3.2
-Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr} || 0%{?_with_gmp}
 License:        GPLv3+
 %else
@@ -330,6 +330,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Tue Nov 08 2016 Sérgio Basto <sergio@serjux.com> - 3.2-2
+- Rebuild for x265-2.1
+
 * Sat Oct 29 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.2-1
 - Updated to 3.2
 - Dropped openjpeg2 patch
