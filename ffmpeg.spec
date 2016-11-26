@@ -19,8 +19,8 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        3.2
-Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        3.2.1
+Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr} || 0%{?_with_gmp}
 License:        GPLv3+
 %else
@@ -330,6 +330,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Sat Nov 26 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.2.1-1
+- Updated to 3.2.1
+
 * Wed Nov 16 2016 Adrian Reber <adrian@lisas.de> - 3.2-3
 - Rebuild for libcdio-0.94
 
