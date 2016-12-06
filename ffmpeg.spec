@@ -19,7 +19,7 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        3.1.5
+Version:        3.1.6
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr} || 0%{?_with_gmp}
 License:        GPLv3+
@@ -28,9 +28,9 @@ License:        GPLv2+
 %endif
 URL:            http://ffmpeg.org/
 %if 0%{?date}
-Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
+Source0:        %{name}-%{?branch}%{date}.tar.bz2
 %else
-Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
+Source0:        http://ffmpeg.org/releases/%{name}-%{version}.tar.xz
 %endif
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 BuildRequires:  bzip2-devel
@@ -175,7 +175,7 @@ This package contains development files for %{name}
     %{!?_without_cdio:--enable-libcdio} \\\
     %{?_with_ieee1394:--enable-libdc1394 --enable-libiec61883} \\\
     %{?_with_faac:--enable-libfaac --enable-nonfree} \\\
-    %{?_with_fdk-aac:--enable-libfdk-aac --enable-nonfree} \\\
+    %{?_with_fdk_aac:--enable-libfdk-aac --enable-nonfree} \\\
     %{?_with_flite:--enable-libflite} \\\
     %{!?_without_jack:--enable-indev=jack} \\\
     --enable-libfreetype \\\
@@ -227,13 +227,13 @@ This package contains development files for %{name}
 
 %prep
 %if 0%{?date}
-%setup -q -n ffmpeg-%{?branch}%{date}
+%setup -q -n %{name}-%{?branch}%{date}
 echo "git-snapshot-%{?branch}%{date}-RPMFusion" > VERSION
 %else
-%setup -q -n ffmpeg-%{version}
+%setup -q
 %endif
 # fix -O3 -g in host_cflags
-sed -i "s|-O3 -g|$RPM_OPT_FLAGS|" configure
+sed -i "s|check_host_cflags -O3|check_host_cflags $RPM_OPT_FLAGS|" configure
 mkdir -p _doc/examples
 cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
 
@@ -275,12 +275,12 @@ cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
 %endif
 %endif
 
-make %{?_smp_mflags} V=1
+%make_build V=1
 make documentation V=1
 make alltools V=1
 
 %install
-make install DESTDIR=$RPM_BUILD_ROOT V=1
+%make_install V=1
 rm -r $RPM_BUILD_ROOT%{_datadir}/ffmpeg/examples
 %if 0%{!?ffmpegsuffix:1}
 install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
@@ -306,7 +306,7 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 %{_mandir}/man1/ffplay*.1*
 %{_mandir}/man1/ffprobe*.1*
 %{_mandir}/man1/ffserver*.1*
-%{_datadir}/ffmpeg
+%{_datadir}/%{name}
 %endif
 
 %files libs
@@ -322,13 +322,17 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 %files devel
 %doc MAINTAINERS doc/APIchanges doc/*.txt
 %doc _doc/examples
-%doc %{_docdir}/ffmpeg/*.html
-%{_includedir}/ffmpeg
+%doc %{_docdir}/%{name}/*.html
+%{_includedir}/%{name}
 %{_libdir}/pkgconfig/lib*.pc
 %{_libdir}/lib*.so
 
 
 %changelog
+* Tue Dec 06 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.1.6-1
+- Updated to 3.1.6
+- Backported some .spec cleanups from rawhide
+
 * Sat Nov 05 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.1.5-1
 - Updated to 3.1.5
 
