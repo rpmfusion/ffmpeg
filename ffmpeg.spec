@@ -12,7 +12,7 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        2.8.9
+Version:        2.8.10
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
@@ -21,9 +21,9 @@ License:        GPLv2+
 %endif
 URL:            http://ffmpeg.org/
 %if 0%{?date}
-Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
+Source0:        %{name}-%{?branch}%{date}.tar.bz2
 %else
-Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
+Source0:        http://ffmpeg.org/releases/%{name}-%{version}.tar.xz
 %endif
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 BuildRequires:  bzip2-devel
@@ -124,6 +124,7 @@ This package contains development files for %{name}
     --mandir=%{_mandir} \\\
     --arch=%{_target_cpu} \\\
     --optflags="$RPM_OPT_FLAGS" \\\
+    --extra-ldflags="$RPM_LD_FLAGS" \\\
     %{?_with_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3} \\\
     --enable-bzlib \\\
     %{!?_with_crystalhd:--disable-crystalhd} \\\
@@ -136,7 +137,7 @@ This package contains development files for %{name}
     --enable-libdc1394 \\\
     %{?_with_dirac:--enable-libdirac} \\\
     %{?_with_faac:--enable-libfaac --enable-nonfree} \\\
-    %{?_with_fdk-aac:--enable-libfdk-aac --enable-nonfree} \\\
+    %{?_with_fdk_aac:--enable-libfdk-aac --enable-nonfree} \\\
     %{!?_with_jack:--disable-indev=jack} \\\
     --enable-libfreetype \\\
     --enable-libgsm \\\
@@ -173,13 +174,13 @@ This package contains development files for %{name}
 
 %prep
 %if 0%{?date}
-%setup -q -n ffmpeg-%{?branch}%{date}
+%setup -q -n %{name}-%{?branch}%{date}
 echo "git-snapshot-%{?branch}%{date}-RPMFusion" > VERSION
 %else
-%setup -q -n ffmpeg-%{version}
+%setup -q
 %endif
 # fix -O3 -g in host_cflags
-sed -i "s|-O3 -g|$RPM_OPT_FLAGS|" configure
+sed -i "s|check_host_cflags -O3|check_host_cflags $RPM_OPT_FLAGS|" configure
 
 %build
 %{ff_configure}\
@@ -216,12 +217,12 @@ sed -i "s|-O3 -g|$RPM_OPT_FLAGS|" configure
 %endif
 %endif
 
-make %{?_smp_mflags} V=1
+%make_build V=1
 make documentation V=1
 make alltools V=1
 
 %install
-make install DESTDIR=$RPM_BUILD_ROOT V=1
+%make_install V=1
 %if 0%{!?ffmpegsuffix:1}
 install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 %endif
@@ -242,7 +243,7 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 %{_mandir}/man1/ffplay*.1*
 %{_mandir}/man1/ffprobe*.1*
 %{_mandir}/man1/ffserver*.1*
-%{_datadir}/ffmpeg
+%{_datadir}/%{name}
 %endif
 
 %files libs
@@ -255,13 +256,17 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 
 %files devel
 %doc MAINTAINERS doc/APIchanges doc/*.txt
-%doc %{_docdir}/ffmpeg/*.html
-%{_includedir}/ffmpeg
+%doc %{_docdir}/%{name}/*.html
+%{_includedir}/%{name}
 %{_libdir}/pkgconfig/lib*.pc
 %{_libdir}/lib*.so
 
 
 %changelog
+* Tue Dec 06 2016 Julian Sikorski <belegdol@fedoraproject.org> - 2.8.10-1
+- Updated to 2.8.10
+- Backported some .spec cleanups from rawhide
+
 * Sun Dec 04 2016 Julian Sikorski <belegdol@fedoraproject.org> - 2.8.9-1
 - Updated to 2.8.9
 
