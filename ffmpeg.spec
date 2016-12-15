@@ -38,15 +38,15 @@
 %endif
 
 Summary:        Digital VCR and streaming server
-Name:           ffmpeg
+Name:           ffmpeg%{?flavor}
 Version:        3.2.2
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
-Source0:        %{name}-%{?branch}%{date}.tar.bz2
+Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 %else
-Source0:        http://ffmpeg.org/releases/%{name}-%{version}.tar.xz
+Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 %endif
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 BuildRequires:  bzip2-devel
@@ -142,10 +142,10 @@ VCR. It can encode in real time in many formats including MPEG1 audio
 and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
 This package contains the libraries for %{name}
 
-%package     -n libavdevice
+%package     -n libavdevice%{?flavor}
 Summary:        Special devices muxing/demuxing library
 
-%description -n libavdevice
+%description -n libavdevice%{?flavor}
 Libavdevice is a complementary library to libavf "libavformat". It provides
 various "special" platform-specific muxers and demuxers, e.g. for grabbing
 devices, audio capture and playback etc.
@@ -153,7 +153,7 @@ devices, audio capture and playback etc.
 %package        devel
 Summary:        Development package for %{name}
 Requires:       %{name}-libs%{_isa} = %{version}-%{release}
-Requires:       libavdevice%{_isa} = %{version}-%{release}
+Requires:       libavdevice%{?flavor}%{_isa} = %{version}-%{release}
 Requires:       pkgconfig
 
 %description    devel
@@ -177,6 +177,7 @@ This package contains development files for %{name}
     --optflags="%{optflags}" \\\
     --extra-ldflags="%{?__global_ldflags} %{?cuda_ldflags}" \\\
     --extra-cflags="%{?nvenc_cflags} %{?cuda_cflags}" \\\
+    %{?flavor:--disable-manpages} \\\
     %{?_with_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3} \\\
     --enable-bzlib \\\
     %{?_with_chromaprint:--enable-chromaprint} \\\
@@ -249,7 +250,7 @@ This package contains development files for %{name}
 
 %prep
 %if 0%{?date}
-%setup -q -n %{name}-%{?branch}%{date}
+%setup -q -n ffmpeg-%{?branch}%{date}
 echo "git-snapshot-%{?branch}%{date}-RPMFusion" > VERSION
 %else
 %setup -q
@@ -312,9 +313,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 %postun libs -p /sbin/ldconfig
 
-%post -n libavdevice -p /sbin/ldconfig
+%post -n libavdevice%{?flavor} -p /sbin/ldconfig
 
-%postun -n libavdevice -p /sbin/ldconfig
+%postun -n libavdevice%{?flavor} -p /sbin/ldconfig
 
 %if 0%{!?ffmpegsuffix:1}
 %files
@@ -337,7 +338,7 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 %{_mandir}/man3/lib*.3.gz
 %exclude %{_mandir}/man3/libavdevice.3*
 
-%files -n libavdevice
+%files -n libavdevice%{?flavor}
 %{_libdir}/libavdevice.so.*
 %{_mandir}/man3/libavdevice.3*
 
