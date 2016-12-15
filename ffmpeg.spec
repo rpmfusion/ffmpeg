@@ -114,6 +114,7 @@ VCR. It can encode in real time in many formats including MPEG1 audio
 and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
 This package contains development files for %{name}
 
+# Don't use the %%configure macro as this is not an autotool script
 %global ff_configure \
 ./configure \\\
     --prefix=%{_prefix} \\\
