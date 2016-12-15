@@ -178,6 +178,8 @@ This package contains development files for %{name}
     --extra-ldflags="%{?__global_ldflags} %{?cuda_ldflags}" \\\
     --extra-cflags="%{?nvenc_cflags} %{?cuda_cflags}" \\\
     %{?flavor:--disable-manpages} \\\
+    %{?progs_suffix:--progs-suffix=%{progs_suffix}} \\\
+    %{?build_suffix:--build-suffix=%{build_suffix}} \\\
     %{?_with_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3} \\\
     --enable-bzlib \\\
     %{?_with_chromaprint:--enable-chromaprint} \\\
@@ -305,7 +307,7 @@ make alltools V=1
 %install
 %make_install V=1
 rm -r %{buildroot}%{_datadir}/%{name}/examples
-%if 0%{!?ffmpegsuffix:1}
+%if 0%{!?progs_suffix:1}
 install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 %endif
 
@@ -320,27 +322,30 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 %if 0%{!?ffmpegsuffix:1}
 %files
 %doc COPYING.* CREDITS README.md doc/ffserver.conf
-%{_bindir}/ffmpeg
-%{_bindir}/ffplay
-%{_bindir}/ffprobe
-%{_bindir}/ffserver
-%{_bindir}/qt-faststart
+%{_bindir}/ffmpeg%{?progs_suffix}
+%{_bindir}/ffplay%{?progs_suffix}
+%{_bindir}/ffprobe%{?progs_suffix}
+%{_bindir}/ffserver%{?progs_suffix}
+%{!?progs_suffix:%{_bindir}/qt-faststart}
+%{!?flavor:
 %{_mandir}/man1/ffmpeg*.1*
 %{_mandir}/man1/ffplay*.1*
 %{_mandir}/man1/ffprobe*.1*
 %{_mandir}/man1/ffserver*.1*
+}
 %{_datadir}/%{name}
 %endif
 
 %files libs
 %{_libdir}/lib*.so.*
-%exclude %{_libdir}/libavdevice.so.*
-%{_mandir}/man3/lib*.3.gz
+%exclude %{_libdir}/libavdevice%{?build_suffix}.so.*
+%{!?flavor:%{_mandir}/man3/lib*.3.gz
 %exclude %{_mandir}/man3/libavdevice.3*
+}
 
 %files -n libavdevice%{?flavor}
-%{_libdir}/libavdevice.so.*
-%{_mandir}/man3/libavdevice.3*
+%{_libdir}/libavdevice%{?build_suffix}.so.*
+%{!?flavor:%{_mandir}/man3/libavdevice.3*}
 
 %files devel
 %doc MAINTAINERS doc/APIchanges doc/*.txt
