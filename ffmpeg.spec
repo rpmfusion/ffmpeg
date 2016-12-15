@@ -17,6 +17,23 @@
 %global _without_nvenc    1
 %endif
 
+# flavor nonfree
+%if 0%{?_with_nonfree:1}
+%global flavor           -nonfree
+%global progs_suffix     -nonfree
+#global build_suffix     -lgpl
+%global _with_cuda       1
+%global _with_cuvid      1
+%global _with_libnpp     1
+%global _with_fdk_aac    1
+%global _without_cdio    1
+%global _without_frei0r  1
+%global _without_gpl     1
+%global _without_x264    1
+%global _without_x265    1
+%global _without_x11grab 1
+%endif
+
 # extras flags
 %if 0%{!?_without_nvenc:1}
 %global nvenc_cflags -I%{_includedir}/nvenc
