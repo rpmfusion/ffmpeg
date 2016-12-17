@@ -17,6 +17,16 @@
 %global _without_nvenc    1
 %endif
 
+# extras flags
+%if 0%{!?_without_nvenc:1}
+%global nvenc_cflags -I%{_includedir}/nvenc
+%endif
+%if 0%{?_with_cuda}
+%{!?_cuda_includedir:%global _cuda_includedir $(pkg-config --cflags cuda-8.0)}
+%global cuda_cflags -I%{_cuda_includedir}
+%global cuda_ldflags -L%{_libdir}/nvidia
+%endif
+
 %if 0%{?_without_gpl}
 %global lesser L
 %endif
@@ -164,7 +174,8 @@ This package contains development files for %{name}
     --mandir=%{_mandir} \\\
     --arch=%{_target_cpu} \\\
     --optflags="%{optflags}" \\\
-    --extra-ldflags="%{?__global_ldflags}" \\\
+    --extra-ldflags="%{?__global_ldflags} %{?cuda_ldflags}" \\\
+    --extra-cflags="%{?nvenc_cflags} %{?cuda_cflags}" \\\
     %{?_with_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3} \\\
     --enable-bzlib \\\
     %{?_with_chromaprint:--enable-chromaprint} \\\
@@ -179,6 +190,8 @@ This package contains development files for %{name}
     --enable-libbluray \\\
     %{?_with_bs2b:--enable-libbs2b} \\\
     %{?_with_caca:--enable-libcaca} \\\
+    %{?_with_cuda:--enable-cuda --enable-nonfree} \\\
+    %{?_with_cuvid:--enable-cuvid --enable-nonfree} \\\
     %{!?_without_cdio:--enable-libcdio} \\\
     %{?_with_ieee1394:--enable-libdc1394 --enable-libiec61883} \\\
     %{?_with_faac:--enable-libfaac --enable-nonfree} \\\
@@ -190,9 +203,10 @@ This package contains development files for %{name}
     %{?_with_gme:--enable-libgme} \\\
     --enable-libgsm \\\
     %{?_with_ilbc:--enable-libilbc} \\\
+    %{?_with_libnpp:--enable-libnpp --enable-nonfree} \\\
     --enable-libmp3lame \\\
     %{?_with_netcdf:--enable-netcdf} \\\
-    %{!?_without_nvenc:--enable-nvenc --extra-cflags="-I%{_includedir}/nvenc"} \\\
+    %{!?_without_nvenc:--enable-nvenc} \\\
     %{!?_without_openal:--enable-openal} \\\
     %{!?_without_opencl:--enable-opencl} \\\
     %{!?_without_opencv:--enable-libopencv} \\\
