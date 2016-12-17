@@ -17,15 +17,21 @@
 %global _without_nvenc    1
 %endif
 
+%if 0%{?_without_gpl}
+%global lesser L
+%endif
+
+%if 0%{?_with_amr} || 0%{?_with_gmp} || 0%{?_with_smb}
+%global ffmpeg_license %{?lesser}GPLv3+
+%else
+%global ffmpeg_license %{?lesser}GPLv2+
+%endif
+
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        3.2.2
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
-%if 0%{?_with_amr} || 0%{?_with_gmp}
-License:        GPLv3+
-%else
-License:        GPLv2+
-%endif
+License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
 Source0:        %{name}-%{?branch}%{date}.tar.bz2
@@ -221,7 +227,7 @@ This package contains development files for %{name}
     --enable-pthreads \\\
     --disable-static \\\
     --enable-shared \\\
-    --enable-gpl \\\
+    %{!?_without_gpl:--enable-gpl} \\\
     --disable-debug \\\
     --disable-stripping
 
