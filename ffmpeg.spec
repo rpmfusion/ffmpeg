@@ -220,7 +220,7 @@ This package contains development files for %{name}
     %{!?_without_xvid:--enable-libxvid} \\\
     %{?_with_zmq:--enable-libzmq} \\\
     %{?_with_zvbi:--enable-libzvbi} \\\
-    --enable-x11grab \\\
+    %{!?_without_x11grab:--enable-x11grab} \\\
     --enable-avfilter \\\
     --enable-avresample \\\
     --enable-postproc \\\
