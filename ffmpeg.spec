@@ -124,7 +124,7 @@ BuildRequires:  yasm
 %{!?_without_openal:BuildRequires: openal-soft-devel}
 %if 0%{!?_without_opencl:1}
 BuildRequires:  opencl-headers ocl-icd-devel
-Recommends:     opencl-icd
+%{?fedora:Recommends: opencl-icd}
 %endif
 %{!?_without_opencv:BuildRequires: opencv-devel}
 BuildRequires:  openjpeg2-devel
@@ -385,6 +385,7 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 - enable optional nonfree build with cuda, cuvid, npp and fdk-aac
   (most credit for this goes to Nicolas Chauvet)
 - allow disabling x11grab (conflicts with nonfree builds)
+- use Recommends only on Fedora (patch by Nicolas Chauvet)
 
 * Tue Dec 06 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.2.2-1
 - Updated to 3.2.2
