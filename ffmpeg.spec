@@ -53,7 +53,7 @@
 %global lesser L
 %endif
 
-%if 0%{?_with_amr} || 0%{?_with_gmp} || 0%{?_with_smb}
+%if 0%{!?_without_amr} || 0%{?_with_gmp} || 0%{?_with_smb}
 %global ffmpeg_license %{?lesser}GPLv3+
 %else
 %global ffmpeg_license %{?lesser}GPLv2+
@@ -120,7 +120,7 @@ BuildRequires:  yasm
 %{?_with_webp:BuildRequires: libwebp-devel}
 %{?_with_netcdf:BuildRequires: netcdf-devel}
 %{!?_without_nvenc:BuildRequires: nvenc-devel}
-%{?_with_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
+%{!?_without_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
 %{!?_without_openal:BuildRequires: openal-soft-devel}
 %if 0%{!?_without_opencl:1}
 BuildRequires:  opencl-headers ocl-icd-devel
@@ -204,7 +204,7 @@ This package contains development files for %{name}
     %{?flavor:--disable-manpages} \\\
     %{?progs_suffix:--progs-suffix=%{progs_suffix}} \\\
     %{?build_suffix:--build-suffix=%{build_suffix}} \\\
-    %{?_with_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3} \\\
+    %{!?_without_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3} \\\
     --enable-bzlib \\\
     %{?_with_chromaprint:--enable-chromaprint} \\\
     %{!?_with_crystalhd:--disable-crystalhd} \\\
@@ -386,6 +386,7 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
   (most credit for this goes to Nicolas Chauvet)
 - allow disabling x11grab (conflicts with nonfree builds)
 - use Recommends only on Fedora (patch by Nicolas Chauvet)
+- enable AMR codecs by default (rfbz#4367, patch by Nicolas Chauvet)
 
 * Tue Dec 06 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.2.2-1
 - Updated to 3.2.2
