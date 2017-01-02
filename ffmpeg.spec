@@ -272,7 +272,7 @@ This package contains development files for %{name}
 %setup -q -n ffmpeg-%{?branch}%{date}
 echo "git-snapshot-%{?branch}%{date}-RPMFusion" > VERSION
 %else
-%setup -q
+%setup -q -n ffmpeg-%{version}
 %endif
 # fix -O3 -g in host_cflags
 sed -i "s|check_host_cflags -O3|check_host_cflags %{optflags}|" configure
