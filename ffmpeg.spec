@@ -44,6 +44,11 @@
 %global cuda_ldflags -L%{_libdir}/nvidia
 %endif
 
+%if 0%{?_with_libnpp}
+%global libnpp_cflags $(pkg-config --cflags nppi-8.0 nppc-8.0)
+%global libnpp_ldlags $(pkg-config --libs-only-L nppi-8.0 nppc-8.0)
+%endif
+
 %if 0%{?_without_gpl}
 %global lesser L
 %endif
@@ -67,6 +72,7 @@ Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 %endif
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 %{?_with_cuda:BuildRequires: cuda-driver-dev-8-0 cuda-misc-headers-8-0 cuda-drivers-devel%{_isa}}
+%{?_with_libnpp:BuildRequires: cuda-cudart-dev-8-0 cuda-misc-headers-8-0 cuda-npp-dev-8-0}
 BuildRequires:  bzip2-devel
 %{?_with_faac:BuildRequires: faac-devel}
 %{?_with_fdk_aac:BuildRequires: fdk-aac-devel}
@@ -193,8 +199,8 @@ This package contains development files for %{name}
     --mandir=%{_mandir} \\\
     --arch=%{_target_cpu} \\\
     --optflags="%{optflags}" \\\
-    --extra-ldflags="%{?__global_ldflags} %{?cuda_ldflags}" \\\
-    --extra-cflags="%{?nvenc_cflags} %{?cuda_cflags}" \\\
+    --extra-ldflags="%{?__global_ldflags} %{?cuda_ldflags} %{?libnpp_ldlags}" \\\
+    --extra-cflags="%{?nvenc_cflags} %{?cuda_cflags} %{?libnpp_cflags}" \\\
     %{?flavor:--disable-manpages} \\\
     %{?progs_suffix:--progs-suffix=%{progs_suffix}} \\\
     %{?build_suffix:--build-suffix=%{build_suffix}} \\\
