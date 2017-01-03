@@ -5,7 +5,6 @@
 #global rel     rc1
 
 %if 0%{?rhel}
-%global _without_celt     1
 %global _without_frei0r   1
 %global _without_opencv   1
 %global _without_vpx      1
@@ -13,7 +12,7 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        2.1.8
+Version:        2.8.10
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
@@ -22,21 +21,23 @@ License:        GPLv2+
 %endif
 URL:            http://ffmpeg.org/
 %if 0%{?date}
-Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
+Source0:        %{name}-%{?branch}%{date}.tar.bz2
 %else
-Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.bz2
+Source0:        http://ffmpeg.org/releases/%{name}-%{version}.tar.xz
 %endif
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 BuildRequires:  bzip2-devel
-%{!?_without_celt:BuildRequires: celt-devel}
+%{?_with_celt:BuildRequires: celt-devel}
 %{?_with_dirac:BuildRequires: dirac-devel}
 %{?_with_faac:BuildRequires: faac-devel}
+%{?_with_fdk_aac:BuildRequires: fdk-aac-devel}
 BuildRequires:  freetype-devel
 %{!?_without_frei0r:BuildRequires: frei0r-devel}
 BuildRequires:  gnutls-devel
 BuildRequires:  gsm-devel
 BuildRequires:  lame-devel >= 3.98.3
 %{?_with_jack:BuildRequires: jack-audio-connection-kit-devel}
+%{!?_without_ladspa:BuildRequires: ladspa-devel}
 BuildRequires:  libass-devel
 %{!?_without_cdio:BuildRequires: libcdio-paranoia-devel}
 #libcrystalhd is currently broken
@@ -55,6 +56,7 @@ BuildRequires:  libXvMC-devel
 %endif
 %{?_with_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
 %{!?_without_openal:BuildRequires: openal-soft-devel}
+%{?_with_opencl:BuildRequires: opencl-headers ocl-icd-devel}
 %{!?_without_opencv:BuildRequires: opencv-devel}
 BuildRequires:  openjpeg-devel
 BuildRequires:  opus-devel
@@ -65,8 +67,10 @@ BuildRequires:  SDL-devel
 BuildRequires:  soxr-devel
 BuildRequires:  speex-devel
 BuildRequires:  subversion
-BuildRequires:  texi2html
+#BuildRequires:  texi2html
+BuildRequires:  texinfo
 %{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.31}
+%{!?_without_x265:BuildRequires: x265-devel}
 BuildRequires:  xvidcore-devel
 BuildRequires:  zlib-devel
 %ifarch %{ix86} x86_64
@@ -89,9 +93,18 @@ VCR. It can encode in real time in many formats including MPEG1 audio
 and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
 This package contains the libraries for %{name}
 
+%package     -n libavdevice
+Summary:        Special devices muxing/demuxing library
+
+%description -n libavdevice
+Libavdevice is a complementary library to libavf "libavformat". It provides
+various "special" platform-specific muxers and demuxers, e.g. for grabbing
+devices, audio capture and playback etc.
+
 %package        devel
 Summary:        Development package for %{name}
 Requires:       %{name}-libs%{_isa} = %{version}-%{release}
+Requires:       libavdevice%{_isa} = %{version}-%{release}
 Requires:       pkgconfig
 
 %description    devel
@@ -102,7 +115,7 @@ and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
 This package contains development files for %{name}
 
 %global ff_configure \
-../configure \\\
+./configure \\\
     --prefix=%{_prefix} \\\
     --bindir=%{_bindir} \\\
     --datadir=%{_datadir}/%{name} \\\
@@ -111,22 +124,27 @@ This package contains development files for %{name}
     --mandir=%{_mandir} \\\
     --arch=%{_target_cpu} \\\
     --optflags="$RPM_OPT_FLAGS" \\\
+    --extra-ldflags="$RPM_LD_FLAGS" \\\
     %{?_with_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3} \\\
     --enable-bzlib \\\
     %{!?_with_crystalhd:--disable-crystalhd} \\\
     %{!?_without_frei0r:--enable-frei0r} \\\
     --enable-gnutls \\\
+    %{!?_without_ladspa:--enable-ladspa} \\\
     --enable-libass \\\
     %{!?_without_cdio:--enable-libcdio} \\\
-    %{!?_without_celt:--enable-libcelt} \\\
+    %{?_with_celt:--enable-libcelt} \\\
     --enable-libdc1394 \\\
     %{?_with_dirac:--enable-libdirac} \\\
     %{?_with_faac:--enable-libfaac --enable-nonfree} \\\
+    %{?_with_fdk_aac:--enable-libfdk-aac --enable-nonfree} \\\
     %{!?_with_jack:--disable-indev=jack} \\\
     --enable-libfreetype \\\
     --enable-libgsm \\\
     --enable-libmp3lame \\\
+    %{?_with_nvenc:--enable-nvenc  --enable-nonfree} \\\
     %{!?_without_openal:--enable-openal} \\\
+    %{?_with_opencl:--enable-opencl} \\\
     %{!?_without_opencv:--enable-libopencv} \\\
     --enable-libopenjpeg \\\
     --enable-libopus \\\
@@ -140,6 +158,7 @@ This package contains development files for %{name}
     --enable-libv4l2 \\\
     %{!?_without_vpx:--enable-libvpx} \\\
     %{!?_without_x264:--enable-libx264} \\\
+    %{!?_without_x265:--enable-libx265} \\\
     --enable-libxvid \\\
     --enable-x11grab \\\
     --enable-avfilter \\\
@@ -155,17 +174,15 @@ This package contains development files for %{name}
 
 %prep
 %if 0%{?date}
-%setup -q -n ffmpeg-%{?branch}%{date}
+%setup -q -n %{name}-%{?branch}%{date}
 echo "git-snapshot-%{?branch}%{date}-RPMFusion" > VERSION
 %else
-%setup -q -n ffmpeg-%{version}
+%setup -q
 %endif
 # fix -O3 -g in host_cflags
-sed -i "s/-O3 -g/$RPM_OPT_FLAGS/" configure
+sed -i "s|check_host_cflags -O3|check_host_cflags $RPM_OPT_FLAGS|" configure
 
 %build
-mkdir generic
-pushd generic
 %{ff_configure}\
     --shlibdir=%{_libdir} \
 %if 0%{?ffmpegsuffix:1}
@@ -176,21 +193,16 @@ pushd generic
 %ifarch %{ix86}
     --cpu=%{_target_cpu} \
 %endif
-%ifarch %{ix86} x86_64
+%ifarch %{ix86} x86_64 ppc ppc64
     --enable-runtime-cpudetect \
 %endif
 %ifarch ppc
     --cpu=g3 \
-    --enable-runtime-cpudetect \
     --enable-pic \
 %endif
 %ifarch ppc64
     --cpu=g5 \
-    --enable-runtime-cpudetect \
     --enable-pic \
-%endif
-%ifarch sparc sparc64
-    --disable-vis \
 %endif
 %ifarch %{arm}
     --disable-runtime-cpudetect --arch=arm \
@@ -205,40 +217,14 @@ pushd generic
 %endif
 %endif
 
-make %{?_smp_mflags} V=1
+%make_build V=1
 make documentation V=1
 make alltools V=1
-popd
-
-%if 0%{!?ffmpegsuffix:1}
-mkdir simd
-pushd simd
-%ifarch sparc sparc64
-%{ff_configure}\
-    --shlibdir=%{_libdir}/v9 \
-    --cpu=v9 \
-    --enable-vis \
-    --disable-ffmpeg \
-    --disable-ffserver \
-    --disable-ffplay \
-
-make %{?_smp_mflags} V=1
-%endif
-popd
-%endif
 
 %install
-rm -rf $RPM_BUILD_ROOT
-pushd generic
-make install DESTDIR=$RPM_BUILD_ROOT V=1
-popd
+%make_install V=1
 %if 0%{!?ffmpegsuffix:1}
-install -pm755 generic/tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
-pushd simd
-%ifarch sparc sparc64
-make install DESTDIR=$RPM_BUILD_ROOT V=1
-%endif
-popd
+install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 %endif
 
 %post libs -p /sbin/ldconfig
@@ -247,7 +233,7 @@ popd
 
 %if 0%{!?ffmpegsuffix:1}
 %files
-%doc COPYING.* CREDITS README doc/ffserver.conf
+%doc COPYING.* CREDITS README.md doc/ffserver.conf
 %{_bindir}/ffmpeg
 %{_bindir}/ffplay
 %{_bindir}/ffprobe
@@ -257,42 +243,164 @@ popd
 %{_mandir}/man1/ffplay*.1*
 %{_mandir}/man1/ffprobe*.1*
 %{_mandir}/man1/ffserver*.1*
-%{_datadir}/ffmpeg
+%{_datadir}/%{name}
 %endif
 
 %files libs
 %{_libdir}/lib*.so.*
+%exclude %{_libdir}/libavdevice.so.*
 %{_mandir}/man3/lib*.3.gz
-%if 0%{!?ffmpegsuffix:1}
-%ifarch sparc sparc64
-%{_libdir}/v9/lib*.so.*
-%endif
-%endif
+
+%files -n libavdevice
+%{_libdir}/libavdevice.so.*
 
 %files devel
 %doc MAINTAINERS doc/APIchanges doc/*.txt
-%{_includedir}/ffmpeg
+%doc %{_docdir}/%{name}/*.html
+%{_includedir}/%{name}
 %{_libdir}/pkgconfig/lib*.pc
 %{_libdir}/lib*.so
-%if 0%{!?ffmpegsuffix:1}
-%ifarch sparc sparc64
-%{_libdir}/v9/lib*.so
-%endif
-%endif
 
 
 %changelog
-* Fri May 01 2015 Julian Sikorski <belegdol@fedoraproject.org> - 2.1.8-1
-- Updated to 2.1.8
+* Tue Dec 06 2016 Julian Sikorski <belegdol@fedoraproject.org> - 2.8.10-1
+- Updated to 2.8.10
+- Backported some .spec cleanups from rawhide
 
-* Sat Jan 03 2015 Julian Sikorski <belegdol@fedoraproject.org> - 2.1.7-1
-- Updated to 2.1.7
+* Sun Dec 04 2016 Julian Sikorski <belegdol@fedoraproject.org> - 2.8.9-1
+- Updated to 2.8.9
 
-* Sat Nov 29 2014 Julian Sikorski <belegdol@fedoraproject.org> - 2.1.6-1
-- Updated to 2.1.6
+* Wed Sep 21 2016 Julian Sikorski <belegdol@fedoraproject.org> - 2.8.8-1
+- Updated to 2.8.8
 
-* Tue Jun 24 2014 Julian Sikorski <belegdol@fedoraproject.org> - 2.1.5-1
-- Updated to 2.1.5
+* Mon May 02 2016 Julian Sikorski <belegdol@fedoraproject.org> - 2.8.7-1
+- Updated to 2.8.7
+
+* Mon Feb 01 2016 Julian Sikorski <belegdol@fedoraproject.org> - 2.8.6-1
+- Updated to 2.8.6
+
+* Sat Jan 16 2016 Julian Sikorski <belegdol@fedoraproject.org> - 2.8.5-1
+- Updated to 2.8.5
+
+* Wed Dec 23 2015 Julian Sikorski <belegdol@fedoraproject.org> - 2.8.4-1
+- Updated to 2.8.4
+- Fixed Fraunhofer FDK AAC conditional build (RF # 3898)
+
+* Sun Nov 29 2015 Julian Sikorski <belegdol@fedoraproject.org> - 2.8.3-1
+- Updated to 2.8.3
+
+* Sat Nov 14 2015 Nicolas Chauvet <kwizart@gmail.com> - 2.8.2-1
+- Update to 2.8.2
+
+* Sat Oct 24 2015 Nicolas Chauvet <kwizart@gmail.com> - 2.8.1-1
+- Update to 2.8.1
+
+* Sat Jul 25 2015 Julian Sikorski <belegdol@fedoraproject.org> - 2.6.4-1
+- Updated to 2.6.4
+
+* Wed May 27 2015 Julian Sikorski <belegdol@fedoraproject.org> - 2.6.3-1
+- Updated to 2.6.3
+
+* Sat May 16 2015 Nicolas Chauvet <kwizart@gmail.com> - 2.6.2-3
+- Rebuilt for x265
+
+* Mon May 11 2015 Nicolas Chauvet <kwizart@gmail.com> - 2.6.2-2
+- Disable opencl by default - rfbz#3640
+- Add with condition for nvenc,fdk_aac
+
+* Tue May 05 2015 Julian Sikorski <belegdol@fedoraproject.org> - 2.6.2-1
+- Updated to 2.6.2
+
+* Tue Apr 28 2015 Julian Sikorski <belegdol@fedoraproject.org> - 2.4.9-1
+- Updated to 2.4.9
+
+* Wed Apr 15 2015 Dominik Mierzejewski <rpm@greysector.net> - 2.4.8-3
+- rebuilt for new x265
+
+* Mon Apr 13 2015 Nicolas Chauvet <kwizart@gmail.com> - 2.4.8-2
+- Fix sed for f22 where cflags contains a directory path
+
+* Mon Mar 30 2015 Julian Sikorski <belegdol@fedoraproject.org> - 2.4.8-1
+- Updated to 2.4.8
+
+* Sun Feb 15 2015 Julian Sikorski <belegdol@fedoraproject.org> - 2.4.7-1
+- Updated to 2.4.7
+
+* Sun Feb 01 2015 Dominik Mierzejewski <rpm at greysector.net> - 2.4.6-3
+- enable LADSPA support (rfbz#3134)
+
+* Sun Feb 01 2015 Dominik Mierzejewski <rpm at greysector.net> - 2.4.6-2
+- enable OpenCL support
+- BR texinfo instead of texi2html to reduce BRs by half
+- drop support for building on SPARC (no longer a Fedora Secondary Arch)
+- move libavdevice to a subpackage (rfbz#3075)
+
+* Wed Jan 14 2015 Julian Sikorski <belegdol@fedoraproject.org> - 2.4.6-1
+- Updated to 2.4.6
+
+* Sun Dec 21 2014 Julian Sikorski <belegdol@fedoraproject.org> - 2.4.5-1
+- Updated to 2.4.5
+
+* Thu Dec 18 2014 Dominik Mierzejewski <rpm at greysector.net> - 2.4.4-2
+- enable support for libx265 by default (rfbz#3421, patch by Nerijus Baliūnas)
+
+* Mon Dec 01 2014 Julian Sikorski <belegdol@fedoraproject.org> - 2.4.4-1
+- Updated to 2.4.4
+
+* Tue Nov 04 2014 Nicolas Chauvet <kwizart@gmail.com> - 2.4.3-2
+- Rebuilt for vaapi 0.36
+
+* Sun Nov 02 2014 Julian Sikorski <belegdol@fedoraproject.org> - 2.4.3-1
+- Updated to 2.4.3
+
+* Sun Oct 19 2014 Sérgio Basto <sergio@serjux.com> - 2.4.2-1
+- Update to ffmpeg-2.4.2
+
+* Fri Oct 03 2014 Julian Sikorski <belegdol@fedoraproject.org> - 2.3.4-1
+- Updated to 2.3.4
+
+* Sat Sep 27 2014 kwizart <kwizart@gmail.com> - 2.3.3-3
+- Rebuild back to ffmpeg 2.3x
+
+* Sat Sep 13 2014 Nicolas Chauvet <kwizart@gmail.com> - 2.3.3-2
+- Disable libcelt by default - rfbz#3359
+
+* Tue Sep 02 2014 Julian Sikorski <belegdol@fedoraproject.org> - 2.3.3-1
+- Updated to 2.3.3
+
+* Tue Aug 12 2014 Julian Sikorski <belegdol@fedoraproject.org> - 2.3.2-1
+- Updated to 2.3.2
+
+* Sun Aug 03 2014 Julian Sikorski <belegdol@fedoraproject.org> - 2.3.1-1
+- Updated to 2.3.1
+- README → README.md
+
+* Tue Jul 15 2014 Julian Sikorski <belegdol@fedoraproject.org> - 2.2.5-1
+- Updated to 2.2.5
+
+* Tue Jul 08 2014 Julian Sikorski <belegdol@fedoraproject.org> - 2.2.4-1
+- Updated to 2.2.4
+
+* Wed Jun 04 2014 Julian Sikorski <belegdol@fedoraproject.org> - 2.2.3-1
+- Updated to 2.2.3
+
+* Mon May 05 2014 Julian Sikorski <belegdol@fedoraproject.org> - 2.2.2-1
+- Updated to 2.2.2
+
+* Fri Apr 18 2014 Nicolas Chauvet <kwizart@gmail.com> - 2.2.1-1
+- Update to 2.2.1
+
+* Mon Mar 24 2014 Julian Sikorski <belegdol@fedoraproject.org> - 2.2-1
+- Updated to 2.2
+
+* Fri Mar 21 2014 Julian Sikorski <belegdol@fedoraproject.org> - 2.1.4-4
+- Rebuilt for libass-0.10.2
+
+* Tue Mar 18 2014 Julian Sikorski <belegdol@fedoraproject.org> - 2.1.4-3
+- Rebuilt for x264
+
+* Thu Mar 06 2014 Nicolas Chauvet <kwizart@gmail.com> - 2.1.4-2
+- Rebuilt for x264
 
 * Tue Feb 25 2014 Julian Sikorski <belegdol@fedoraproject.org> - 2.1.4-1
 - Updated to 2.1.4
