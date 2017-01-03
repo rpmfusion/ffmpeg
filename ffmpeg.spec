@@ -32,6 +32,7 @@
 %global _without_x264    1
 %global _without_x265    1
 %global _without_x11grab 1
+%global _without_xvid    1
 %endif
 
 # extras flags
