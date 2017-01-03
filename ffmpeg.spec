@@ -62,7 +62,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        3.2.2
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -381,6 +381,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Tue Jan 03 2017 Dominik Mierzejewski <rpm@greysector.net> - 3.2.2-3
+- rebuild for x265
+
 * Mon Jan 02 2017 Dominik Mierzejewski <rpm@greysector.net> - 3.2.2-2
 - enable optional nonfree build with cuda, cuvid, npp and fdk-aac
   (most credit for this goes to Nicolas Chauvet)
