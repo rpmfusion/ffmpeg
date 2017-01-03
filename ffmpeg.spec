@@ -40,8 +40,7 @@
 %global nvenc_cflags -I%{_includedir}/nvenc
 %endif
 %if 0%{?_with_cuda}
-%{!?_cuda_includedir:%global _cuda_includedir $(pkg-config --cflags cuda-8.0)}
-%global cuda_cflags -I%{_cuda_includedir}
+%global cuda_cflags $(pkg-config --cflags cuda-8.0)
 %global cuda_ldflags -L%{_libdir}/nvidia
 %endif
 
@@ -67,6 +66,7 @@ Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 %endif
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
+%{?_with_cuda:BuildRequires: cuda-driver-dev-8-0 cuda-misc-headers-8-0 cuda-drivers-devel%{_isa}}
 BuildRequires:  bzip2-devel
 %{?_with_faac:BuildRequires: faac-devel}
 %{?_with_fdk_aac:BuildRequires: fdk-aac-devel}
