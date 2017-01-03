@@ -381,7 +381,7 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
-* Mon Jan 02 2016 Dominik Mierzejewski <rpm@greysector.net> - 3.2.2-2
+* Mon Jan 02 2017 Dominik Mierzejewski <rpm@greysector.net> - 3.2.2-2
 - enable optional nonfree build with cuda, cuvid, npp and fdk-aac
   (most credit for this goes to Nicolas Chauvet)
 - allow disabling x11grab (conflicts with nonfree builds)
