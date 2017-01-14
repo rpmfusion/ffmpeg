@@ -133,7 +133,7 @@ BuildRequires:  opus-devel
 BuildRequires:  perl(Pod::Man)
 %{?_with_rubberband:BuildRequires: rubberband-devel}
 BuildRequires:  schroedinger-devel
-BuildRequires:  SDL2-devel
+%{!?_without_tools:BuildRequires: SDL2-devel}
 %{?_with_snappy:BuildRequires: snappy-devel}
 BuildRequires:  soxr-devel
 BuildRequires:  speex-devel
@@ -289,8 +289,7 @@ cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
 %build
 %{ff_configure}\
     --shlibdir=%{_libdir} \
-%if 0%{?ffmpegsuffix:1}
-    --build-suffix=%{ffmpegsuffix} \
+%if 0%{?_without_tools:1}
     --disable-doc \
     --disable-ffmpeg --disable-ffplay --disable-ffprobe --disable-ffserver \
 %else
@@ -330,7 +329,9 @@ make alltools V=1
 
 %install
 %make_install V=1
-rm -r %{buildroot}%{_datadir}/%{name}/examples
+%if 0%{!?flavor:1}
+rm -r %{buildroot}%{_datadir}/%{name}/examples}
+%endif
 %if 0%{!?progs_suffix:1}
 install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 %endif
@@ -343,7 +344,7 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 %postun -n libavdevice%{?flavor} -p /sbin/ldconfig
 
-%if 0%{!?ffmpegsuffix:1}
+%if 0%{!?_without_tools:1}
 %files
 %doc COPYING.* CREDITS README.md doc/ffserver.conf
 %{_bindir}/ffmpeg%{?progs_suffix}
@@ -374,7 +375,7 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 %files devel
 %doc MAINTAINERS doc/APIchanges doc/*.txt
 %doc _doc/examples
-%doc %{_docdir}/%{name}/*.html
+%{!?flavor:%doc %{_docdir}/%{name}/*.html}
 %{_includedir}/%{name}
 %{_libdir}/pkgconfig/lib*.pc
 %{_libdir}/lib*.so
