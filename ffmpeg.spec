@@ -61,8 +61,8 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        3.2.2
-Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        3.2.3
+Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -381,6 +381,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Mon Feb 06 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.2.3-1
+- Updated to 3.2.3
+
 * Tue Jan 03 2017 Dominik Mierzejewski <rpm@greysector.net> - 3.2.2-3
 - rebuild for x265
 
