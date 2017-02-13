@@ -12,7 +12,7 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        2.8.10
+Version:        2.8.11
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr:1}
 License:        GPLv3+
@@ -264,6 +264,9 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 
 
 %changelog
+* Mon Feb 13 2017 Nicolas Chauvet <kwizart@gmail.com> - 2.8.11-1
+- Update to 2.8.11
+
 * Tue Dec 06 2016 Julian Sikorski <belegdol@fedoraproject.org> - 2.8.10-1
 - Updated to 2.8.10
 - Backported some .spec cleanups from rawhide
