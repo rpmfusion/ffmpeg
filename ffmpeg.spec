@@ -14,7 +14,7 @@ Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        2.8.11
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
-%if 0%{?_with_amr:1}
+%if 0%{?!_without_amr:1}
 License:        GPLv3+
 %else
 License:        GPLv2+
@@ -54,7 +54,7 @@ BuildRequires:  libvorbis-devel
 BuildRequires:  libXvMC-devel
 %{?!_without_vaapi:BuildRequires: libva-devel >= 0.31.0}
 %endif
-%{?_with_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
+%{!?_without_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
 %{!?_without_openal:BuildRequires: openal-soft-devel}
 %{?_with_opencl:BuildRequires: opencl-headers ocl-icd-devel}
 %{!?_without_opencv:BuildRequires: opencv-devel}
@@ -126,7 +126,7 @@ This package contains development files for %{name}
     --arch=%{_target_cpu} \\\
     --optflags="$RPM_OPT_FLAGS" \\\
     --extra-ldflags="$RPM_LD_FLAGS" \\\
-    %{?_with_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3} \\\
+    %{!?_without_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3} \\\
     --enable-bzlib \\\
     %{!?_with_crystalhd:--disable-crystalhd} \\\
     %{!?_without_frei0r:--enable-frei0r} \\\
@@ -266,6 +266,7 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 %changelog
 * Mon Feb 13 2017 Nicolas Chauvet <kwizart@gmail.com> - 2.8.11-1
 - Update to 2.8.11
+- enable AMR codecs by default - rfbz#4367
 
 * Tue Dec 06 2016 Julian Sikorski <belegdol@fedoraproject.org> - 2.8.10-1
 - Updated to 2.8.10
