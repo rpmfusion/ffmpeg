@@ -330,7 +330,7 @@ make alltools V=1
 %install
 %make_install V=1
 %if 0%{!?flavor:1}
-rm -r %{buildroot}%{_datadir}/%{name}/examples}
+rm -r %{buildroot}%{_datadir}/%{name}/examples
 %endif
 %if 0%{!?progs_suffix:1}
 install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
