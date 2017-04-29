@@ -4,6 +4,9 @@
 #global date    20110612
 #global rel     rc1
 
+# Cuda and others are only available on some arches
+%global cuda_arches x86_64 i686
+
 %if 0%{?fedora} >= 25
 # OpenCV 3.X has an overlinking issue - unsuitable for core libraries
 # Reported as https://github.com/opencv/opencv/issues/7001
@@ -22,17 +25,23 @@
 %global flavor           -nonfree
 %global progs_suffix     -nonfree
 #global build_suffix     -lgpl
+%ifarch %{cuda_arches}
 %global _with_cuda       1
 %global _with_cuvid      1
 %global _with_libnpp     1
+%endif
 %global _with_fdk_aac    1
 %global _without_cdio    1
 %global _without_frei0r  1
 %global _without_gpl     1
 %global _without_x264    1
 %global _without_x265    1
-%global _without_x11grab 1
 %global _without_xvid    1
+%endif
+
+# Disable nvenc when not relevant
+%ifnarch %{cuda_arches}
+%global _without_nvenc    1
 %endif
 
 # extras flags
@@ -61,8 +70,8 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        3.2.4
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        3.3
+Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -262,7 +271,6 @@ This package contains development files for %{name}
     %{!?_without_xvid:--enable-libxvid} \\\
     %{?_with_zmq:--enable-libzmq} \\\
     %{?_with_zvbi:--enable-libzvbi} \\\
-    %{!?_without_x11grab:--enable-x11grab} \\\
     --enable-avfilter \\\
     --enable-avresample \\\
     --enable-postproc \\\
@@ -382,6 +390,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Wed Apr 19 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.3-1
+- Updated to 3.3
+
 * Sun Mar 19 2017 RPM Fusion Release Engineering <kwizart@rpmfusion.org> - 3.2.4-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
 
