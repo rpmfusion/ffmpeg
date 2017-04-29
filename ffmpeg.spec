@@ -392,6 +392,8 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 %changelog
 * Wed Apr 19 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.3-1
 - Updated to 3.3
+- Make nvenc x86 only
+- Remove obsolete x11grab configure option
 
 * Sun Mar 19 2017 RPM Fusion Release Engineering <kwizart@rpmfusion.org> - 3.2.4-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
