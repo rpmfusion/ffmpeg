@@ -70,7 +70,7 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        3.3
+Version:        3.3.1
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
@@ -390,6 +390,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Mon May 15 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.3.1-1
+- Updated to 3.3.1
+
 * Wed Apr 19 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.3-1
 - Updated to 3.3
 - Make nvenc x86 only
