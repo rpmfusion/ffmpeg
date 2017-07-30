@@ -70,7 +70,7 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        3.3.2
+Version:        3.3.3
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
@@ -372,7 +372,7 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 %files libs
 %{_libdir}/lib*.so.*
 %exclude %{_libdir}/libavdevice%{?build_suffix}.so.*
-%{!?flavor:%{_mandir}/man3/lib*.3.gz
+%{!?flavor:%{_mandir}/man3/lib*.3.*
 %exclude %{_mandir}/man3/libavdevice.3*
 }
 
@@ -390,6 +390,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Sat Jul 29 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.3.3-1
+- Updated to 3.3.3
+
 * Wed Jun 07 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.3.2-1
 - Updated to 3.3.2
 
