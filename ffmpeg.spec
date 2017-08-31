@@ -71,7 +71,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        3.3.3
-Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        4%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -79,6 +79,8 @@ Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 %else
 Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 %endif
+# Patch based on https://git.ffmpeg.org/gitweb/ffmpeg.git/patch/078322f33ced4b2db6ac3e5002f98233d6fbf643
+Patch0:         LibOpenJPEG-2.2.patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 %{?_with_cuda:BuildRequires: cuda-driver-dev-8-0 cuda-misc-headers-8-0 cuda-drivers-devel%{_isa}}
 %{?_with_libnpp:BuildRequires: cuda-cudart-dev-8-0 cuda-misc-headers-8-0 cuda-npp-dev-8-0}
@@ -289,6 +291,7 @@ echo "git-snapshot-%{?branch}%{date}-RPMFusion" > VERSION
 %else
 %setup -q -n ffmpeg-%{version}
 %endif
+%patch0 -p1
 # fix -O3 -g in host_cflags
 sed -i "s|check_host_cflags -O3|check_host_cflags %{optflags}|" configure
 mkdir -p _doc/examples
@@ -390,6 +393,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Thu Aug 31 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.3.3-4
+- Add support for LibOpenJPEG v2.2
+
 * Thu Aug 31 2017 RPM Fusion Release Engineering <kwizart@rpmfusion.org> - 3.3.3-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
 
