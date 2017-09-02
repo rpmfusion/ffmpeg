@@ -20,7 +20,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
 Version:        3.1.10
-Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr} || 0%{?_with_gmp}
 License:        GPLv3+
 %else
@@ -32,6 +32,8 @@ Source0:        %{name}-%{?branch}%{date}.tar.bz2
 %else
 Source0:        http://ffmpeg.org/releases/%{name}-%{version}.tar.xz
 %endif
+# Patch based on https://git.ffmpeg.org/gitweb/ffmpeg.git/patch/078322f33ced4b2db6ac3e5002f98233d6fbf643
+Patch0: LibOpenJPEG-2.2.patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 BuildRequires:  bzip2-devel
 %{?_with_faac:BuildRequires: faac-devel}
@@ -232,6 +234,7 @@ echo "git-snapshot-%{?branch}%{date}-RPMFusion" > VERSION
 %else
 %setup -q
 %endif
+%patch0 -p1
 # fix -O3 -g in host_cflags
 sed -i "s|check_host_cflags -O3|check_host_cflags $RPM_OPT_FLAGS|" configure
 mkdir -p _doc/examples
@@ -329,6 +332,9 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 
 
 %changelog
+* Thu Aug 31 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.1.10-2
+- Add support for LibOpenJPEG v2.2
+
 * Mon Aug 07 2017 Julian Sikorski <belegdol@fedoraproject.org> - 3.1.10-1
 - Updated to 3.1.10
 
