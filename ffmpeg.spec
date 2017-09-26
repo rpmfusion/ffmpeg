@@ -19,8 +19,8 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        3.1.10
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        3.1.11
+Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?_with_amr} || 0%{?_with_gmp}
 License:        GPLv3+
 %else
@@ -332,6 +332,9 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 
 
 %changelog
+* Tue Sep 26 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.1.11-1
+- Updated to 3.1.11
+
 * Thu Aug 31 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.1.10-2
 - Add support for LibOpenJPEG v2.2
 
