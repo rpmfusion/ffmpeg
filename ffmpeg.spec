@@ -71,7 +71,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        3.4
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -109,9 +109,11 @@ BuildRequires:  libavc1394-devel
 BuildRequires:  libdc1394-devel
 BuildRequires:  libiec61883-devel
 %endif
+BuildRequires:  libdrm-devel
 BuildRequires:  libgcrypt-devel
 BuildRequires:  libGL-devel
 Buildrequires:  libmodplug-devel
+BuildRequires:  librsvg2-devel
 %{?_with_rtmp:BuildRequires: librtmp-devel}
 %{?_with_smb:BuildRequires: libsmbclient-devel}
 %{?_with_ssh:BuildRequires: libssh-devel}
@@ -230,6 +232,7 @@ This package contains development files for %{name}
     %{?_with_cuvid:--enable-cuvid --enable-nonfree} \\\
     %{!?_without_cdio:--enable-libcdio} \\\
     %{?_with_ieee1394:--enable-libdc1394 --enable-libiec61883} \\\
+    --enable-libdrm \\\
     %{?_with_faac:--enable-libfaac --enable-nonfree} \\\
     %{?_with_fdk_aac:--enable-libfdk-aac --enable-nonfree} \\\
     %{?_with_flite:--enable-libflite} \\\
@@ -250,6 +253,7 @@ This package contains development files for %{name}
     --enable-libopenjpeg \\\
     --enable-libopus \\\
     %{!?_without_pulse:--enable-libpulse} \\\
+    --enable-librsvg \\\
     %{?_with_rtmp:--enable-librtmp} \\\
     %{?_with_rubberband:--enable-librubberband} \\\
     %{?_with_smb:--enable-libsmbclient} \\\
@@ -388,6 +392,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Wed Oct 25 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.4-3
+- Add SVG rasterization and KMS screengrabber support
+
 * Mon Oct 16 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.4-2
 - rebuild for x265
 
