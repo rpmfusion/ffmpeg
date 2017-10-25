@@ -331,6 +331,9 @@ cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
 %else
     --enable-thumb \
 %endif
+%ifarch armv7hl
+    --disable-neon \
+%endif
 %ifarch armv7hnl
     --enable-neon \
 %endif
