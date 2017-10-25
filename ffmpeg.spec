@@ -338,6 +338,7 @@ cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
     --enable-neon \
 %endif
 %endif
+    || cat ffbuild/config.log
 
 %make_build V=1
 make documentation V=1
@@ -402,6 +403,7 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 - drop support for building on ppc (32bit)
 - explicitly support ppc64p7 and ppc64le
 - set correct CPU options on armv7hl
+- show config.log in case of configure failure
 
 * Wed Oct 25 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.4-4
 - Switch from yasm to nasm
