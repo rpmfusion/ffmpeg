@@ -71,7 +71,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        3.4
-Release:        4%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        5%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -302,34 +302,40 @@ cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
 %if 0%{?_without_tools:1}
     --disable-doc \
     --disable-ffmpeg --disable-ffplay --disable-ffprobe --disable-ffserver \
-%else
+%endif
 %ifarch %{ix86}
     --cpu=%{_target_cpu} \
 %endif
 %ifarch %{ix86} x86_64
     %{!?_without_qsv:--enable-libmfx} \
 %endif
-%ifarch %{ix86} x86_64 ppc ppc64
+%ifarch %{ix86} x86_64 %{power64}
     --enable-runtime-cpudetect \
 %endif
-%ifarch ppc
-    --cpu=g3 \
-    --enable-pic \
-%endif
+%ifarch %{power64}
 %ifarch ppc64
     --cpu=g5 \
+%endif
+%ifarch ppc64p7
+    --cpu=power7 \
+%endif
+%ifarch ppc64le
+    --cpu=power8 \
+%endif
     --enable-pic \
 %endif
 %ifarch %{arm}
     --disable-runtime-cpudetect --arch=arm \
 %ifarch armv6hl
     --cpu=armv6 \
-%else
+%endif
+%ifarch armv7hl armv7hnl
+    --cpu=armv7-a \
+    --enable-vfpv3 \
     --enable-thumb \
 %endif
 %ifarch armv7hnl
     --enable-neon \
-%endif
 %endif
 %endif
 
@@ -392,6 +398,11 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Wed Oct 25 2017 Dominik Mierzejewski <rpm@greysector.net> - 3.4-5
+- drop support for building on ppc (32bit)
+- explicitly support ppc64p7 and ppc64le
+- set correct CPU options on armv7hl
+
 * Wed Oct 25 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.4-4
 - Switch from yasm to nasm
 
