@@ -71,7 +71,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        3.4
-Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        4%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -126,7 +126,7 @@ BuildRequires:  libvorbis-devel
 %{!?_without_mfx:BuildRequires: libmfx-devel}
 BuildRequires:  libXvMC-devel
 %{?!_without_vaapi:BuildRequires: libva-devel >= 0.31.0}
-BuildRequires:  yasm
+BuildRequires:  nasm
 %endif
 %{?_with_webp:BuildRequires: libwebp-devel}
 %{?_with_netcdf:BuildRequires: netcdf-devel}
@@ -392,6 +392,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Wed Oct 25 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.4-4
+- Switch from yasm to nasm
+
 * Wed Oct 25 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.4-3
 - Add SVG rasterization and KMS screengrabber support
 
