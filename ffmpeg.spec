@@ -119,13 +119,13 @@ BuildRequires:  librsvg2-devel
 %{?_with_ssh:BuildRequires: libssh-devel}
 BuildRequires:  libtheora-devel
 BuildRequires:  libv4l-devel
+%{?!_without_vaapi:BuildRequires: libva-devel >= 0.31.0}
 BuildRequires:  libvdpau-devel
 BuildRequires:  libvorbis-devel
 %{?!_without_vpx:BuildRequires: libvpx-devel >= 0.9.1}
 %ifarch %{ix86} x86_64
 %{!?_without_mfx:BuildRequires: libmfx-devel}
 BuildRequires:  libXvMC-devel
-%{?!_without_vaapi:BuildRequires: libva-devel >= 0.31.0}
 BuildRequires:  nasm
 %endif
 %{?_with_webp:BuildRequires: libwebp-devel}
@@ -404,6 +404,7 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 - explicitly support ppc64p7 and ppc64le
 - set correct CPU options on armv7hl
 - show config.log in case of configure failure
+- enable VAAPI support on all arches, it's not x86-specific anymore
 
 * Wed Oct 25 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.4-4
 - Switch from yasm to nasm
