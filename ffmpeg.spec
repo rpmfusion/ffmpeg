@@ -70,8 +70,8 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        3.3.4
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        3.3.5
+Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -396,6 +396,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Fri Oct 27 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.3.5-1
+- Updated to 3.3.5
+
 * Thu Oct 12 2017 Dominik Mierzejewski <rpm@greysector.net> - 3.3.4-2
 - add support for OpenJPEG v2.3
 
