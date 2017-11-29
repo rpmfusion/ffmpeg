@@ -71,7 +71,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        3.4
-Release:        5%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        6%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -153,6 +153,7 @@ BuildRequires:  subversion
 BuildRequires:  texinfo
 %{?_with_twolame:BuildRequires: twolame-devel}
 %{?_with_wavpack:BuildRequires: wavpack-devel}
+%{!?_without_vidstab:BuildRequires:  vid.stab-devel}
 %{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.31}
 %{!?_without_x265:BuildRequires: x265-devel}
 %{!?_without_xvid:BuildRequires: xvidcore-devel}
@@ -266,6 +267,7 @@ This package contains development files for %{name}
     %{?_with_twolame:--enable-libtwolame} \\\
     --enable-libvorbis \\\
     --enable-libv4l2 \\\
+    %{!?_without_vidstab:--enable-libvidstab} \\\
     %{!?_without_vpx:--enable-libvpx} \\\
     %{?_with_webp:--enable-libwebp} \\\
     %{!?_without_x264:--enable-libx264} \\\
@@ -402,6 +404,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Tue Nov 28 2017 Dominik Mierzejewski <rpm@greysector.net> - 3.4-6
+- enable support for vid.stab (rfbz#4713)
+
 * Wed Oct 25 2017 Dominik Mierzejewski <rpm@greysector.net> - 3.4-5
 - drop support for building on ppc (32bit)
 - explicitly support ppc64p7 and ppc64le
