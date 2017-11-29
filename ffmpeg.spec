@@ -124,7 +124,7 @@ BuildRequires:  libvdpau-devel
 BuildRequires:  libvorbis-devel
 %{?!_without_vpx:BuildRequires: libvpx-devel >= 0.9.1}
 %ifarch %{ix86} x86_64
-%{!?_without_mfx:BuildRequires: libmfx-devel}
+%{!?_without_mfx:BuildRequires: libmfx-devel >= 1.23-1}
 BuildRequires:  libXvMC-devel
 BuildRequires:  nasm
 %endif
@@ -406,6 +406,7 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 %changelog
 * Tue Nov 28 2017 Dominik Mierzejewski <rpm@greysector.net> - 3.4-6
 - enable support for vid.stab (rfbz#4713)
+- rebuild against new libmfx (rhbz#1471768)
 
 * Wed Oct 25 2017 Dominik Mierzejewski <rpm@greysector.net> - 3.4-5
 - drop support for building on ppc (32bit)
