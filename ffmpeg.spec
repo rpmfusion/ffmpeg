@@ -83,6 +83,8 @@ Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 Patch0:         LibOpenJPEG-2.2.patch
 # Patch based on https://git.ffmpeg.org/gitweb/ffmpeg.git/patch/41d6d627024393c142cf7cd93eff1d5a049105f5
 Patch1:         LibOpenJPEG-2.3.patch
+# Backport arm neon with recent binutils
+Patch2:         0001-arm-Fix-SIGBUS-on-ARM-when-compiled-with-binutils-2..patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 %{?_with_cuda:BuildRequires: cuda-driver-dev-8-0 cuda-misc-headers-8-0 cuda-drivers-devel%{_isa}}
 %{?_with_libnpp:BuildRequires: cuda-cudart-dev-8-0 cuda-misc-headers-8-0 cuda-npp-dev-8-0}
@@ -295,6 +297,7 @@ echo "git-snapshot-%{?branch}%{date}-RPMFusion" > VERSION
 %endif
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 # fix -O3 -g in host_cflags
 sed -i "s|check_host_cflags -O3|check_host_cflags %{optflags}|" configure
 mkdir -p _doc/examples
