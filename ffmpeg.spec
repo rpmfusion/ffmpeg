@@ -71,7 +71,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        3.4.1
-Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -79,6 +79,8 @@ Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 %else
 Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 %endif
+#Backport patch for arm neon
+Patch0:         0001-arm-Fix-SIGBUS-on-ARM-when-compiled-with-binutils-2..patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 %{?_with_cuda:BuildRequires: cuda-driver-dev-8-0 cuda-misc-headers-8-0 cuda-drivers-devel%{_isa}}
 %{?_with_libnpp:BuildRequires: cuda-cudart-dev-8-0 cuda-misc-headers-8-0 cuda-npp-dev-8-0}
@@ -293,6 +295,8 @@ echo "git-snapshot-%{?branch}%{date}-RPMFusion" > VERSION
 %else
 %setup -q -n ffmpeg-%{version}
 %endif
+# backport patch for arm neon
+%patch0 -p1
 # fix -O3 -g in host_cflags
 sed -i "s|check_host_cflags -O3|check_host_cflags %{optflags}|" configure
 mkdir -p _doc/examples
@@ -404,6 +408,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Mon Dec 11 2017 Nicolas Chauvet <kwizart@gmail.com> - 3.4.1-2
+- Backport patch for arm neon rfbz#4727
+
 * Mon Dec 11 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.4.1-1
 - Updated to 3.4.1
 
