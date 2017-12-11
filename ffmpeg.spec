@@ -306,37 +306,43 @@ cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
 %if 0%{?_without_tools:1}
     --disable-doc \
     --disable-ffmpeg --disable-ffplay --disable-ffprobe --disable-ffserver \
-%else
+%endif
 %ifarch %{ix86}
     --cpu=%{_target_cpu} \
 %endif
 %ifarch %{ix86} x86_64
     %{!?_without_qsv:--enable-libmfx} \
 %endif
-%ifarch %{ix86} x86_64 ppc ppc64
+%ifarch %{ix86} x86_64 %{power64}
     --enable-runtime-cpudetect \
 %endif
-%ifarch ppc
-    --cpu=g3 \
-    --enable-pic \
-%endif
+%ifarch %{power64}
 %ifarch ppc64
     --cpu=g5 \
+%endif
+%ifarch ppc64p7
+    --cpu=power7 \
+%endif
+%ifarch ppc64le
+    --cpu=power8 \
+%endif
     --enable-pic \
 %endif
 %ifarch %{arm}
     --disable-runtime-cpudetect --arch=arm \
 %ifarch armv6hl
     --cpu=armv6 \
-%else
-    --enable-thumb \
 %endif
+%endif
+%ifarch armv7hl armv7hnl
+    --cpu=armv7-a \
+    --enable-vfpv3 \
+    --enable-thumb \
 %ifarch armv7hl
     --disable-neon \
 %endif
 %ifarch armv7hnl
     --enable-neon \
-%endif
 %endif
 %endif
 
