@@ -71,7 +71,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        3.3.5
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -405,6 +405,10 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Mon Dec 11 2017 Nicolas Chauvet <kwizart@gmail.com> - 3.3.5-3
+- Backport patch for arm neon rfbz#4727
+- Backport power and arm arch handling improvements for 3.3x
+
 * Wed Nov 01 2017 Sérgio Basto <sergio@serjux.com> - 3.3.5-2
 - Rebuild for x265 update
 
