@@ -48,14 +48,18 @@
 %if 0%{!?_without_nvenc:1}
 %global nvenc_cflags -I%{_includedir}/nvenc
 %endif
-%if 0%{?_with_cuda}
-%global cuda_cflags $(pkg-config --cflags cuda-8.0)
+%if 0%{!?_cuda_version:1}
+%global _cuda_version 9.1
+%endif
+%global _cuda_rpm_version %(echo %{_cuda_version} | sed -e 's/\\./-/')
+%if 0%{?_with_cuda:1}
+%global cuda_cflags $(pkg-config --cflags cuda-%{cuda_version})
 %global cuda_ldflags -L%{_libdir}/nvidia
 %endif
 
 %if 0%{?_with_libnpp}
-%global libnpp_cflags $(pkg-config --cflags nppi-8.0 nppc-8.0)
-%global libnpp_ldlags $(pkg-config --libs-only-L nppi-8.0 nppc-8.0)
+%global libnpp_cflags $(pkg-config --cflags nppi-%{_cuda_version} nppc-%{_cuda_version})
+%global libnpp_ldlags $(pkg-config --libs-only-L nppi-%{_cuda_version} nppc-%{_cuda_version})
 %endif
 
 %if 0%{?_without_gpl}
@@ -84,8 +88,8 @@ Patch0:         LibOpenJPEG-2.2.patch
 # Patch based on https://git.ffmpeg.org/gitweb/ffmpeg.git/patch/41d6d627024393c142cf7cd93eff1d5a049105f5
 Patch1:         LibOpenJPEG-2.3.patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
-%{?_with_cuda:BuildRequires: cuda-driver-dev-8-0 cuda-misc-headers-8-0 cuda-drivers-devel%{_isa}}
-%{?_with_libnpp:BuildRequires: cuda-cudart-dev-8-0 cuda-misc-headers-8-0 cuda-npp-dev-8-0}
+%{?_with_cuda:BuildRequires: cuda-driver-dev-%{_cuda_rpm_version} cuda-misc-headers-%{_cuda_rpm_version} cuda-drivers-devel%{_isa}}
+%{?_with_libnpp:BuildRequires: cuda-cudart-dev-%{_cuda_rpm_version} cuda-misc-headers-%{_cuda_rpm_version} cuda-npp-dev-%{_cuda_rpm_version}}
 BuildRequires:  bzip2-devel
 %{?_with_faac:BuildRequires: faac-devel}
 %{?_with_fdk_aac:BuildRequires: fdk-aac-devel}
