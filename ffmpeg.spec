@@ -75,7 +75,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        3.3.5
-Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        4%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -414,6 +414,10 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Sun Dec 17 2017 Nicolas Chauvet <kwizart@gmail.com> - 3.3.5-4
+- Enable vid.stab - rfbz#4713
+- Add _cuda_version rpm macro
+
 * Mon Dec 11 2017 Nicolas Chauvet <kwizart@gmail.com> - 3.3.5-3
 - Backport patch for arm neon rfbz#4727
 - Backport power and arm arch handling improvements for 3.3x
