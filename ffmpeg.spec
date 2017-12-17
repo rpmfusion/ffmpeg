@@ -75,7 +75,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        3.4.1
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -412,6 +412,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Sun Dec 17 2017 Nicolas Chauvet <kwizart@gmail.com> - 3.4.1-3
+- Add _cuda_version rpm macro
+
 * Mon Dec 11 2017 Nicolas Chauvet <kwizart@gmail.com> - 3.4.1-2
 - Backport patch for arm neon rfbz#4727
 
