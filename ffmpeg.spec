@@ -70,7 +70,7 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        3.3.5
+Version:        3.3.6
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
@@ -396,6 +396,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Mon Jan 01 2018 Julian Sikorski <belegdol@fedoraproject.org> - 3.3.6-1
+- Updated to 3.3.6
+
 * Fri Oct 27 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.3.5-1
 - Updated to 3.3.5
 
