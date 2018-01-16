@@ -1,7 +1,7 @@
 # TODO: add make test to %%check section
 
 #global branch  oldabi-
-#global date    20110612
+%global date    20180116
 #global rel     rc1
 
 # Cuda and others are only available on some arches
@@ -74,8 +74,8 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        3.4.1
-Release:        5%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        3.5
+Release:        0.1.%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -83,8 +83,6 @@ Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 %else
 Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 %endif
-#Backport patch for arm neon
-Patch0:         0001-arm-Fix-SIGBUS-on-ARM-when-compiled-with-binutils-2..patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 %{?_with_cuda:BuildRequires: cuda-driver-dev-%{_cuda_rpm_version} cuda-misc-headers-%{_cuda_rpm_version} cuda-drivers-devel%{_isa}}
 %{?_with_libnpp:BuildRequires: cuda-cudart-dev-%{_cuda_rpm_version} cuda-nvcc-%{_cuda_rpm_version} cuda-misc-headers-%{_cuda_rpm_version} cuda-npp-dev-%{_cuda_rpm_version}}
@@ -185,6 +183,7 @@ This package contains the libraries for %{name}
 
 %package     -n libavdevice%{?flavor}
 Summary:        Special devices muxing/demuxing library
+Requires:       %{name}-libs%{_isa} = %{version}-%{release}
 
 %description -n libavdevice%{?flavor}
 Libavdevice is a complementary library to libavf "libavformat". It provides
@@ -299,8 +298,6 @@ echo "git-snapshot-%{?branch}%{date}-RPMFusion" > VERSION
 %else
 %setup -q -n ffmpeg-%{version}
 %endif
-# backport patch for arm neon
-%patch0 -p1
 # fix -O3 -g in host_cflags
 sed -i "s|check_host_cflags -O3|check_host_cflags %{optflags}|" configure
 mkdir -p _doc/examples
@@ -311,7 +308,7 @@ cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
     --shlibdir=%{_libdir} \
 %if 0%{?_without_tools:1}
     --disable-doc \
-    --disable-ffmpeg --disable-ffplay --disable-ffprobe --disable-ffserver \
+    --disable-ffmpeg --disable-ffplay --disable-ffprobe \
 %endif
 %ifarch %{ix86}
     --cpu=%{_target_cpu} \
@@ -376,17 +373,15 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 %if 0%{!?_without_tools:1}
 %files
-%doc COPYING.* CREDITS README.md doc/ffserver.conf
+%doc COPYING.* CREDITS README.md
 %{_bindir}/ffmpeg%{?progs_suffix}
 %{_bindir}/ffplay%{?progs_suffix}
 %{_bindir}/ffprobe%{?progs_suffix}
-%{_bindir}/ffserver%{?progs_suffix}
 %{!?progs_suffix:%{_bindir}/qt-faststart}
 %{!?flavor:
 %{_mandir}/man1/ffmpeg*.1*
 %{_mandir}/man1/ffplay*.1*
 %{_mandir}/man1/ffprobe*.1*
-%{_mandir}/man1/ffserver*.1*
 }
 %{_datadir}/%{name}
 %endif
@@ -412,6 +407,11 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Tue Jan 16 2018 Leigh Scott <leigh123linux@googlemail.com> - 3.5-0.1.20180116git
+- Update to 20180116git
+- Remove ffserver parts from spec
+- Add requires ffmpeg-libs to libavdevice (rfbz#4768)
+
 * Mon Jan 15 2018 Nicolas Chauvet <kwizart@gmail.com> - 3.4.1-5
 - Update to libva 2.0.0
 
