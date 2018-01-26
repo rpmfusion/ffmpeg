@@ -75,7 +75,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        3.5
-Release:        0.1.%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        0.2.%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -407,6 +407,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Fri Jan 26 2018 Leigh Scott <leigh123linux@googlemail.com> - 3.5-0.2.20180116git
+- Rebuild for libcdio
+
 * Tue Jan 16 2018 Leigh Scott <leigh123linux@googlemail.com> - 3.5-0.1.20180116git
 - Update to 20180116git
 - Remove ffserver parts from spec
