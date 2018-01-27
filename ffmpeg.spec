@@ -408,7 +408,7 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 %changelog
 * Fri Jan 26 2018 Leigh Scott <leigh123linux@googlemail.com> - 3.5-0.2.20180116git
-- Rebuild for libcdio
+- Rebuild for new libcdio and libvpx versions
 
 * Tue Jan 16 2018 Leigh Scott <leigh123linux@googlemail.com> - 3.5-0.1.20180116git
 - Update to 20180116git
