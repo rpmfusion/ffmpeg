@@ -1,7 +1,7 @@
 # TODO: add make test to %%check section
 
 #global branch  oldabi-
-%global date    20180211
+%global date    20180305
 #global rel     rc1
 
 # Cuda and others are only available on some arches
@@ -45,9 +45,6 @@
 %endif
 
 # extras flags
-%if 0%{!?_without_nvenc:1}
-%global nvenc_cflags -I%{_includedir}/nvenc
-%endif
 %if 0%{!?_cuda_version:1}
 %global _cuda_version 9.1
 %endif
@@ -75,7 +72,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        3.5
-Release:        0.5.%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        0.6.%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -134,7 +131,7 @@ BuildRequires:  nasm
 %endif
 %{?_with_webp:BuildRequires: libwebp-devel}
 %{?_with_netcdf:BuildRequires: netcdf-devel}
-%{!?_without_nvenc:BuildRequires: nvenc-devel}
+%{!?_without_nvenc:BuildRequires: nv-codec-headers}
 %{!?_without_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
 %{!?_without_openal:BuildRequires: openal-soft-devel}
 %if 0%{!?_without_opencl:1}
@@ -216,7 +213,7 @@ This package contains development files for %{name}
     --arch=%{_target_cpu} \\\
     --optflags="%{optflags}" \\\
     --extra-ldflags="%{?__global_ldflags} %{?cuda_ldflags} %{?libnpp_ldlags}" \\\
-    --extra-cflags="%{?nvenc_cflags} %{?cuda_cflags} %{?libnpp_cflags}" \\\
+    --extra-cflags="%{?cuda_cflags} %{?libnpp_cflags}" \\\
     %{?flavor:--disable-manpages} \\\
     %{?progs_suffix:--progs-suffix=%{progs_suffix}} \\\
     %{?build_suffix:--build-suffix=%{build_suffix}} \\\
@@ -407,6 +404,10 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Mon Mar 05 2018 Leigh Scott <leigh123linux@googlemail.com> - 3.5-0.6.20180305git
+- Update to 20180305
+- Change build requires for nvenc
+
 * Wed Feb 28 2018 Leigh Scott <leigh123linux@googlemail.com> - 3.5-0.5.20180211git
 - Rebuilt for x265
 
