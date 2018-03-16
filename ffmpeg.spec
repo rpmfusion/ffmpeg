@@ -186,6 +186,7 @@ This package contains the libraries for %{name}
 
 %package     -n libavdevice%{?flavor}
 Summary:        Special devices muxing/demuxing library
+Requires:       %{name}-libs%{_isa} = %{version}-%{release}
 
 %description -n libavdevice%{?flavor}
 Libavdevice is a complementary library to libavf "libavformat". It provides
