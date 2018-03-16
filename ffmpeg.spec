@@ -53,11 +53,11 @@
 %endif
 %global _cuda_rpm_version %(echo %{_cuda_version} | sed -e 's/\\./-/')
 %if 0%{?_with_cuda:1}
-%global cuda_cflags $(pkg-config --cflags cuda-%{cuda_version})
+%global cuda_cflags $(pkg-config --cflags cuda-%{_cuda_version})
 %global cuda_ldflags -L%{_libdir}/nvidia
 %endif
 
-%if 0%{?_with_libnpp}
+if 0%{?_with_libnpp:1}
 %global libnpp_cflags $(pkg-config --cflags nppi-%{_cuda_version} nppc-%{_cuda_version})
 %global libnpp_ldlags $(pkg-config --libs-only-L nppi-%{_cuda_version} nppc-%{_cuda_version})
 %endif
@@ -89,7 +89,7 @@ Patch0:         LibOpenJPEG-2.2.patch
 Patch1:         LibOpenJPEG-2.3.patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 %{?_with_cuda:BuildRequires: cuda-driver-dev-%{_cuda_rpm_version} cuda-misc-headers-%{_cuda_rpm_version} cuda-drivers-devel%{_isa}}
-%{?_with_libnpp:BuildRequires: cuda-cudart-dev-%{_cuda_rpm_version} cuda-misc-headers-%{_cuda_rpm_version} cuda-npp-dev-%{_cuda_rpm_version}}
+%{?_with_libnpp:BuildRequires: cuda-cudart-dev-%{_cuda_rpm_version} cuda-nvcc-%{_cuda_rpm_version} cuda-misc-headers-%{_cuda_rpm_version} cuda-npp-dev-%{_cuda_rpm_version}}
 BuildRequires:  alsa-lib-devel
 BuildRequires:  bzip2-devel
 %{?_with_faac:BuildRequires: faac-devel}
