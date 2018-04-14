@@ -57,7 +57,7 @@
 %global cuda_ldflags -L%{_libdir}/nvidia
 %endif
 
-if 0%{?_with_libnpp:1}
+%if 0%{?_with_libnpp:1}
 %global libnpp_cflags $(pkg-config --cflags nppi-%{_cuda_version} nppc-%{_cuda_version})
 %global libnpp_ldlags $(pkg-config --libs-only-L nppi-%{_cuda_version} nppc-%{_cuda_version})
 %endif
@@ -74,7 +74,7 @@ if 0%{?_with_libnpp:1}
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        3.3.6
+Version:        3.3.7
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
@@ -402,6 +402,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Sat Apr 14 2018 Leigh Scott <leigh123linux@googlemail.com> - 3.3.7-1
+- Updated to 3.3.7
+
 * Mon Jan 01 2018 Julian Sikorski <belegdol@fedoraproject.org> - 3.3.6-1
 - Updated to 3.3.6
 
