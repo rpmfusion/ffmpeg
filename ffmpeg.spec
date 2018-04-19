@@ -1,7 +1,7 @@
 # TODO: add make test to %%check section
 
 #global branch  oldabi-
-%global date    20180305
+%global date    20180419
 #global rel     rc1
 
 # Cuda and others are only available on some arches
@@ -71,8 +71,8 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        3.5
-Release:        0.6.%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        4.0
+Release:        0.1.%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -405,6 +405,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Thu Apr 19 2018 Leigh Scott <leigh123linux@googlemail.com> - 4.0-0.1.20180419git
+- Update to 20180419 (release/4.0 branch)
+
 * Mon Mar 05 2018 Leigh Scott <leigh123linux@googlemail.com> - 3.5-0.6.20180305git
 - Update to 20180305
 - Change build requires for nvenc
