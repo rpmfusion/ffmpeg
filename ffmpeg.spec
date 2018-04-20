@@ -1,7 +1,7 @@
 # TODO: add make test to %%check section
 
 #global branch  oldabi-
-%global date    20180419
+#global date    20180419
 #global rel     rc1
 
 # Cuda and others are only available on some arches
@@ -72,7 +72,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.0
-Release:        0.1.%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -405,6 +405,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Fri Apr 20 2018 Leigh Scott <leigh123linux@googlemail.com> - 4.0-1
+- Update to 4.0 release
+
 * Thu Apr 19 2018 Leigh Scott <leigh123linux@googlemail.com> - 4.0-0.1.20180419git
 - Update to 20180419 (release/4.0 branch)
 
