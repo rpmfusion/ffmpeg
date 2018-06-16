@@ -72,7 +72,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.0
-Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -405,6 +405,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Sat Jun 16 2018 Leigh Scott <leigh123linux@googlemail.com> - 4.0-2
+- Rebuild for new libass version
+
 * Fri Apr 20 2018 Leigh Scott <leigh123linux@googlemail.com> - 4.0-1
 - Update to 4.0 release
 
