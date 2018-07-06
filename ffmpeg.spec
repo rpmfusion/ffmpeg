@@ -72,7 +72,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.0.1
-Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -161,7 +161,7 @@ BuildRequires:  texinfo
 %{!?_without_xvid:BuildRequires: xvidcore-devel}
 BuildRequires:  zlib-devel
 %{?_with_zmq:BuildRequires: zeromq-devel}
-%{?_with_zvbi:BuildRequires: zvbi-devel}
+%{!?_without_zvbi:BuildRequires: zvbi-devel}
 
 %description
 FFmpeg is a complete and free Internet live audio and video
@@ -277,7 +277,7 @@ This package contains development files for %{name}
     %{!?_without_x265:--enable-libx265} \\\
     %{!?_without_xvid:--enable-libxvid} \\\
     %{?_with_zmq:--enable-libzmq} \\\
-    %{?_with_zvbi:--enable-libzvbi} \\\
+    %{!?_without_zvbi:--enable-libzvbi} \\\
     --enable-avfilter \\\
     --enable-avresample \\\
     --enable-postproc \\\
@@ -405,6 +405,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Fri Jul 06 2018 Leigh Scott <leigh123linux@googlemail.com> - 4.0.1-2
+- enable libzvbi by default (rfbz#4956)
+
 * Sat Jun 16 2018 Leigh Scott <leigh123linux@googlemail.com> - 4.0.1-1
 - Update to 4.0.1 release
 
