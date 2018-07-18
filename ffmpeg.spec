@@ -71,8 +71,8 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        4.0.1
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        4.0.2
+Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -405,6 +405,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Wed Jul 18 2018 Leigh Scott <leigh123linux@googlemail.com> - 4.0.2-1
+- Update to 4.0.2 release
+
 * Fri Jul 06 2018 Leigh Scott <leigh123linux@googlemail.com> - 4.0.1-2
 - enable libzvbi by default (rfbz#4956)
 
