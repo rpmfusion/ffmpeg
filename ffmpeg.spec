@@ -12,7 +12,7 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg
-Version:        2.8.14
+Version:        2.8.15
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 %if 0%{?!_without_amr:1}
 License:        GPLv3+
@@ -264,6 +264,9 @@ install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
 
 
 %changelog
+* Wed Jul 18 2018 Leigh Scott <leigh123linux@googlemail.com> - 2.8.15-1
+- Update to 2.8.15
+
 * Thu Feb 22 2018 Nicolas Chauvet <kwizart@gmail.com> - 2.8.14-1
 - Update to 2.8.14
 
