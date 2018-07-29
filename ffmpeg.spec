@@ -72,7 +72,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.0.2
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -114,7 +114,7 @@ BuildRequires:  libiec61883-devel
 BuildRequires:  libdrm-devel
 BuildRequires:  libgcrypt-devel
 BuildRequires:  libGL-devel
-Buildrequires:  libmodplug-devel
+BuildRequires:  libmodplug-devel
 BuildRequires:  librsvg2-devel
 %{?_with_rtmp:BuildRequires: librtmp-devel}
 %{?_with_smb:BuildRequires: libsmbclient-devel}
@@ -124,7 +124,7 @@ BuildRequires:  libv4l-devel
 %{?!_without_vaapi:BuildRequires: libva-devel >= 0.31.0}
 BuildRequires:  libvdpau-devel
 BuildRequires:  libvorbis-devel
-%{?!_without_vpx:BuildRequires: libvpx-devel >= 0.9.1}
+%{?!_without_vpx:BuildRequires: libvpx-devel >= 1.4.0}
 %ifarch %{ix86} x86_64
 %{!?_without_mfx:BuildRequires: libmfx-devel >= 1.23-1}
 BuildRequires:  libXvMC-devel
@@ -141,7 +141,7 @@ BuildRequires:  opencl-headers ocl-icd-devel
 %endif
 %{!?_without_opencv:BuildRequires: opencv-devel}
 BuildRequires:  openjpeg2-devel
-BuildRequires:  opus-devel
+BuildRequires:  opus-devel >= 1.1.3
 %{!?_without_pulse:BuildRequires: pulseaudio-libs-devel}
 BuildRequires:  perl(Pod::Man)
 %{?_with_rubberband:BuildRequires: rubberband-devel}
@@ -405,6 +405,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Sun Jul 29 2018 Julian Sikorski <belegdol@fedoraproject.org> - 4.0.2-3
+- Add spec fixes from rfbz #4964
+
 * Thu Jul 26 2018 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 4.0.2-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
 
