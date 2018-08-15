@@ -46,7 +46,7 @@
 
 # extras flags
 %if 0%{!?_cuda_version:1}
-%global _cuda_version 9.1
+%global _cuda_version 9.2
 %endif
 %global _cuda_rpm_version %(echo %{_cuda_version} | sed -e 's/\\./-/')
 %if 0%{?_with_cuda:1}
@@ -232,7 +232,7 @@ This package contains development files for %{name}
     --enable-libbluray \\\
     %{?_with_bs2b:--enable-libbs2b} \\\
     %{?_with_caca:--enable-libcaca} \\\
-    %{?_with_cuda:--enable-cuda --enable-nonfree} \\\
+    %{?_with_cuda:--enable-cuda-sdk --enable-nonfree} \\\
     %{?_with_cuvid:--enable-cuvid --enable-nonfree} \\\
     %{!?_without_cdio:--enable-libcdio} \\\
     %{?_with_ieee1394:--enable-libdc1394 --enable-libiec61883} \\\
