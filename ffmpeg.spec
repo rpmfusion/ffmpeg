@@ -148,7 +148,7 @@ BuildRequires:  opencl-headers ocl-icd-devel
 %endif
 %{!?_without_opencv:BuildRequires: opencv-devel}
 BuildRequires:  openjpeg2-devel
-BuildRequires:  opus-devel
+%{!?_without_opus:BuildRequires: opus-devel}
 %{!?_without_pulse:BuildRequires: pulseaudio-libs-devel}
 BuildRequires:  perl(Pod::Man)
 %{?_with_rubberband:BuildRequires: rubberband-devel}
@@ -262,7 +262,7 @@ This package contains development files for %{name}
     %{!?_without_opencv:--enable-libopencv} \\\
     %{!?_without_opengl:--enable-opengl} \\\
     --enable-libopenjpeg \\\
-    --enable-libopus \\\
+    %{!?_without_opus:--enable-libopus} \\\
     %{!?_without_pulse:--enable-libpulse} \\\
     %{?_with_rtmp:--enable-librtmp} \\\
     %{?_with_rubberband:--enable-librubberband} \\\
