@@ -16,6 +16,7 @@
 %if 0%{?rhel}
 %global _without_frei0r   1
 %global _without_opencv   1
+%global _without_opus     1
 %global _without_vpx      1
 %global _without_nvenc    1
 %endif
