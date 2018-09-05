@@ -73,7 +73,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.0.2
-Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        4%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -406,6 +406,11 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Wed Sep 05 2018 Nicolas Chauvet <kwizart@gmail.com> - 4.0.2-4
+- Add without_opus
+- Add disable opus and mfx for rhel
+- Enable nvenc for rhel
+
 * Sun Jul 29 2018 Julian Sikorski <belegdol@fedoraproject.org> - 4.0.2-3
 - Add spec fixes from rfbz #4964
 
