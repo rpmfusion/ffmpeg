@@ -14,6 +14,7 @@
 %endif
 
 %if 0%{?rhel}
+%global _without_aom      1
 %global _without_frei0r   1
 %global _without_mfx      1
 %global _without_opencv   1
@@ -73,7 +74,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.0.2
-Release:        4%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        5%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -99,6 +100,7 @@ BuildRequires:  gsm-devel
 BuildRequires:  lame-devel >= 3.98.3
 %{!?_without_jack:BuildRequires: jack-audio-connection-kit-devel}
 %{!?_without_ladspa:BuildRequires: ladspa-devel}
+%{!?_without_aom:BuildRequires:  aom-devel}
 BuildRequires:  libass-devel
 BuildRequires:  libbluray-devel
 %{?_with_bs2b:BuildRequires: libbs2b-devel}
@@ -229,6 +231,7 @@ This package contains development files for %{name}
     %{?_with_gmp:--enable-gmp --enable-version3} \\\
     --enable-gnutls \\\
     %{!?_without_ladspa:--enable-ladspa} \\\
+    %{!?_without_aom:--enable-libaom} \\\
     --enable-libass \\\
     --enable-libbluray \\\
     %{?_with_bs2b:--enable-libbs2b} \\\
@@ -406,6 +409,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Tue Sep 11 2018 Robert-André Mauchin <zebob.m@gmail.com> - 4.0.2-5
+- Add support for libaom (rfbz#5016)
+
 * Wed Sep 05 2018 Nicolas Chauvet <kwizart@gmail.com> - 4.0.2-4
 - Add without_opus
 - Add disable opus and mfx for rhel
