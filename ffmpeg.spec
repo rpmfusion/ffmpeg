@@ -74,7 +74,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.0.2
-Release:        5%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        6%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -409,6 +409,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Fri Sep 14 2018 Leigh Scott <leigh123linux@googlemail.com> - 4.0.2-6
+- Change BuildRequires: aom-devel to libaom-devel
+
 * Tue Sep 11 2018 Robert-André Mauchin <zebob.m@gmail.com> - 4.0.2-5
 - Add support for libaom (rfbz#5016)
 
