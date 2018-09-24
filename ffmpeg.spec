@@ -5,7 +5,7 @@
 #global rel     rc1
 
 # Cuda and others are only available on some arches
-%global cuda_arches x86_64 i686
+%global cuda_arches x86_64
 
 %if 0%{?fedora} >= 25
 # OpenCV 3.X has an overlinking issue - unsuitable for core libraries
