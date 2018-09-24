@@ -48,7 +48,7 @@
 
 # extras flags
 %if 0%{!?_cuda_version:1}
-%global _cuda_version 9.2
+%global _cuda_version 10.0
 %endif
 %global _cuda_rpm_version %(echo %{_cuda_version} | sed -e 's/\\./-/')
 %if 0%{?_with_cuda:1}
