@@ -379,7 +379,6 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 %if 0%{!?_without_tools:1}
 %files
-%doc COPYING.* CREDITS README.md
 %{_bindir}/ffmpeg%{?progs_suffix}
 %{_bindir}/ffplay%{?progs_suffix}
 %{_bindir}/ffprobe%{?progs_suffix}
@@ -393,6 +392,8 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 %endif
 
 %files libs
+%doc  CREDITS README.md
+%license COPYING.*
 %{_libdir}/lib*.so.*
 %exclude %{_libdir}/libavdevice%{?build_suffix}.so.*
 %{!?flavor:%{_mandir}/man3/lib*.3.*
