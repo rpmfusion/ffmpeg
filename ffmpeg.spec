@@ -369,13 +369,8 @@ rm -r %{buildroot}%{_datadir}/%{name}/examples
 install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 %endif
 
-%post libs -p /sbin/ldconfig
-
-%postun libs -p /sbin/ldconfig
-
-%post -n libavdevice%{?flavor} -p /sbin/ldconfig
-
-%postun -n libavdevice%{?flavor} -p /sbin/ldconfig
+%ldconfig_scriptlets  libs
+%ldconfig_scriptlets  libavdevice%{?flavor}
 
 %if 0%{!?_without_tools:1}
 %files
