@@ -73,8 +73,8 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        4.0.2
-Release:        8%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        4.0.3
+Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -409,6 +409,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Sat Nov 03 2018 Leigh Scott <leigh123linux@googlemail.com> - 4.0.3-1
+- Update to 4.0.3 release
+
 * Thu Oct 04 2018 Leigh Scott <leigh123linux@googlemail.com> - 4.0.2-8
 - Add upstream commit to fix aom build failure
 
