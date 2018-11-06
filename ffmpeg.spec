@@ -73,7 +73,7 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        4.0.3
+Version:        4.1
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
@@ -82,9 +82,6 @@ Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 %else
 Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 %endif
-# Upstream commit to fix aom build issue
-# https://git.ffmpeg.org/gitweb/ffmpeg.git/commitdiff/b69ea742ab23ad74b2ae2772764743642212a139
-Patch0:         avcodec-libaomenc-remove-AVOption-related-to-frame-p.patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 %{?_with_cuda:BuildRequires: cuda-driver-dev-%{_cuda_rpm_version} cuda-misc-headers-%{_cuda_rpm_version} cuda-drivers-devel%{_isa}}
 %{?_with_libnpp:BuildRequires: cuda-cudart-dev-%{_cuda_rpm_version} cuda-nvcc-%{_cuda_rpm_version} cuda-misc-headers-%{_cuda_rpm_version} cuda-npp-dev-%{_cuda_rpm_version}}
@@ -303,7 +300,6 @@ echo "git-snapshot-%{?branch}%{date}-RPMFusion" > VERSION
 %else
 %setup -q -n ffmpeg-%{version}
 %endif
-%patch0 -p1 -b .aom_build_fix
 # fix -O3 -g in host_cflags
 sed -i "s|check_host_cflags -O3|check_host_cflags %{optflags}|" configure
 mkdir -p _doc/examples
@@ -409,6 +405,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Tue Nov 06 2018 Leigh Scott <leigh123linux@googlemail.com> - 4.1-1
+- Update to 4.1 release
+
 * Sat Nov 03 2018 Leigh Scott <leigh123linux@googlemail.com> - 4.0.3-1
 - Update to 4.0.3 release
 
