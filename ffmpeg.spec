@@ -311,7 +311,7 @@ This package contains development files for %{name}
 %prep
 %if 0%{?date}
 %setup -q -n ffmpeg-%{?branch}%{date}
-echo "git-snapshot-%{?branch}%{date}-RPMFusion" > VERSION
+echo "git-snapshot-%{?branch}%{date}-rpmfusion" > VERSION
 %else
 %setup -q -n ffmpeg-%{version}
 %endif
