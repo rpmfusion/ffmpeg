@@ -61,6 +61,10 @@
 %global libnpp_ldlags $(pkg-config --libs-only-L nppi-%{_cuda_version} nppc-%{_cuda_version})
 %endif
 
+%if 0%{?_with_rpi:1}
+%global _with_mmal       1
+%endif
+
 %if 0%{?_without_gpl}
 %global lesser L
 %endif
@@ -137,6 +141,7 @@ BuildRequires:  nasm
 %endif
 %{?_with_webp:BuildRequires: libwebp-devel}
 %{?_with_netcdf:BuildRequires: netcdf-devel}
+%{?_with_rpi:BuildRequires: raspberrypi-vc-libs-devel}
 %{!?_without_nvenc:BuildRequires: nv-codec-headers}
 %{!?_without_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
 %{!?_without_openal:BuildRequires: openal-soft-devel}
@@ -255,6 +260,7 @@ This package contains development files for %{name}
     %{?_with_libnpp:--enable-libnpp --enable-nonfree} \\\
     --enable-libmp3lame \\\
     %{?_with_netcdf:--enable-netcdf} \\\
+    %{?_with_mmal:--enable-mmal} \\\
     %{!?_without_nvenc:--enable-nvenc} \\\
     %{!?_without_openal:--enable-openal} \\\
     %{!?_without_opencl:--enable-opencl} \\\
