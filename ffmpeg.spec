@@ -69,6 +69,7 @@
 
 %if 0%{?_with_rpi:1}
 %global _with_mmal       1
+ExclusiveArch: armv7hnl
 %endif
 
 %if 0%{?_without_gpl}
