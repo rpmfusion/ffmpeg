@@ -22,6 +22,12 @@
 %global _without_vpx      1
 %endif
 
+%if 0%{?fedora}
+%ifarch x86_64
+%global _with_vmaf        1
+%endif
+%endif
+
 # flavor nonfree
 %if 0%{?_with_nonfree:1}
 %global flavor           -nonfree
@@ -164,6 +170,7 @@ BuildRequires:  subversion
 #BuildRequires:  texi2html
 BuildRequires:  texinfo
 %{?_with_twolame:BuildRequires: twolame-devel}
+%{?_with_vmaf:BuildRequires: libvmaf-devel}
 %{?_with_wavpack:BuildRequires: wavpack-devel}
 %{!?_without_vidstab:BuildRequires:  vid.stab-devel}
 %{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.31}
@@ -283,6 +290,7 @@ This package contains development files for %{name}
     --enable-libvorbis \\\
     --enable-libv4l2 \\\
     %{!?_without_vidstab:--enable-libvidstab} \\\
+    %{?_with_vmaf:--enable-libvmaf} \\\
     %{!?_without_vpx:--enable-libvpx} \\\
     %{?_with_webp:--enable-libwebp} \\\
     %{!?_without_x264:--enable-libx264} \\\
