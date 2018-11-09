@@ -87,7 +87,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.1
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -423,6 +423,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Fri Nov 09 2018 Nicolas Chauvet <kwizart@gmail.com> - 4.1-3
+- Fix for cuda enabled repo
+
 * Thu Nov 08 2018 Nicolas Chauvet <kwizart@gmail.com> - 4.1-2
 - Add support for rpi
 - Enable libvmaf for x86_64
