@@ -29,12 +29,12 @@
 %endif
 
 # flavor nonfree
-%if 0%{?_with_nonfree:1}
-%global flavor           -nonfree
-%global progs_suffix     -nonfree
+%if 0%{?_with_cuda:1}
+%global debug_package %{nil}
+%global flavor           -cuda
+%global progs_suffix     -cuda
 #global build_suffix     -lgpl
 %ifarch %{cuda_arches}
-%global _with_cuda       1
 %global _with_cuvid      1
 %global _with_libnpp     1
 %endif
@@ -42,6 +42,7 @@
 %global _without_cdio    1
 %global _without_frei0r  1
 %global _without_gpl     1
+%global _without_vidstab 1
 %global _without_x264    1
 %global _without_x265    1
 %global _without_xvid    1
@@ -56,10 +57,11 @@
 %if 0%{!?_cuda_version:1}
 %global _cuda_version 10.0
 %endif
-%global _cuda_rpm_version %(echo %{_cuda_version} | sed -e 's/\\./-/')
+%global _cuda_version_rpm %(echo %{_cuda_version} | sed -e 's/\\./-/')
+%global _cuda_bindir %{_cuda_prefix}/bin
 %if 0%{?_with_cuda:1}
 %global cuda_cflags $(pkg-config --cflags cuda-%{_cuda_version})
-%global cuda_ldflags -L%{_libdir}/nvidia
+%global cuda_ldflags $(pkg-config --libs cuda-%{_cuda_version})
 %endif
 
 %if 0%{?_with_libnpp:1}
@@ -97,8 +99,8 @@ Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 # https://git.ffmpeg.org/gitweb/ffmpeg.git/commitdiff/b69ea742ab23ad74b2ae2772764743642212a139
 Patch0:         avcodec-libaomenc-remove-AVOption-related-to-frame-p.patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
-%{?_with_cuda:BuildRequires: cuda-driver-dev-%{_cuda_rpm_version} cuda-misc-headers-%{_cuda_rpm_version} cuda-drivers-devel%{_isa}}
-%{?_with_libnpp:BuildRequires: cuda-cudart-dev-%{_cuda_rpm_version} cuda-nvcc-%{_cuda_rpm_version} cuda-misc-headers-%{_cuda_rpm_version} cuda-npp-dev-%{_cuda_rpm_version}}
+%{?_with_cuda:BuildRequires: cuda-driver-dev-%{_cuda_version_rpm} cuda-misc-headers-%{_cuda_version_rpm} cuda-drivers-devel%{_isa} cuda-compiler-%{_cuda_version_rpm} cuda-cudart-dev-%{_cuda_version_rpm}}
+%{?_with_libnpp:BuildRequires: cuda-npp-dev-%{_cuda_version_rpm}}
 BuildRequires:  alsa-lib-devel
 BuildRequires:  bzip2-devel
 %{?_with_faac:BuildRequires: faac-devel}
@@ -324,6 +326,7 @@ mkdir -p _doc/examples
 cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
 
 %build
+export PATH=${PATH}:%{_cuda_bindir}
 %{ff_configure}\
     --shlibdir=%{_libdir} \
 %if 0%{?_without_tools:1}
@@ -384,7 +387,7 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 %endif
 
 %ldconfig_scriptlets  libs
-%ldconfig_scriptlets  libavdevice%{?flavor}
+%ldconfig_scriptlets -n libavdevice%{?flavor}
 
 %if 0%{!?_without_tools:1}
 %files
@@ -416,7 +419,7 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 %files devel
 %doc MAINTAINERS doc/APIchanges doc/*.txt
 %doc _doc/examples
-%{!?flavor:%doc %{_docdir}/%{name}/*.html}
+%doc %{_docdir}/%{name}/*.html
 %{_includedir}/%{name}
 %{_libdir}/pkgconfig/lib*.pc
 %{_libdir}/lib*.so
