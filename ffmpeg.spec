@@ -96,8 +96,8 @@ Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 %endif
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
-%{?_with_cuda:BuildRequires: cuda-driver-dev-%{_cuda_version_rpm} cuda-misc-headers-%{_cuda_version_rpm} cuda-drivers-devel%{_isa} cuda-compiler-%{_cuda_version_rpm} cuda-cudart-dev-%{_cuda_version_rpm}}
-%{?_with_libnpp:BuildRequires: cuda-npp-dev-%{_cuda_version_rpm}}
+%{?_with_cuda:BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel}
+%{?_with_libnpp:BuildRequires: pkgconfig(nppc-%{_cuda_version})}
 BuildRequires:  alsa-lib-devel
 BuildRequires:  bzip2-devel
 %{?_with_faac:BuildRequires: faac-devel}
