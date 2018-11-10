@@ -323,7 +323,7 @@ mkdir -p _doc/examples
 cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
 
 %build
-export PATH=${PATH}:%{_cuda_bindir}
+%{?_with_cuda:export PATH=${PATH}:%{_cuda_bindir}}
 %{ff_configure}\
     --shlibdir=%{_libdir} \
 %if 0%{?_without_tools:1}
