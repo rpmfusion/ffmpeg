@@ -73,7 +73,7 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        3.3.8
+Version:        3.3.9
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
@@ -415,6 +415,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Sun Nov 18 2018 Julian Sikorski <belegdol@fedoraproject.org> - 3.3.9-1
+- Updated to 3.3.9
+
 * Wed Jul 18 2018 Leigh Scott <leigh123linux@googlemail.com> - 3.3.8-1
 - Updated to 3.3.8
 - enable libzvbi by default (rfbz#4956)
