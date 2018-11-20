@@ -110,7 +110,6 @@ BuildRequires:  libbluray-devel
 %{?_with_caca:BuildRequires: libcaca-devel}
 %{!?_without_cdio:BuildRequires: libcdio-paranoia-devel}
 %{?_with_chromaprint:BuildRequires: libchromaprint-devel}
-#libcrystalhd is currently broken
 %{?_with_crystalhd:BuildRequires: libcrystalhd-devel}
 %if 0%{?_with_ieee1394}
 BuildRequires:  libavc1394-devel
