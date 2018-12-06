@@ -4,78 +4,169 @@
 #global date    20110612
 #global rel     rc1
 
+# Cuda and others are only available on some arches
+%global cuda_arches x86_64 i686
+
+%if 0%{?fedora} >= 25
+# OpenCV 3.X has an overlinking issue - unsuitable for core libraries
+# Reported as https://github.com/opencv/opencv/issues/7001
+%global _without_opencv   1
+%endif
+
 %if 0%{?rhel}
 %global _without_frei0r   1
 %global _without_opencv   1
 %global _without_vpx      1
+%global _without_nvenc    1
+%global _with_opus        1
+%endif
+
+# flavor nonfree
+%if 0%{?_with_nonfree:1}
+%global flavor           -nonfree
+%global progs_suffix     -nonfree
+#global build_suffix     -lgpl
+%ifarch %{cuda_arches}
+%global _with_cuda       1
+%global _with_cuvid      1
+%global _with_libnpp     1
+%endif
+%global _with_fdk_aac    1
+%global _without_cdio    1
+%global _without_frei0r  1
+%global _without_gpl     1
+%global _without_x264    1
+%global _without_x265    1
+%global _without_xvid    1
+%endif
+
+# Disable nvenc when not relevant
+%ifnarch %{cuda_arches}
+%global _without_nvenc    1
+%endif
+
+# extras flags
+%if 0%{!?_without_nvenc:1}
+%global nvenc_cflags -I%{_includedir}/nvenc
+%endif
+%if 0%{!?_cuda_version:1}
+%global _cuda_version 9.1
+%endif
+%global _cuda_rpm_version %(echo %{_cuda_version} | sed -e 's/\\./-/')
+%if 0%{?_with_cuda:1}
+%global cuda_cflags $(pkg-config --cflags cuda-%{_cuda_version})
+%global cuda_ldflags -L%{_libdir}/nvidia
+%endif
+
+%if 0%{?_with_libnpp:1}
+%global libnpp_cflags $(pkg-config --cflags nppi-%{_cuda_version} nppc-%{_cuda_version})
+%global libnpp_ldlags $(pkg-config --libs-only-L nppi-%{_cuda_version} nppc-%{_cuda_version})
+%endif
+
+%if 0%{?_without_gpl}
+%global lesser L
+%endif
+
+%if 0%{!?_without_amr} || 0%{?_with_gmp} || 0%{?_with_smb}
+%global ffmpeg_license %{?lesser}GPLv3+
+%else
+%global ffmpeg_license %{?lesser}GPLv2+
 %endif
 
 Summary:        Digital VCR and streaming server
-Name:           ffmpeg
-Version:        2.8.15
+Name:           ffmpeg%{?flavor}
+Version:        3.4.5
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
-%if 0%{?!_without_amr:1}
-License:        GPLv3+
-%else
-License:        GPLv2+
-%endif
+License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
-Source0:        %{name}-%{?branch}%{date}.tar.bz2
+Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 %else
-Source0:        http://ffmpeg.org/releases/%{name}-%{version}.tar.xz
+Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 %endif
+#Backport patch for arm neon
+Patch0:         0001-arm-Fix-SIGBUS-on-ARM-when-compiled-with-binutils-2..patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
+%{?_with_cuda:BuildRequires: cuda-driver-dev-%{_cuda_rpm_version} cuda-misc-headers-%{_cuda_rpm_version} cuda-drivers-devel%{_isa}}
+%{?_with_libnpp:BuildRequires: cuda-cudart-dev-%{_cuda_rpm_version} cuda-nvcc-%{_cuda_rpm_version} cuda-misc-headers-%{_cuda_rpm_version} cuda-npp-dev-%{_cuda_rpm_version}}
 BuildRequires:  bzip2-devel
-%{?_with_celt:BuildRequires: celt-devel}
-%{?_with_dirac:BuildRequires: dirac-devel}
 %{?_with_faac:BuildRequires: faac-devel}
 %{?_with_fdk_aac:BuildRequires: fdk-aac-devel}
+%{?_with_flite:BuildRequires: flite-devel}
+BuildRequires:  fontconfig-devel
 BuildRequires:  freetype-devel
 %{!?_without_frei0r:BuildRequires: frei0r-devel}
+%{?_with_gme:BuildRequires: game-music-emu-devel}
 BuildRequires:  gnutls-devel
 BuildRequires:  gsm-devel
+%{?_with_ilbc:BuildRequires: ilbc-devel}
 BuildRequires:  lame-devel >= 3.98.3
-%{?_with_jack:BuildRequires: jack-audio-connection-kit-devel}
+%{!?_without_jack:BuildRequires: jack-audio-connection-kit-devel}
 %{!?_without_ladspa:BuildRequires: ladspa-devel}
 BuildRequires:  libass-devel
+BuildRequires:  libbluray-devel
+%{?_with_bs2b:BuildRequires: libbs2b-devel}
+%{?_with_caca:BuildRequires: libcaca-devel}
 %{!?_without_cdio:BuildRequires: libcdio-paranoia-devel}
+%{?_with_chromaprint:BuildRequires: libchromaprint-devel}
 #libcrystalhd is currently broken
 %{?_with_crystalhd:BuildRequires: libcrystalhd-devel}
+%if 0%{?_with_ieee1394}
+BuildRequires:  libavc1394-devel
 BuildRequires:  libdc1394-devel
+BuildRequires:  libiec61883-devel
+%endif
+BuildRequires:  libdrm-devel
+BuildRequires:  libgcrypt-devel
+BuildRequires:  libGL-devel
 Buildrequires:  libmodplug-devel
+BuildRequires:  librsvg2-devel
 %{?_with_rtmp:BuildRequires: librtmp-devel}
+%{?_with_smb:BuildRequires: libsmbclient-devel}
+%{?_with_ssh:BuildRequires: libssh-devel}
 BuildRequires:  libtheora-devel
 BuildRequires:  libv4l-devel
+%{?!_without_vaapi:BuildRequires: libva-devel >= 0.31.0}
 BuildRequires:  libvdpau-devel
 BuildRequires:  libvorbis-devel
 %{?!_without_vpx:BuildRequires: libvpx-devel >= 0.9.1}
 %ifarch %{ix86} x86_64
+%{!?_without_mfx:BuildRequires: libmfx-devel >= 1.21-1}
 BuildRequires:  libXvMC-devel
-%{?!_without_vaapi:BuildRequires: libva-devel >= 0.31.0}
+BuildRequires:  nasm
 %endif
+%{?_with_webp:BuildRequires: libwebp-devel}
+%{?_with_netcdf:BuildRequires: netcdf-devel}
+%{!?_without_nvenc:BuildRequires: nvenc-devel}
 %{!?_without_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
 %{!?_without_openal:BuildRequires: openal-soft-devel}
-%{?_with_opencl:BuildRequires: opencl-headers ocl-icd-devel}
+%if 0%{!?_without_opencl:1}
+BuildRequires:  opencl-headers ocl-icd-devel
+%{?fedora:Recommends: opencl-icd}
+%endif
 %{!?_without_opencv:BuildRequires: opencv-devel}
-BuildRequires:  openjpeg-devel
-BuildRequires:  opus-devel
+BuildRequires:  openjpeg2-devel
+%{?_without_opus:BuildRequires: opus-devel}
 %{!?_without_pulse:BuildRequires: pulseaudio-libs-devel}
 BuildRequires:  perl(Pod::Man)
-BuildRequires:  schroedinger-devel
-BuildRequires:  SDL-devel
+%{?_with_rubberband:BuildRequires: rubberband-devel}
+%{!?_without_tools:BuildRequires: SDL2-devel}
+%{?_with_snappy:BuildRequires: snappy-devel}
 BuildRequires:  soxr-devel
 BuildRequires:  speex-devel
 BuildRequires:  subversion
+%{?_with_tesseract:BuildRequires: tesseract-devel}
 #BuildRequires:  texi2html
 BuildRequires:  texinfo
+%{?_with_twolame:BuildRequires: twolame-devel}
+%{?_with_wavpack:BuildRequires: wavpack-devel}
+%{!?_without_vidstab:BuildRequires:  vid.stab-devel}
 %{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.31}
 %{!?_without_x265:BuildRequires: x265-devel}
-BuildRequires:  xvidcore-devel
+%{!?_without_xvid:BuildRequires: xvidcore-devel}
 BuildRequires:  zlib-devel
-%ifarch %{ix86} x86_64
-BuildRequires:  yasm
-%endif
+%{?_with_zmq:BuildRequires: zeromq-devel}
+%{?_with_zvbi:BuildRequires: zvbi-devel}
 
 %description
 FFmpeg is a complete and free Internet live audio and video
@@ -85,6 +176,7 @@ and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
 
 %package        libs
 Summary:        Libraries for %{name}
+%{?el7:BuildRequires: epel-rpm-macros}
 
 %description    libs
 FFmpeg is a complete and free Internet live audio and video
@@ -93,10 +185,10 @@ VCR. It can encode in real time in many formats including MPEG1 audio
 and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
 This package contains the libraries for %{name}
 
-%package     -n libavdevice
+%package     -n libavdevice%{?flavor}
 Summary:        Special devices muxing/demuxing library
 
-%description -n libavdevice
+%description -n libavdevice%{?flavor}
 Libavdevice is a complementary library to libavf "libavformat". It provides
 various "special" platform-specific muxers and demuxers, e.g. for grabbing
 devices, audio capture and playback etc.
@@ -104,7 +196,7 @@ devices, audio capture and playback etc.
 %package        devel
 Summary:        Development package for %{name}
 Requires:       %{name}-libs%{_isa} = %{version}-%{release}
-Requires:       libavdevice%{_isa} = %{version}-%{release}
+Requires:       libavdevice%{?flavor}%{_isa} = %{version}-%{release}
 Requires:       pkgconfig
 
 %description    devel
@@ -120,103 +212,148 @@ This package contains development files for %{name}
     --prefix=%{_prefix} \\\
     --bindir=%{_bindir} \\\
     --datadir=%{_datadir}/%{name} \\\
+    --docdir=%{_docdir}/%{name} \\\
     --incdir=%{_includedir}/%{name} \\\
     --libdir=%{_libdir} \\\
     --mandir=%{_mandir} \\\
     --arch=%{_target_cpu} \\\
-    --optflags="$RPM_OPT_FLAGS" \\\
-    --extra-ldflags="$RPM_LD_FLAGS" \\\
+    --optflags="%{optflags}" \\\
+    --extra-ldflags="%{?__global_ldflags} %{?cuda_ldflags} %{?libnpp_ldlags}" \\\
+    --extra-cflags="%{?nvenc_cflags} %{?cuda_cflags} %{?libnpp_cflags}" \\\
+    %{?flavor:--disable-manpages} \\\
+    %{?progs_suffix:--progs-suffix=%{progs_suffix}} \\\
+    %{?build_suffix:--build-suffix=%{build_suffix}} \\\
     %{!?_without_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3} \\\
     --enable-bzlib \\\
+    %{?_with_chromaprint:--enable-chromaprint} \\\
     %{!?_with_crystalhd:--disable-crystalhd} \\\
+    --enable-fontconfig \\\
     %{!?_without_frei0r:--enable-frei0r} \\\
+    --enable-gcrypt \\\
+    %{?_with_gmp:--enable-gmp --enable-version3} \\\
     --enable-gnutls \\\
     %{!?_without_ladspa:--enable-ladspa} \\\
     --enable-libass \\\
+    --enable-libbluray \\\
+    %{?_with_bs2b:--enable-libbs2b} \\\
+    %{?_with_caca:--enable-libcaca} \\\
+    %{?_with_cuda:--enable-cuda --enable-nonfree} \\\
+    %{?_with_cuvid:--enable-cuvid --enable-nonfree} \\\
     %{!?_without_cdio:--enable-libcdio} \\\
-    %{?_with_celt:--enable-libcelt} \\\
-    --enable-libdc1394 \\\
-    %{?_with_dirac:--enable-libdirac} \\\
+    %{?_with_ieee1394:--enable-libdc1394 --enable-libiec61883} \\\
+    --enable-libdrm \\\
     %{?_with_faac:--enable-libfaac --enable-nonfree} \\\
     %{?_with_fdk_aac:--enable-libfdk-aac --enable-nonfree} \\\
-    %{!?_with_jack:--disable-indev=jack} \\\
+    %{?_with_flite:--enable-libflite} \\\
+    %{!?_without_jack:--enable-indev=jack} \\\
     --enable-libfreetype \\\
+    --enable-libfribidi \\\
+    %{?_with_gme:--enable-libgme} \\\
     --enable-libgsm \\\
+    %{?_with_ilbc:--enable-libilbc} \\\
+    %{?_with_libnpp:--enable-libnpp --enable-nonfree} \\\
     --enable-libmp3lame \\\
-    %{?_with_nvenc:--enable-nvenc  --enable-nonfree} \\\
+    %{?_with_netcdf:--enable-netcdf} \\\
+    %{!?_without_nvenc:--enable-nvenc} \\\
     %{!?_without_openal:--enable-openal} \\\
-    %{?_with_opencl:--enable-opencl} \\\
+    %{!?_without_opencl:--enable-opencl} \\\
     %{!?_without_opencv:--enable-libopencv} \\\
+    %{!?_without_opengl:--enable-opengl} \\\
     --enable-libopenjpeg \\\
-    --enable-libopus \\\
+    %{?_without_opus:--enable-libopus} \\\
     %{!?_without_pulse:--enable-libpulse} \\\
+    --enable-librsvg \\\
     %{?_with_rtmp:--enable-librtmp} \\\
-    --enable-libschroedinger \\\
+    %{?_with_rubberband:--enable-librubberband} \\\
+    %{?_with_smb:--enable-libsmbclient} \\\
+    %{?_with_snappy:--enable-libsnappy} \\\
     --enable-libsoxr \\\
     --enable-libspeex \\\
+    %{?_with_ssh:--enable-libssh} \\\
+    %{?_with_tesseract:--enable-libtesseract} \\\
     --enable-libtheora \\\
+    %{?_with_twolame:--enable-libtwolame} \\\
     --enable-libvorbis \\\
     --enable-libv4l2 \\\
+    %{!?_without_vidstab:--enable-libvidstab} \\\
     %{!?_without_vpx:--enable-libvpx} \\\
+    %{?_with_webp:--enable-libwebp} \\\
     %{!?_without_x264:--enable-libx264} \\\
     %{!?_without_x265:--enable-libx265} \\\
-    --enable-libxvid \\\
-    --enable-x11grab \\\
+    %{!?_without_xvid:--enable-libxvid} \\\
+    %{?_with_zmq:--enable-libzmq} \\\
+    %{?_with_zvbi:--enable-libzvbi} \\\
     --enable-avfilter \\\
     --enable-avresample \\\
     --enable-postproc \\\
     --enable-pthreads \\\
     --disable-static \\\
     --enable-shared \\\
-    --enable-gpl \\\
+    %{!?_without_gpl:--enable-gpl} \\\
     --disable-debug \\\
     --disable-stripping
 
 
 %prep
 %if 0%{?date}
-%setup -q -n %{name}-%{?branch}%{date}
+%setup -q -n ffmpeg-%{?branch}%{date}
 echo "git-snapshot-%{?branch}%{date}-RPMFusion" > VERSION
 %else
-%setup -q
+%setup -q -n ffmpeg-%{version}
 %endif
+# backport patch for arm neon
+%patch0 -p1
 # fix -O3 -g in host_cflags
-sed -i "s|check_host_cflags -O3|check_host_cflags $RPM_OPT_FLAGS|" configure
+sed -i "s|check_host_cflags -O3|check_host_cflags %{optflags}|" configure
+mkdir -p _doc/examples
+cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
 
 %build
 %{ff_configure}\
     --shlibdir=%{_libdir} \
-%if 0%{?ffmpegsuffix:1}
-    --build-suffix=%{ffmpegsuffix} \
+%if 0%{?_without_tools:1}
     --disable-doc \
     --disable-ffmpeg --disable-ffplay --disable-ffprobe --disable-ffserver \
-%else
+%endif
 %ifarch %{ix86}
     --cpu=%{_target_cpu} \
 %endif
-%ifarch %{ix86} x86_64 ppc ppc64
+%ifarch %{ix86} x86_64
+    %{!?_without_qsv:--enable-libmfx} \
+%endif
+%ifarch %{ix86} x86_64 %{power64}
     --enable-runtime-cpudetect \
 %endif
-%ifarch ppc
-    --cpu=g3 \
-    --enable-pic \
-%endif
+%ifarch %{power64}
 %ifarch ppc64
     --cpu=g5 \
+%endif
+%ifarch ppc64p7
+    --cpu=power7 \
+%endif
+%ifarch ppc64le
+    --cpu=power8 \
+%endif
     --enable-pic \
 %endif
 %ifarch %{arm}
     --disable-runtime-cpudetect --arch=arm \
 %ifarch armv6hl
     --cpu=armv6 \
-%else
+%endif
+%ifarch armv7hl armv7hnl
+    --cpu=armv7-a \
+    --enable-vfpv3 \
     --enable-thumb \
+%endif
+%ifarch armv7hl
+    --disable-neon \
 %endif
 %ifarch armv7hnl
     --enable-neon \
 %endif
 %endif
-%endif
+    || cat ffbuild/config.log
 
 %make_build V=1
 make documentation V=1
@@ -224,74 +361,223 @@ make alltools V=1
 
 %install
 %make_install V=1
-%if 0%{!?ffmpegsuffix:1}
-install -pm755 tools/qt-faststart $RPM_BUILD_ROOT%{_bindir}
+%if 0%{!?flavor:1}
+rm -r %{buildroot}%{_datadir}/%{name}/examples
+%endif
+%if 0%{!?progs_suffix:1}
+install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 %endif
 
-%post libs -p /sbin/ldconfig
+%ldconfig_scriptlets libs
+%ldconfig_scriptlets -n libavdevice%{?flavor}
 
-%postun libs -p /sbin/ldconfig
-
-%if 0%{!?ffmpegsuffix:1}
+%if 0%{!?_without_tools:1}
 %files
 %doc COPYING.* CREDITS README.md doc/ffserver.conf
-%{_bindir}/ffmpeg
-%{_bindir}/ffplay
-%{_bindir}/ffprobe
-%{_bindir}/ffserver
-%{_bindir}/qt-faststart
+%{_bindir}/ffmpeg%{?progs_suffix}
+%{_bindir}/ffplay%{?progs_suffix}
+%{_bindir}/ffprobe%{?progs_suffix}
+%{_bindir}/ffserver%{?progs_suffix}
+%{!?progs_suffix:%{_bindir}/qt-faststart}
+%{!?flavor:
 %{_mandir}/man1/ffmpeg*.1*
 %{_mandir}/man1/ffplay*.1*
 %{_mandir}/man1/ffprobe*.1*
 %{_mandir}/man1/ffserver*.1*
+}
 %{_datadir}/%{name}
 %endif
 
 %files libs
 %{_libdir}/lib*.so.*
-%exclude %{_libdir}/libavdevice.so.*
-%{_mandir}/man3/lib*.3.gz
+%exclude %{_libdir}/libavdevice%{?build_suffix}.so.*
+%{!?flavor:%{_mandir}/man3/lib*.3.*
+%exclude %{_mandir}/man3/libavdevice.3*
+}
 
-%files -n libavdevice
-%{_libdir}/libavdevice.so.*
+%files -n libavdevice%{?flavor}
+%{_libdir}/libavdevice%{?build_suffix}.so.*
+%{!?flavor:%{_mandir}/man3/libavdevice.3*}
 
 %files devel
 %doc MAINTAINERS doc/APIchanges doc/*.txt
-%doc %{_docdir}/%{name}/*.html
+%doc _doc/examples
+%{!?flavor:%doc %{_docdir}/%{name}/*.html}
 %{_includedir}/%{name}
 %{_libdir}/pkgconfig/lib*.pc
 %{_libdir}/lib*.so
 
 
 %changelog
-* Wed Jul 18 2018 Leigh Scott <leigh123linux@googlemail.com> - 2.8.15-1
-- Update to 2.8.15
+* Thu Nov 22 2018 Antonio Trande <sagitter@fedoraproject.org> - 3.4.5-1
+- Release 3.4.5
 
-* Thu Feb 22 2018 Nicolas Chauvet <kwizart@gmail.com> - 2.8.14-1
-- Update to 2.8.14
+* Thu Nov 22 2018 Antonio Trande <sagitter@fedoraproject.org> - 3.4.1-5
+- Rebuild for el7
+- Rebuild for x265-2.9 on el7
+- Use ldconfig_scriptlets
+- Disable system's opus detection
 
-* Tue Jan 30 2018 Nicolas Chauvet <kwizart@gmail.com> - 2.8.13-2
+* Sat Dec 30 2017 Sérgio Basto <sergio@serjux.com> - 3.4.1-4
+- Mass rebuild for x264 and x265
+
+* Sun Dec 17 2017 Nicolas Chauvet <kwizart@gmail.com> - 3.4.1-3
+- Add _cuda_version rpm macro
+
+* Mon Dec 11 2017 Nicolas Chauvet <kwizart@gmail.com> - 3.4.1-2
+- Backport patch for arm neon rfbz#4727
+
+* Mon Dec 11 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.4.1-1
+- Updated to 3.4.1
+
+* Tue Nov 28 2017 Dominik Mierzejewski <rpm@greysector.net> - 3.4-6
+- enable support for vid.stab (rfbz#4713)
+- rebuild against new libmfx (rhbz#1471768)
+
+* Wed Oct 25 2017 Dominik Mierzejewski <rpm@greysector.net> - 3.4-5
+- drop support for building on ppc (32bit)
+- explicitly support ppc64p7 and ppc64le
+- set correct CPU options on armv7hl
+- show config.log in case of configure failure
+- enable VAAPI support on all arches, it's not x86-specific anymore
+
+* Wed Oct 25 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.4-4
+- Switch from yasm to nasm
+
+* Wed Oct 25 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.4-3
+- Add SVG rasterization and KMS screengrabber support
+
+* Mon Oct 16 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.4-2
+- rebuild for x265
+
+* Sun Oct 15 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.4-1
+- Updated to 3.4
+- Remove build requires schroedinger-devel (wrapper was removed)
+
+* Thu Oct 12 2017 Dominik Mierzejewski <rpm@greysector.net> - 3.3.4-2
+- add support for OpenJPEG v2.3
+
+* Tue Sep 12 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.3.4-1
+- Updated to 3.3.4
+
+* Thu Aug 31 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.3.3-4
+- Add support for LibOpenJPEG v2.2
+
+* Thu Aug 31 2017 RPM Fusion Release Engineering <kwizart@rpmfusion.org> - 3.3.3-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
+
+* Thu Aug 31 2017 RPM Fusion Release Engineering <kwizart@rpmfusion.org> - 3.3.3-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
+
+* Sat Jul 29 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.3.3-1
+- Updated to 3.3.3
+
+* Wed Jun 07 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.3.2-1
+- Updated to 3.3.2
+
+* Mon May 15 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.3.1-1
+- Updated to 3.3.1
+
+* Wed Apr 19 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.3-1
+- Updated to 3.3
+- Make nvenc x86 only
+- Remove obsolete x11grab configure option
+
+* Sun Mar 19 2017 RPM Fusion Release Engineering <kwizart@rpmfusion.org> - 3.2.4-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
+* Sat Feb 11 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.2.4-1
+- Updated to 3.2.4
+
+* Mon Feb 06 2017 Leigh Scott <leigh123linux@googlemail.com> - 3.2.3-1
+- Updated to 3.2.3
+
+* Tue Jan 03 2017 Dominik Mierzejewski <rpm@greysector.net> - 3.2.2-3
+- rebuild for x265
+
+* Mon Jan 02 2017 Dominik Mierzejewski <rpm@greysector.net> - 3.2.2-2
+- enable optional nonfree build with cuda, cuvid, npp and fdk-aac
+  (most credit for this goes to Nicolas Chauvet)
+- allow disabling x11grab (conflicts with nonfree builds)
+- use Recommends only on Fedora (patch by Nicolas Chauvet)
+- enable AMR codecs by default (rfbz#4367, patch by Nicolas Chauvet)
+
+* Tue Dec 06 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.2.2-1
+- Updated to 3.2.2
+
+* Sat Nov 26 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.2.1-1
+- Updated to 3.2.1
+
+* Wed Nov 16 2016 Adrian Reber <adrian@lisas.de> - 3.2-3
+- Rebuild for libcdio-0.94
+
+* Tue Nov 08 2016 Sérgio Basto <sergio@serjux.com> - 3.2-2
+- Rebuild for x265-2.1
+
+* Sat Oct 29 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.2-1
+- Updated to 3.2
+- Dropped openjpeg2 patch
+- Updated BuildRequires to SDL2-devel
+- Incorporated some cleanups from RF #4243
+
+* Tue Oct 25 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.1.5-1
+- Updated to 3.1.5
+
+* Sat Oct 01 2016 Leigh Scott <leigh123linux@googlemail.com> - 3.1.4-2
+- Fix missing libxvid (rfbz#4274)
+
+* Sat Oct 01 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.1.4-1
+- Updated to 3.1.4
+
+* Thu Sep 08 2016 Nicolas Chauvet <kwizart@gmail.com> - 3.1.3-3
+- Disable OpenCV for Fedora >= 25
+
+* Sat Sep 03 2016 Dominik Mierzejewski <rpm@greysector.net> - 3.1.3-2
+- enable QSV support by default, since libmfx is in Fedora now
+- QSV is x86 only
+- put x86-specific BRs in one place
+
+* Sat Aug 27 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.1.3-1
+- Updated to 3.1.3
+
+* Thu Aug 25 2016 Leigh Scott <leigh123linux@googlemail.com> - 3.1.2-2
+- enable support for nvenc
+
+* Wed Aug 10 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.1.2-1
+- Updated to 3.1.2
+
+* Wed Jul 27 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.1.1-1
+- Updated to 3.1.1
+- Dropped included patch
+- Added $RPM_LD_FLAGS to %%configure
+- Switched to openjpeg2
+- Fixed build with openjpeg2-2.1.1 (patch by Sandro Mani)
+
+* Sat Jul 23 2016 Igor Gnatenko <ignatenko@redhat.com> - 3.0.2-5
+- Rebuild for libvpx soname bump
+
+* Sun Jul 10 2016 Dominik Mierzejewski <rpm@greysector.net> - 3.0.2-4
+- enable jack by default (rfbz#2156)
+- re-enable opencl by default (rfbz#3640 was fixed)
+- add conditional support for QSV via libmfx (rfbz#4043)
+- drop libcelt support (celt 0.11 no longer available in Fedora)
+- drop libdirac support (unsupported by FFmpeg)
+- make xvidcore support optional
+- add missing ldconfig calls for libavdevice package
+- move libavdevice manpage to its subpackage
+- move examples from main package to -devel as docs
+- add support for libiec61883 and make DV (IEEE 1394) support optional
+- enable optional support for many external libraries (rfbz#4109)
+
+* Thu Jul 07 2016 Julian Sikorski <belegdol@fedoraproject.org> - 3.0.2-3
+- Fixed build failure on rawhide due to newer opencv using a patch from upstream
+  git
+
+* Sun Jun 12 2016 Leigh Scott <leigh123linux@googlemail.com> - 3.0.2-2
 - rebuilt
 
-* Sat Sep 02 2017 Nicolas Chauvet <kwizart@gmail.com> - 2.8.13-1
-- Update to 2.8.13 (security issues)
-
-* Wed Jun 07 2017 Nicolas Chauvet <kwizart@gmail.com> - 2.8.12-1
-- Update to 2.8.12
-
-* Mon Feb 13 2017 Nicolas Chauvet <kwizart@gmail.com> - 2.8.11-1
-- Update to 2.8.11
-- enable AMR codecs by default - rfbz#4367
-
-* Tue Dec 06 2016 Julian Sikorski <belegdol@fedoraproject.org> - 2.8.10-1
-- Updated to 2.8.10
-- Backported some .spec cleanups from rawhide
-
-* Sun Dec 04 2016 Julian Sikorski <belegdol@fedoraproject.org> - 2.8.9-1
-- Updated to 2.8.9
-
-* Wed Sep 21 2016 Julian Sikorski <belegdol@fedoraproject.org> - 2.8.8-1
-- Updated to 2.8.8
+* Sat May 14 2016 Michael Kuhn <suraia@ikkoku.de> - 3.0.2-1
+- Update to 3.0.2.
 
 * Mon May 02 2016 Julian Sikorski <belegdol@fedoraproject.org> - 2.8.7-1
 - Updated to 2.8.7
