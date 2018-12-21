@@ -70,6 +70,8 @@
 %endif
 
 %if 0%{?_with_rpi:1}
+%global _with_omx        1
+%global _with_omx_rpi    1
 %global _with_mmal       1
 ExclusiveArch: armv7hnl
 %endif
@@ -153,6 +155,7 @@ BuildRequires:  nasm
 %{?_with_rpi:BuildRequires: raspberrypi-vc-devel}
 %{!?_without_nvenc:BuildRequires: nv-codec-headers}
 %{!?_without_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
+%{?_with_omx:BuildRequires: libomxil-bellagio-devel}
 %{!?_without_openal:BuildRequires: openal-soft-devel}
 %if 0%{!?_without_opencl:1}
 BuildRequires:  opencl-headers ocl-icd-devel
@@ -272,6 +275,8 @@ This package contains development files for %{name}
     %{?_with_netcdf:--enable-netcdf} \\\
     %{?_with_mmal:--enable-mmal} \\\
     %{!?_without_nvenc:--enable-nvenc} \\\
+    %{?_with_omx:--enable-omx} \\\
+    %{?_with_omx_rpi:--enable-omx-rpi} \\\
     %{!?_without_openal:--enable-openal} \\\
     %{!?_without_opencl:--enable-opencl} \\\
     %{!?_without_opencv:--enable-libopencv} \\\
