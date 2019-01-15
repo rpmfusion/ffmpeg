@@ -100,6 +100,8 @@ Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 # Upstream commit to fix aom build issue
 # https://git.ffmpeg.org/gitweb/ffmpeg.git/commitdiff/b69ea742ab23ad74b2ae2772764743642212a139
 Patch0:         avcodec-libaomenc-remove-AVOption-related-to-frame-p.patch
+# Backport from master to allow vmaf 1.3.9
+Patch1:         87cc7e8d4ef8fa643d8d4822525b9c95cc9e7307.patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 %{?_with_cuda:BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel}
 %{?_with_libnpp:BuildRequires: pkgconfig(nppc-%{_cuda_version})}
@@ -325,6 +327,7 @@ echo "git-snapshot-%{?branch}%{date}-rpmfusion" > VERSION
 %setup -q -n ffmpeg-%{version}
 %endif
 %patch0 -p1 -b .aom_build_fix
+%patch1 -p1 -b .vmaf_build
 # fix -O3 -g in host_cflags
 sed -i "s|check_host_cflags -O3|check_host_cflags %{optflags}|" configure
 mkdir -p _doc/examples
