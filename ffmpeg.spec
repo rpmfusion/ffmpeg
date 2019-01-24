@@ -5,20 +5,15 @@
 #global rel     rc1
 
 # Cuda and others are only available on some arches
-%global cuda_arches x86_64 i686
+%global cuda_arches x86_64
 
-%if 0%{?fedora} >= 25
 # OpenCV 3.X has an overlinking issue - unsuitable for core libraries
 # Reported as https://github.com/opencv/opencv/issues/7001
 %global _without_opencv   1
-%endif
 
 %if 0%{?rhel}
 %global _without_frei0r   1
-%global _without_opencv   1
 %global _without_vpx      1
-%global _without_nvenc    1
-%global _with_opus        1
 %endif
 
 # flavor nonfree
@@ -46,9 +41,6 @@
 %endif
 
 # extras flags
-%if 0%{!?_without_nvenc:1}
-%global nvenc_cflags -I%{_includedir}/nvenc
-%endif
 %if 0%{!?_cuda_version:1}
 %global _cuda_version 9.1
 %endif
@@ -89,6 +81,7 @@ Patch0:         0001-arm-Fix-SIGBUS-on-ARM-when-compiled-with-binutils-2..patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 %{?_with_cuda:BuildRequires: cuda-driver-dev-%{_cuda_rpm_version} cuda-misc-headers-%{_cuda_rpm_version} cuda-drivers-devel%{_isa}}
 %{?_with_libnpp:BuildRequires: cuda-cudart-dev-%{_cuda_rpm_version} cuda-nvcc-%{_cuda_rpm_version} cuda-misc-headers-%{_cuda_rpm_version} cuda-npp-dev-%{_cuda_rpm_version}}
+BuildRequires:  alsa-lib-devel
 BuildRequires:  bzip2-devel
 %{?_with_faac:BuildRequires: faac-devel}
 %{?_with_fdk_aac:BuildRequires: fdk-aac-devel}
@@ -109,7 +102,6 @@ BuildRequires:  libbluray-devel
 %{?_with_caca:BuildRequires: libcaca-devel}
 %{!?_without_cdio:BuildRequires: libcdio-paranoia-devel}
 %{?_with_chromaprint:BuildRequires: libchromaprint-devel}
-#libcrystalhd is currently broken
 %{?_with_crystalhd:BuildRequires: libcrystalhd-devel}
 %if 0%{?_with_ieee1394}
 BuildRequires:  libavc1394-devel
@@ -119,7 +111,7 @@ BuildRequires:  libiec61883-devel
 BuildRequires:  libdrm-devel
 BuildRequires:  libgcrypt-devel
 BuildRequires:  libGL-devel
-Buildrequires:  libmodplug-devel
+BuildRequires:  libmodplug-devel
 BuildRequires:  librsvg2-devel
 %{?_with_rtmp:BuildRequires: librtmp-devel}
 %{?_with_smb:BuildRequires: libsmbclient-devel}
@@ -137,7 +129,7 @@ BuildRequires:  nasm
 %endif
 %{?_with_webp:BuildRequires: libwebp-devel}
 %{?_with_netcdf:BuildRequires: netcdf-devel}
-%{!?_without_nvenc:BuildRequires: nvenc-devel}
+%{!?_without_nvenc:BuildRequires: nv-codec-headers}
 %{!?_without_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
 %{!?_without_openal:BuildRequires: openal-soft-devel}
 %if 0%{!?_without_opencl:1}
@@ -146,7 +138,7 @@ BuildRequires:  opencl-headers ocl-icd-devel
 %endif
 %{!?_without_opencv:BuildRequires: opencv-devel}
 BuildRequires:  openjpeg2-devel
-%{?_without_opus:BuildRequires: opus-devel}
+%{!?_without_opus:BuildRequires: opus-devel}
 %{!?_without_pulse:BuildRequires: pulseaudio-libs-devel}
 BuildRequires:  perl(Pod::Man)
 %{?_with_rubberband:BuildRequires: rubberband-devel}
@@ -166,7 +158,7 @@ BuildRequires:  texinfo
 %{!?_without_xvid:BuildRequires: xvidcore-devel}
 BuildRequires:  zlib-devel
 %{?_with_zmq:BuildRequires: zeromq-devel}
-%{?_with_zvbi:BuildRequires: zvbi-devel}
+%{!?_without_zvbi:BuildRequires: zvbi-devel}
 
 %description
 FFmpeg is a complete and free Internet live audio and video
@@ -187,6 +179,7 @@ This package contains the libraries for %{name}
 
 %package     -n libavdevice%{?flavor}
 Summary:        Special devices muxing/demuxing library
+Requires:       %{name}-libs%{_isa} = %{version}-%{release}
 
 %description -n libavdevice%{?flavor}
 Libavdevice is a complementary library to libavf "libavformat". It provides
@@ -219,7 +212,7 @@ This package contains development files for %{name}
     --arch=%{_target_cpu} \\\
     --optflags="%{optflags}" \\\
     --extra-ldflags="%{?__global_ldflags} %{?cuda_ldflags} %{?libnpp_ldlags}" \\\
-    --extra-cflags="%{?nvenc_cflags} %{?cuda_cflags} %{?libnpp_cflags}" \\\
+    --extra-cflags="%{?cuda_cflags} %{?libnpp_cflags}" \\\
     %{?flavor:--disable-manpages} \\\
     %{?progs_suffix:--progs-suffix=%{progs_suffix}} \\\
     %{?build_suffix:--build-suffix=%{build_suffix}} \\\
@@ -260,7 +253,7 @@ This package contains development files for %{name}
     %{!?_without_opencv:--enable-libopencv} \\\
     %{!?_without_opengl:--enable-opengl} \\\
     --enable-libopenjpeg \\\
-    %{?_without_opus:--enable-libopus} \\\
+    %{!?_without_opus:--enable-libopus} \\\
     %{!?_without_pulse:--enable-libpulse} \\\
     --enable-librsvg \\\
     %{?_with_rtmp:--enable-librtmp} \\\
@@ -282,7 +275,7 @@ This package contains development files for %{name}
     %{!?_without_x265:--enable-libx265} \\\
     %{!?_without_xvid:--enable-libxvid} \\\
     %{?_with_zmq:--enable-libzmq} \\\
-    %{?_with_zvbi:--enable-libzvbi} \\\
+    %{!?_without_zvbi:--enable-libzvbi} \\\
     --enable-avfilter \\\
     --enable-avresample \\\
     --enable-postproc \\\
@@ -297,7 +290,7 @@ This package contains development files for %{name}
 %prep
 %if 0%{?date}
 %setup -q -n ffmpeg-%{?branch}%{date}
-echo "git-snapshot-%{?branch}%{date}-RPMFusion" > VERSION
+echo "git-snapshot-%{?branch}%{date}-rpmfusion" > VERSION
 %else
 %setup -q -n ffmpeg-%{version}
 %endif
