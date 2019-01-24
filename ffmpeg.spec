@@ -82,7 +82,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.1
-Release:        5%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        6%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -420,6 +420,11 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Thu Jan 24 2019 Nicolas Chauvet <kwizart@gmail.com> - 4.1-6
+- Drop opencv by default
+  OpenCV 3.X has an overlinking issue - unsuitable for core libraries
+  Reported as https://github.com/opencv/opencv/issues/7001
+
 * Fri Dec 21 2018 Nicolas Chauvet <kwizart@gmail.com> - 4.1-5
 - Add omx/omx_rpi
 
