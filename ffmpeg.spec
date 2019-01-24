@@ -7,7 +7,7 @@
 # Cuda and others are only available on some arches
 %global cuda_arches x86_64
 
-%if 0%{?rhel}
+%if 0%{?rhel} && 0%{?rhel} < 8
 %global _without_aom      1
 %global _without_frei0r   1
 %global _without_mfx      1
