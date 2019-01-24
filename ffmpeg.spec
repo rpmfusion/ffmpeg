@@ -89,7 +89,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.0.3
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -140,7 +140,7 @@ BuildRequires:  libmodplug-devel
 BuildRequires:  librsvg2-devel
 %{?_with_rtmp:BuildRequires: librtmp-devel}
 %{?_with_smb:BuildRequires: libsmbclient-devel}
-%{?_with_ssh:BuildRequires: libssh-devel}
+BuildRequires:  libssh-devel
 BuildRequires:  libtheora-devel
 BuildRequires:  libv4l-devel
 %{?!_without_vaapi:BuildRequires: libva-devel >= 0.31.0}
@@ -293,7 +293,7 @@ This package contains development files for %{name}
     %{?_with_snappy:--enable-libsnappy} \\\
     --enable-libsoxr \\\
     --enable-libspeex \\\
-    %{?_with_ssh:--enable-libssh} \\\
+    --enable-libssh \\\
     %{?_with_tesseract:--enable-libtesseract} \\\
     --enable-libtheora \\\
     %{?_with_twolame:--enable-libtwolame} \\\
@@ -434,8 +434,12 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Fri Jan 25 2019 Dominik Mierzejewski <rpm@greysector.net> - 4.0.3-3
+- Enable libssh support by default (rfbz#5135)
+
 * Tue Jan 15 2019 Nicolas Chauvet <kwizart@gmail.com> - 4.0.3-2
 - Cherry-pick from master
+
 - Add omx/omx_rpi
 - Fix for cuda enabled repo
 - Add support for rpi
