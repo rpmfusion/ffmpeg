@@ -82,7 +82,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.1
-Release:        6%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        7%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -128,7 +128,7 @@ BuildRequires:  libmodplug-devel
 BuildRequires:  librsvg2-devel
 %{?_with_rtmp:BuildRequires: librtmp-devel}
 %{?_with_smb:BuildRequires: libsmbclient-devel}
-%{?_with_ssh:BuildRequires: libssh-devel}
+BuildRequires:  libssh-devel
 BuildRequires:  libtheora-devel
 BuildRequires:  libv4l-devel
 %{?!_without_vaapi:BuildRequires: libva-devel >= 0.31.0}
@@ -281,7 +281,7 @@ This package contains development files for %{name}
     %{?_with_snappy:--enable-libsnappy} \\\
     --enable-libsoxr \\\
     --enable-libspeex \\\
-    %{?_with_ssh:--enable-libssh} \\\
+    --enable-libssh \\\
     %{?_with_tesseract:--enable-libtesseract} \\\
     --enable-libtheora \\\
     %{?_with_twolame:--enable-libtwolame} \\\
@@ -420,6 +420,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Fri Jan 25 2019 Dominik Mierzejewski <rpm@greysector.net> - 4.1-7
+- Enable libssh support by default (rfbz#5135)
+
 * Thu Jan 24 2019 Nicolas Chauvet <kwizart@gmail.com> - 4.1-6
 - Drop opencv by default
   OpenCV 3.X has an overlinking issue - unsuitable for core libraries
