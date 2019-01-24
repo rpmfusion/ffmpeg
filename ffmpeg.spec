@@ -68,7 +68,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        3.4.5
-Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -402,6 +402,10 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Thu Jan 24 2019 Nicolas Chauvet <kwizart@gmail.com> - 3.4.5-2
+- Enable libopus but disable encoder - rhbz#5147
+- Backport various fixes from newer branches
+
 * Thu Nov 22 2018 Antonio Trande <sagitter@fedoraproject.org> - 3.4.5-1
 - Release 3.4.5
 
