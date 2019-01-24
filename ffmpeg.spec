@@ -7,17 +7,10 @@
 # Cuda and others are only available on some arches
 %global cuda_arches x86_64
 
-%if 0%{?fedora} >= 25
-# OpenCV 3.X has an overlinking issue - unsuitable for core libraries
-# Reported as https://github.com/opencv/opencv/issues/7001
-%global _without_opencv   1
-%endif
-
 %if 0%{?rhel}
 %global _without_aom      1
 %global _without_frei0r   1
 %global _without_mfx      1
-%global _without_opencv   1
 %global _without_opus     1
 %global _without_vpx      1
 %endif
@@ -158,7 +151,7 @@ BuildRequires:  nasm
 BuildRequires:  opencl-headers ocl-icd-devel
 %{?fedora:Recommends: opencl-icd}
 %endif
-%{!?_without_opencv:BuildRequires: opencv-devel}
+%{?_with_opencv:BuildRequires: opencv-devel}
 BuildRequires:  openjpeg2-devel
 %{!?_without_opus:BuildRequires: opus-devel >= 1.1.3}
 %{!?_without_pulse:BuildRequires: pulseaudio-libs-devel}
@@ -276,7 +269,7 @@ This package contains development files for %{name}
     %{?_with_omx_rpi:--enable-omx-rpi} \\\
     %{!?_without_openal:--enable-openal} \\\
     %{!?_without_opencl:--enable-opencl} \\\
-    %{!?_without_opencv:--enable-libopencv} \\\
+    %{?_with_opencv:--enable-libopencv} \\\
     %{!?_without_opengl:--enable-opengl} \\\
     --enable-libopenjpeg \\\
     %{!?_without_opus:--enable-libopus} \\\
