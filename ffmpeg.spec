@@ -253,7 +253,7 @@ This package contains development files for %{name}
     %{!?_without_opencv:--enable-libopencv} \\\
     %{!?_without_opengl:--enable-opengl} \\\
     --enable-libopenjpeg \\\
-    %{!?_without_opus:--enable-libopus} \\\
+    %{!?_without_opus:--enable-libopus %{?el7:--disable-encoder=libopus}} \\\
     %{!?_without_pulse:--enable-libpulse} \\\
     --enable-librsvg \\\
     %{?_with_rtmp:--enable-librtmp} \\\
