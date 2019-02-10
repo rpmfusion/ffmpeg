@@ -81,8 +81,8 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        4.1
-Release:        7%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        4.1.1
+Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -420,6 +420,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Sun Feb 10 2019 Leigh Scott <leigh123linux@googlemail.com> - 4.1.1-1
+- Update to 4.1.1 release
+
 * Fri Jan 25 2019 Dominik Mierzejewski <rpm@greysector.net> - 4.1-7
 - Enable libssh support by default (rfbz#5135)
 
