@@ -68,7 +68,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        3.4.5
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -78,6 +78,12 @@ Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 %endif
 #Backport patch for arm neon
 Patch0:         0001-arm-Fix-SIGBUS-on-ARM-when-compiled-with-binutils-2..patch
+# https://nvd.nist.gov/vuln/detail/CVE-2019-9718
+# https://git.ffmpeg.org/gitweb/ffmpeg.git/commit/1f00c97bc3475c477f3c468cf2d924d5761d0982
+Patch1:         0001-avcodec-htmlsubtitles-Fixes-denial-of-service-due-to.patch
+# https://nvd.nist.gov/vuln/detail/CVE-2019-9721
+# https://git.ffmpeg.org/gitweb/ffmpeg.git/commit/894995c41e0795c7a44f81adc4838dedc3932e65
+Patch2:         0002-avcodec-htmlsubtitles-Fixes-denial-of-service-due-to.patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 %{?_with_cuda:BuildRequires: cuda-driver-dev-%{_cuda_rpm_version} cuda-misc-headers-%{_cuda_rpm_version} cuda-drivers-devel%{_isa}}
 %{?_with_libnpp:BuildRequires: cuda-cudart-dev-%{_cuda_rpm_version} cuda-nvcc-%{_cuda_rpm_version} cuda-misc-headers-%{_cuda_rpm_version} cuda-npp-dev-%{_cuda_rpm_version}}
@@ -296,6 +302,8 @@ echo "git-snapshot-%{?branch}%{date}-rpmfusion" > VERSION
 %endif
 # backport patch for arm neon
 %patch0 -p1
+%patch1 -p1 -b .CVE-2019-9718
+%patch2 -p1 -b .CVE-2019-9721
 # fix -O3 -g in host_cflags
 sed -i "s|check_host_cflags -O3|check_host_cflags %{optflags}|" configure
 mkdir -p _doc/examples
@@ -402,6 +410,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Tue Mar 19 2019 Leigh Scott <leigh123linux@googlemail.com> - 3.4.5-3
+- Patch to fix CVE-2019-9718 and CVE-2019-9721
+
 * Thu Jan 24 2019 Nicolas Chauvet <kwizart@gmail.com> - 3.4.5-2
 - Enable libopus but disable encoder - rhbz#5147
 - Backport various fixes from newer branches
