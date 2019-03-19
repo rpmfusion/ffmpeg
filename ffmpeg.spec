@@ -7,27 +7,28 @@
 # Cuda and others are only available on some arches
 %global cuda_arches x86_64
 
-%if 0%{?rhel} && 0%{?rhel} < 8
+%if 0%{?fedora} >= 25
+# OpenCV 3.X has an overlinking issue - unsuitable for core libraries
+# Reported as https://github.com/opencv/opencv/issues/7001
+%global _without_opencv   1
+%endif
+
+%if 0%{?rhel}
 %global _without_aom      1
 %global _without_frei0r   1
 %global _without_mfx      1
+%global _without_opencv   1
 %global _without_opus     1
 %global _without_vpx      1
 %endif
 
-%if 0%{?fedora}
-%ifarch x86_64
-%global _with_vmaf        1
-%endif
-%endif
-
 # flavor nonfree
-%if 0%{?_with_cuda:1}
-%global debug_package %{nil}
-%global flavor           -cuda
-%global progs_suffix     -cuda
+%if 0%{?_with_nonfree:1}
+%global flavor           -nonfree
+%global progs_suffix     -nonfree
 #global build_suffix     -lgpl
 %ifarch %{cuda_arches}
+%global _with_cuda       1
 %global _with_cuvid      1
 %global _with_libnpp     1
 %endif
@@ -35,7 +36,6 @@
 %global _without_cdio    1
 %global _without_frei0r  1
 %global _without_gpl     1
-%global _without_vidstab 1
 %global _without_x264    1
 %global _without_x265    1
 %global _without_xvid    1
@@ -50,23 +50,15 @@
 %if 0%{!?_cuda_version:1}
 %global _cuda_version 10.0
 %endif
-%global _cuda_version_rpm %(echo %{_cuda_version} | sed -e 's/\\./-/')
-%global _cuda_bindir %{_cuda_prefix}/bin
+%global _cuda_rpm_version %(echo %{_cuda_version} | sed -e 's/\\./-/')
 %if 0%{?_with_cuda:1}
 %global cuda_cflags $(pkg-config --cflags cuda-%{_cuda_version})
-%global cuda_ldflags $(pkg-config --libs cuda-%{_cuda_version})
+%global cuda_ldflags -L%{_libdir}/nvidia
 %endif
 
 %if 0%{?_with_libnpp:1}
 %global libnpp_cflags $(pkg-config --cflags nppi-%{_cuda_version} nppc-%{_cuda_version})
 %global libnpp_ldlags $(pkg-config --libs-only-L nppi-%{_cuda_version} nppc-%{_cuda_version})
-%endif
-
-%if 0%{?_with_rpi:1}
-%global _with_omx        1
-%global _with_omx_rpi    1
-%global _with_mmal       1
-ExclusiveArch: armv7hnl
 %endif
 
 %if 0%{?_without_gpl}
@@ -81,8 +73,8 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        4.1.1
-Release:        4%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        4.0.3
+Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -90,9 +82,12 @@ Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 %else
 Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 %endif
+# Upstream commit to fix aom build issue
+# https://git.ffmpeg.org/gitweb/ffmpeg.git/commitdiff/b69ea742ab23ad74b2ae2772764743642212a139
+Patch0:         avcodec-libaomenc-remove-AVOption-related-to-frame-p.patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
-%{?_with_cuda:BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel}
-%{?_with_libnpp:BuildRequires: pkgconfig(nppc-%{_cuda_version})}
+%{?_with_cuda:BuildRequires: cuda-driver-dev-%{_cuda_rpm_version} cuda-misc-headers-%{_cuda_rpm_version} cuda-drivers-devel%{_isa}}
+%{?_with_libnpp:BuildRequires: cuda-cudart-dev-%{_cuda_rpm_version} cuda-nvcc-%{_cuda_rpm_version} cuda-misc-headers-%{_cuda_rpm_version} cuda-npp-dev-%{_cuda_rpm_version}}
 BuildRequires:  alsa-lib-devel
 BuildRequires:  bzip2-devel
 %{?_with_faac:BuildRequires: faac-devel}
@@ -128,7 +123,7 @@ BuildRequires:  libmodplug-devel
 BuildRequires:  librsvg2-devel
 %{?_with_rtmp:BuildRequires: librtmp-devel}
 %{?_with_smb:BuildRequires: libsmbclient-devel}
-BuildRequires:  libssh-devel
+%{?_with_ssh:BuildRequires: libssh-devel}
 BuildRequires:  libtheora-devel
 BuildRequires:  libv4l-devel
 %{?!_without_vaapi:BuildRequires: libva-devel >= 0.31.0}
@@ -142,16 +137,14 @@ BuildRequires:  nasm
 %endif
 %{?_with_webp:BuildRequires: libwebp-devel}
 %{?_with_netcdf:BuildRequires: netcdf-devel}
-%{?_with_rpi:BuildRequires: raspberrypi-vc-devel}
 %{!?_without_nvenc:BuildRequires: nv-codec-headers}
 %{!?_without_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
-%{?_with_omx:BuildRequires: libomxil-bellagio-devel}
 %{!?_without_openal:BuildRequires: openal-soft-devel}
 %if 0%{!?_without_opencl:1}
 BuildRequires:  opencl-headers ocl-icd-devel
 %{?fedora:Recommends: opencl-icd}
 %endif
-%{?_with_opencv:BuildRequires: opencv-devel}
+%{!?_without_opencv:BuildRequires: opencv-devel}
 BuildRequires:  openjpeg2-devel
 %{!?_without_opus:BuildRequires: opus-devel >= 1.1.3}
 %{!?_without_pulse:BuildRequires: pulseaudio-libs-devel}
@@ -166,7 +159,6 @@ BuildRequires:  subversion
 #BuildRequires:  texi2html
 BuildRequires:  texinfo
 %{?_with_twolame:BuildRequires: twolame-devel}
-%{?_with_vmaf:BuildRequires: libvmaf-devel}
 %{?_with_wavpack:BuildRequires: wavpack-devel}
 %{!?_without_vidstab:BuildRequires:  vid.stab-devel}
 %{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.31}
@@ -263,13 +255,10 @@ This package contains development files for %{name}
     %{?_with_libnpp:--enable-libnpp --enable-nonfree} \\\
     --enable-libmp3lame \\\
     %{?_with_netcdf:--enable-netcdf} \\\
-    %{?_with_mmal:--enable-mmal} \\\
     %{!?_without_nvenc:--enable-nvenc} \\\
-    %{?_with_omx:--enable-omx} \\\
-    %{?_with_omx_rpi:--enable-omx-rpi} \\\
     %{!?_without_openal:--enable-openal} \\\
     %{!?_without_opencl:--enable-opencl} \\\
-    %{?_with_opencv:--enable-libopencv} \\\
+    %{!?_without_opencv:--enable-libopencv} \\\
     %{!?_without_opengl:--enable-opengl} \\\
     --enable-libopenjpeg \\\
     %{!?_without_opus:--enable-libopus} \\\
@@ -281,14 +270,13 @@ This package contains development files for %{name}
     %{?_with_snappy:--enable-libsnappy} \\\
     --enable-libsoxr \\\
     --enable-libspeex \\\
-    --enable-libssh \\\
+    %{?_with_ssh:--enable-libssh} \\\
     %{?_with_tesseract:--enable-libtesseract} \\\
     --enable-libtheora \\\
     %{?_with_twolame:--enable-libtwolame} \\\
     --enable-libvorbis \\\
     --enable-libv4l2 \\\
     %{!?_without_vidstab:--enable-libvidstab} \\\
-    %{?_with_vmaf:--enable-libvmaf} \\\
     %{!?_without_vpx:--enable-libvpx} \\\
     %{?_with_webp:--enable-libwebp} \\\
     %{!?_without_x264:--enable-libx264} \\\
@@ -310,17 +298,17 @@ This package contains development files for %{name}
 %prep
 %if 0%{?date}
 %setup -q -n ffmpeg-%{?branch}%{date}
-echo "git-snapshot-%{?branch}%{date}-rpmfusion" > VERSION
+echo "git-snapshot-%{?branch}%{date}-RPMFusion" > VERSION
 %else
 %setup -q -n ffmpeg-%{version}
 %endif
+%patch0 -p1 -b .aom_build_fix
 # fix -O3 -g in host_cflags
 sed -i "s|check_host_cflags -O3|check_host_cflags %{optflags}|" configure
 mkdir -p _doc/examples
 cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
 
 %build
-%{?_with_cuda:export PATH=${PATH}:%{_cuda_bindir}}
 %{ff_configure}\
     --shlibdir=%{_libdir} \
 %if 0%{?_without_tools:1}
@@ -381,7 +369,7 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 %endif
 
 %ldconfig_scriptlets  libs
-%ldconfig_scriptlets -n libavdevice%{?flavor}
+%ldconfig_scriptlets  libavdevice%{?flavor}
 
 %if 0%{!?_without_tools:1}
 %files
@@ -413,49 +401,13 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 %files devel
 %doc MAINTAINERS doc/APIchanges doc/*.txt
 %doc _doc/examples
-%doc %{_docdir}/%{name}/*.html
+%{!?flavor:%doc %{_docdir}/%{name}/*.html}
 %{_includedir}/%{name}
 %{_libdir}/pkgconfig/lib*.pc
 %{_libdir}/lib*.so
 
 
 %changelog
-* Tue Mar 12 2019 Sérgio Basto <sergio@serjux.com> - 4.1.1-4
-- Mass rebuild for x264
-
-* Mon Mar 04 2019 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 4.1.1-3
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
-
-* Thu Feb 28 2019 Leigh Scott <leigh123linux@googlemail.com> - 4.1.1-2
-- Rebuild for new x265
-
-* Sun Feb 10 2019 Leigh Scott <leigh123linux@googlemail.com> - 4.1.1-1
-- Update to 4.1.1 release
-
-* Fri Jan 25 2019 Dominik Mierzejewski <rpm@greysector.net> - 4.1-7
-- Enable libssh support by default (rfbz#5135)
-
-* Thu Jan 24 2019 Nicolas Chauvet <kwizart@gmail.com> - 4.1-6
-- Drop opencv by default
-  OpenCV 3.X has an overlinking issue - unsuitable for core libraries
-  Reported as https://github.com/opencv/opencv/issues/7001
-
-* Fri Dec 21 2018 Nicolas Chauvet <kwizart@gmail.com> - 4.1-5
-- Add omx/omx_rpi
-
-* Sun Nov 18 2018 Leigh Scott <leigh123linux@googlemail.com> - 4.1-4
-- Rebuild for new x265
-
-* Fri Nov 09 2018 Nicolas Chauvet <kwizart@gmail.com> - 4.1-3
-- Fix for cuda enabled repo
-
-* Thu Nov 08 2018 Nicolas Chauvet <kwizart@gmail.com> - 4.1-2
-- Add support for rpi
-- Enable libvmaf for x86_64
-
-* Tue Nov 06 2018 Leigh Scott <leigh123linux@googlemail.com> - 4.1-1
-- Update to 4.1 release
-
 * Sat Nov 03 2018 Leigh Scott <leigh123linux@googlemail.com> - 4.0.3-1
 - Update to 4.0.3 release
 
