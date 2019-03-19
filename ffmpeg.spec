@@ -22,13 +22,19 @@
 %global _without_vpx      1
 %endif
 
+%if 0%{?fedora}
+%ifarch x86_64
+%global _with_vmaf        1
+%endif
+%endif
+
 # flavor nonfree
-%if 0%{?_with_nonfree:1}
-%global flavor           -nonfree
-%global progs_suffix     -nonfree
+%if 0%{?_with_cuda:1}
+%global debug_package %{nil}
+%global flavor           -cuda
+%global progs_suffix     -cuda
 #global build_suffix     -lgpl
 %ifarch %{cuda_arches}
-%global _with_cuda       1
 %global _with_cuvid      1
 %global _with_libnpp     1
 %endif
@@ -36,6 +42,7 @@
 %global _without_cdio    1
 %global _without_frei0r  1
 %global _without_gpl     1
+%global _without_vidstab 1
 %global _without_x264    1
 %global _without_x265    1
 %global _without_xvid    1
@@ -50,15 +57,23 @@
 %if 0%{!?_cuda_version:1}
 %global _cuda_version 10.0
 %endif
-%global _cuda_rpm_version %(echo %{_cuda_version} | sed -e 's/\\./-/')
+%global _cuda_version_rpm %(echo %{_cuda_version} | sed -e 's/\\./-/')
+%global _cuda_bindir %{_cuda_prefix}/bin
 %if 0%{?_with_cuda:1}
 %global cuda_cflags $(pkg-config --cflags cuda-%{_cuda_version})
-%global cuda_ldflags -L%{_libdir}/nvidia
+%global cuda_ldflags $(pkg-config --libs cuda-%{_cuda_version})
 %endif
 
 %if 0%{?_with_libnpp:1}
 %global libnpp_cflags $(pkg-config --cflags nppi-%{_cuda_version} nppc-%{_cuda_version})
 %global libnpp_ldlags $(pkg-config --libs-only-L nppi-%{_cuda_version} nppc-%{_cuda_version})
+%endif
+
+%if 0%{?_with_rpi:1}
+%global _with_omx        1
+%global _with_omx_rpi    1
+%global _with_mmal       1
+ExclusiveArch: armv7hnl
 %endif
 
 %if 0%{?_without_gpl}
@@ -74,7 +89,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.0.3
-Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        4%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -85,9 +100,17 @@ Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 # Upstream commit to fix aom build issue
 # https://git.ffmpeg.org/gitweb/ffmpeg.git/commitdiff/b69ea742ab23ad74b2ae2772764743642212a139
 Patch0:         avcodec-libaomenc-remove-AVOption-related-to-frame-p.patch
+# Backport from master to allow vmaf 1.3.9
+Patch1:         87cc7e8d4ef8fa643d8d4822525b9c95cc9e7307.patch
+# https://nvd.nist.gov/vuln/detail/CVE-2019-9718
+# https://git.ffmpeg.org/gitweb/ffmpeg.git/commit/1f00c97bc3475c477f3c468cf2d924d5761d0982
+Patch2:         0001-avcodec-htmlsubtitles-Fixes-denial-of-service-due-to.patch
+# https://nvd.nist.gov/vuln/detail/CVE-2019-9721
+# https://git.ffmpeg.org/gitweb/ffmpeg.git/commit/894995c41e0795c7a44f81adc4838dedc3932e65
+Patch3:         0002-avcodec-htmlsubtitles-Fixes-denial-of-service-due-to.patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
-%{?_with_cuda:BuildRequires: cuda-driver-dev-%{_cuda_rpm_version} cuda-misc-headers-%{_cuda_rpm_version} cuda-drivers-devel%{_isa}}
-%{?_with_libnpp:BuildRequires: cuda-cudart-dev-%{_cuda_rpm_version} cuda-nvcc-%{_cuda_rpm_version} cuda-misc-headers-%{_cuda_rpm_version} cuda-npp-dev-%{_cuda_rpm_version}}
+%{?_with_cuda:BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel}
+%{?_with_libnpp:BuildRequires: pkgconfig(nppc-%{_cuda_version})}
 BuildRequires:  alsa-lib-devel
 BuildRequires:  bzip2-devel
 %{?_with_faac:BuildRequires: faac-devel}
@@ -123,7 +146,7 @@ BuildRequires:  libmodplug-devel
 BuildRequires:  librsvg2-devel
 %{?_with_rtmp:BuildRequires: librtmp-devel}
 %{?_with_smb:BuildRequires: libsmbclient-devel}
-%{?_with_ssh:BuildRequires: libssh-devel}
+BuildRequires:  libssh-devel
 BuildRequires:  libtheora-devel
 BuildRequires:  libv4l-devel
 %{?!_without_vaapi:BuildRequires: libva-devel >= 0.31.0}
@@ -137,8 +160,10 @@ BuildRequires:  nasm
 %endif
 %{?_with_webp:BuildRequires: libwebp-devel}
 %{?_with_netcdf:BuildRequires: netcdf-devel}
+%{?_with_rpi:BuildRequires: raspberrypi-vc-devel}
 %{!?_without_nvenc:BuildRequires: nv-codec-headers}
 %{!?_without_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
+%{?_with_omx:BuildRequires: libomxil-bellagio-devel}
 %{!?_without_openal:BuildRequires: openal-soft-devel}
 %if 0%{!?_without_opencl:1}
 BuildRequires:  opencl-headers ocl-icd-devel
@@ -159,6 +184,7 @@ BuildRequires:  subversion
 #BuildRequires:  texi2html
 BuildRequires:  texinfo
 %{?_with_twolame:BuildRequires: twolame-devel}
+%{?_with_vmaf:BuildRequires: libvmaf-devel}
 %{?_with_wavpack:BuildRequires: wavpack-devel}
 %{!?_without_vidstab:BuildRequires:  vid.stab-devel}
 %{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.31}
@@ -255,7 +281,10 @@ This package contains development files for %{name}
     %{?_with_libnpp:--enable-libnpp --enable-nonfree} \\\
     --enable-libmp3lame \\\
     %{?_with_netcdf:--enable-netcdf} \\\
+    %{?_with_mmal:--enable-mmal} \\\
     %{!?_without_nvenc:--enable-nvenc} \\\
+    %{?_with_omx:--enable-omx} \\\
+    %{?_with_omx_rpi:--enable-omx-rpi} \\\
     %{!?_without_openal:--enable-openal} \\\
     %{!?_without_opencl:--enable-opencl} \\\
     %{!?_without_opencv:--enable-libopencv} \\\
@@ -270,13 +299,14 @@ This package contains development files for %{name}
     %{?_with_snappy:--enable-libsnappy} \\\
     --enable-libsoxr \\\
     --enable-libspeex \\\
-    %{?_with_ssh:--enable-libssh} \\\
+    --enable-libssh \\\
     %{?_with_tesseract:--enable-libtesseract} \\\
     --enable-libtheora \\\
     %{?_with_twolame:--enable-libtwolame} \\\
     --enable-libvorbis \\\
     --enable-libv4l2 \\\
     %{!?_without_vidstab:--enable-libvidstab} \\\
+    %{?_with_vmaf:--enable-libvmaf} \\\
     %{!?_without_vpx:--enable-libvpx} \\\
     %{?_with_webp:--enable-libwebp} \\\
     %{!?_without_x264:--enable-libx264} \\\
@@ -298,17 +328,21 @@ This package contains development files for %{name}
 %prep
 %if 0%{?date}
 %setup -q -n ffmpeg-%{?branch}%{date}
-echo "git-snapshot-%{?branch}%{date}-RPMFusion" > VERSION
+echo "git-snapshot-%{?branch}%{date}-rpmfusion" > VERSION
 %else
 %setup -q -n ffmpeg-%{version}
 %endif
 %patch0 -p1 -b .aom_build_fix
+%patch1 -p1 -b .vmaf_build
+%patch2 -p1 -b .CVE-2019-9718
+%patch3 -p1 -b .CVE-2019-9721
 # fix -O3 -g in host_cflags
 sed -i "s|check_host_cflags -O3|check_host_cflags %{optflags}|" configure
 mkdir -p _doc/examples
 cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
 
 %build
+%{?_with_cuda:export PATH=${PATH}:%{_cuda_bindir}}
 %{ff_configure}\
     --shlibdir=%{_libdir} \
 %if 0%{?_without_tools:1}
@@ -369,7 +403,7 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 %endif
 
 %ldconfig_scriptlets  libs
-%ldconfig_scriptlets  libavdevice%{?flavor}
+%ldconfig_scriptlets -n libavdevice%{?flavor}
 
 %if 0%{!?_without_tools:1}
 %files
@@ -401,13 +435,28 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 %files devel
 %doc MAINTAINERS doc/APIchanges doc/*.txt
 %doc _doc/examples
-%{!?flavor:%doc %{_docdir}/%{name}/*.html}
+%doc %{_docdir}/%{name}/*.html
 %{_includedir}/%{name}
 %{_libdir}/pkgconfig/lib*.pc
 %{_libdir}/lib*.so
 
 
 %changelog
+* Tue Mar 19 2019 Leigh Scott <leigh123linux@googlemail.com> - 4.0.3-4
+- Patch to fix CVE-2019-9718 and CVE-2019-9721
+
+* Fri Jan 25 2019 Dominik Mierzejewski <rpm@greysector.net> - 4.0.3-3
+- Enable libssh support by default (rfbz#5135)
+
+* Tue Jan 15 2019 Nicolas Chauvet <kwizart@gmail.com> - 4.0.3-2
+- Cherry-pick from master
+
+- Add omx/omx_rpi
+- Fix for cuda enabled repo
+- Add support for rpi
+- Enable libvmaf for x86_64
+- backport patch for libvmaf support
+
 * Sat Nov 03 2018 Leigh Scott <leigh123linux@googlemail.com> - 4.0.3-1
 - Update to 4.0.3 release
 

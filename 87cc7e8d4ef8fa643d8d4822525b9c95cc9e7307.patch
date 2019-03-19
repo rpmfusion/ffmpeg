@@ -1,0 +1,84 @@
+commit 87cc7e8d4ef8fa643d8d4822525b9c95cc9e7307
+Author: Kyle Swanson <kswanson@netflix.com>
+Date:   Tue Aug 7 15:05:16 2018 -0700
+
+    lavfi/vf_libvmaf: update to use libvmaf v1.3.9
+    
+    Signed-off-by: Kyle Swanson <kswanson@netflix.com>
+
+diff --git a/configure b/configure
+index 15a58935de..e718c1531c 100755
+--- a/configure
++++ b/configure
+@@ -6089,7 +6089,7 @@ enabled libtwolame        && require libtwolame twolame.h twolame_init -ltwolame
+                                die "ERROR: libtwolame must be installed and version must be >= 0.3.10"; }
+ enabled libv4l2           && require_pkg_config libv4l2 libv4l2 libv4l2.h v4l2_ioctl
+ enabled libvidstab        && require_pkg_config libvidstab "vidstab >= 0.98" vid.stab/libvidstab.h vsMotionDetectInit
+-enabled libvmaf           && require_pkg_config libvmaf "libvmaf >= 0.6.2" libvmaf.h compute_vmaf
++enabled libvmaf           && require_pkg_config libvmaf "libvmaf >= 1.3.9" libvmaf.h compute_vmaf
+ enabled libvo_amrwbenc    && require libvo_amrwbenc vo-amrwbenc/enc_if.h E_IF_init -lvo-amrwbenc
+ enabled libvorbis         && require_pkg_config libvorbis vorbis vorbis/codec.h vorbis_info_init &&
+                              require_pkg_config libvorbisenc vorbisenc vorbis/vorbisenc.h vorbis_encode_init
+diff --git a/doc/filters.texi b/doc/filters.texi
+index 792edfd2e1..d6c15837f2 100644
+--- a/doc/filters.texi
++++ b/doc/filters.texi
+@@ -10868,7 +10868,7 @@ The obtained VMAF score is printed through the logging system.
+ 
+ It requires Netflix's vmaf library (libvmaf) as a pre-requisite.
+ After installing the library it can be enabled using:
+-@code{./configure --enable-libvmaf}.
++@code{./configure --enable-libvmaf --enable-version3}.
+ If no model path is specified it uses the default model: @code{vmaf_v0.6.1.pkl}.
+ 
+ The filter has following options:
+@@ -10902,6 +10902,15 @@ Enables computing ms_ssim along with vmaf.
+ 
+ @item pool
+ Set the pool method (mean, min or harmonic mean) to be used for computing vmaf.
++
++@item n_threads
++Set number of threads to be used when computing vmaf.
++
++@item n_subsample
++Set interval for frame subsampling used when computing vmaf.
++
++@item enable_conf_interval
++Enables confidence interval.
+ @end table
+ 
+ This filter also supports the @ref{framesync} options.
+diff --git a/libavfilter/vf_libvmaf.c b/libavfilter/vf_libvmaf.c
+index 5d47a74375..249e50c720 100644
+--- a/libavfilter/vf_libvmaf.c
++++ b/libavfilter/vf_libvmaf.c
+@@ -62,6 +62,9 @@ typedef struct LIBVMAFContext {
+     int ssim;
+     int ms_ssim;
+     char *pool;
++    int n_threads;
++    int n_subsample;
++    int enable_conf_interval;
+     int error;
+ } LIBVMAFContext;
+ 
+@@ -78,6 +81,9 @@ static const AVOption libvmaf_options[] = {
+     {"ssim",  "Enables computing ssim along with vmaf.",                                OFFSET(ssim), AV_OPT_TYPE_BOOL, {.i64=0}, 0, 1, FLAGS},
+     {"ms_ssim",  "Enables computing ms-ssim along with vmaf.",                          OFFSET(ms_ssim), AV_OPT_TYPE_BOOL, {.i64=0}, 0, 1, FLAGS},
+     {"pool",  "Set the pool method to be used for computing vmaf.",                     OFFSET(pool), AV_OPT_TYPE_STRING, {.str=NULL}, 0, 1, FLAGS},
++    {"n_threads", "Set number of threads to be used when computing vmaf.",              OFFSET(n_threads), AV_OPT_TYPE_INT, {.i64=0}, 0, UINT_MAX, FLAGS},
++    {"n_subsample", "Set interval for frame subsampling used when computing vmaf.",     OFFSET(n_subsample), AV_OPT_TYPE_INT, {.i64=1}, 1, UINT_MAX, FLAGS},
++    {"enable_conf_interval",  "Enables confidence interval.",                           OFFSET(enable_conf_interval), AV_OPT_TYPE_BOOL, {.i64=0}, 0, 1, FLAGS},
+     { NULL }
+ };
+ 
+@@ -166,7 +172,8 @@ static void compute_vmaf_score(LIBVMAFContext *s)
+                             read_frame, s, s->model_path, s->log_path,
+                             s->log_fmt, 0, 0, s->enable_transform,
+                             s->phone_model, s->psnr, s->ssim,
+-                            s->ms_ssim, s->pool);
++                            s->ms_ssim, s->pool,
++                            s->n_threads, s->n_subsample, s->enable_conf_interval);
+ }
+ 
+ static void *call_vmaf(void *ctx)
