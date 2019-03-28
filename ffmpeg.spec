@@ -88,8 +88,8 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        4.0.3
-Release:        4%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        4.0.4
+Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -97,17 +97,8 @@ Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 %else
 Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 %endif
-# Upstream commit to fix aom build issue
-# https://git.ffmpeg.org/gitweb/ffmpeg.git/commitdiff/b69ea742ab23ad74b2ae2772764743642212a139
-Patch0:         avcodec-libaomenc-remove-AVOption-related-to-frame-p.patch
 # Backport from master to allow vmaf 1.3.9
-Patch1:         87cc7e8d4ef8fa643d8d4822525b9c95cc9e7307.patch
-# https://nvd.nist.gov/vuln/detail/CVE-2019-9718
-# https://git.ffmpeg.org/gitweb/ffmpeg.git/commit/1f00c97bc3475c477f3c468cf2d924d5761d0982
-Patch2:         0001-avcodec-htmlsubtitles-Fixes-denial-of-service-due-to.patch
-# https://nvd.nist.gov/vuln/detail/CVE-2019-9721
-# https://git.ffmpeg.org/gitweb/ffmpeg.git/commit/894995c41e0795c7a44f81adc4838dedc3932e65
-Patch3:         0002-avcodec-htmlsubtitles-Fixes-denial-of-service-due-to.patch
+Patch0:         87cc7e8d4ef8fa643d8d4822525b9c95cc9e7307.patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 %{?_with_cuda:BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel}
 %{?_with_libnpp:BuildRequires: pkgconfig(nppc-%{_cuda_version})}
@@ -332,10 +323,8 @@ echo "git-snapshot-%{?branch}%{date}-rpmfusion" > VERSION
 %else
 %setup -q -n ffmpeg-%{version}
 %endif
-%patch0 -p1 -b .aom_build_fix
-%patch1 -p1 -b .vmaf_build
-%patch2 -p1 -b .CVE-2019-9718
-%patch3 -p1 -b .CVE-2019-9721
+%patch0 -p1 -b .vmaf_build
+
 # fix -O3 -g in host_cflags
 sed -i "s|check_host_cflags -O3|check_host_cflags %{optflags}|" configure
 mkdir -p _doc/examples
@@ -442,6 +431,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Thu Mar 28 2019 Leigh Scott <leigh123linux@googlemail.com> - 4.0.4-1
+- Update to 4.0.4 release
+
 * Tue Mar 19 2019 Leigh Scott <leigh123linux@googlemail.com> - 4.0.3-4
 - Patch to fix CVE-2019-9718 and CVE-2019-9721
 
