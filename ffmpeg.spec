@@ -99,6 +99,9 @@ Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 %endif
 # Backport from master to allow vmaf 1.3.9
 Patch0:         87cc7e8d4ef8fa643d8d4822525b9c95cc9e7307.patch
+#Backport avutil/mem: Fix invalid use of av_alloc_size
+#See rfbz#5221
+Patch1:         4361293fcf59edb56879c36edcd25f0a91e0edf8.patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 %{?_with_cuda:BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel}
 %{?_with_libnpp:BuildRequires: pkgconfig(nppc-%{_cuda_version})}
@@ -324,6 +327,7 @@ echo "git-snapshot-%{?branch}%{date}-rpmfusion" > VERSION
 %setup -q -n ffmpeg-%{version}
 %endif
 %patch0 -p1 -b .vmaf_build
+%patch1 -p1
 
 # fix -O3 -g in host_cflags
 sed -i "s|check_host_cflags -O3|check_host_cflags %{optflags}|" configure
