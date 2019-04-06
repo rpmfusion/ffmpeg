@@ -1,0 +1,29 @@
+commit 4a6d5f3cadaabefe6c3548e575bb7e713997762f
+Author: ManojGuptaBonda <mbonda@nvidia.com>
+Date:   Mon Oct 29 13:39:54 2018 +0530
+
+    avcodec/vdpau: Enable HEVC support for working Nvidia driver versions
+    
+    The driver bugs that caused decoded HEVC content to have an incorrect
+    memory layout have been fully fixed in the 410.xx driver release so
+    we can start exposing support.
+
+diff --git a/libavcodec/vdpau.c b/libavcodec/vdpau.c
+index 1b2ec989cd..59454e8c4b 100644
+--- a/libavcodec/vdpau.c
++++ b/libavcodec/vdpau.c
+@@ -208,8 +208,12 @@ int ff_vdpau_common_init(AVCodecContext *avctx, VdpDecoderProfile profile,
+         return vdpau_error(status);
+     if (avctx->codec_id == AV_CODEC_ID_HEVC && strncmp(info_string, "NVIDIA ", 7) == 0 &&
+         !(avctx->hwaccel_flags & AV_HWACCEL_FLAG_ALLOW_PROFILE_MISMATCH)) {
+-        av_log(avctx, AV_LOG_VERBOSE, "HEVC with NVIDIA VDPAU drivers is buggy, skipping.\n");
+-        return AVERROR(ENOTSUP);
++        int driver_version;
++        sscanf(info_string, "NVIDIA VDPAU Driver Shared Library  %d", &driver_version);
++        if (driver_version < 410) {
++            av_log(avctx, AV_LOG_VERBOSE, "HEVC with NVIDIA VDPAU drivers is buggy, skipping.\n");
++            return AVERROR(ENOTSUP);
++        }
+     }
+ 
+     status = vdctx->get_proc_address(vdctx->device,
