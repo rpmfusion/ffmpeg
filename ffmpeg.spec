@@ -82,7 +82,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.1.3
-Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -424,6 +424,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Sat Apr 06 2019 Nicolas Chauvet <kwizart@gmail.com> - 4.1.3-2
+- Backport avutil/mem: Fix invalid use of av_alloc_size - rfbz#5149
+
 * Mon Apr 01 2019 Leigh Scott <leigh123linux@googlemail.com> - 4.1.3-1
 - Update to 4.1.3 release
 
