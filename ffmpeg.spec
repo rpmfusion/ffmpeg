@@ -7,12 +7,17 @@
 # Cuda and others are only available on some arches
 %global cuda_arches x86_64
 
-%if 0%{?rhel} && 0%{?rhel} < 8
+%if 0%{?el7}
 %global _without_aom      1
 %global _without_frei0r   1
 %global _without_mfx      1
 %global _without_opus     1
 %global _without_vpx      1
+%endif
+
+%if 0%{?el8}
+%global _without_aom      1
+%global _without_mfx      1
 %endif
 
 %if 0%{?fedora}
