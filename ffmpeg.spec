@@ -98,6 +98,8 @@ Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 #Backport avutil/mem: Fix invalid use of av_alloc_size
 #See rfbz#5221
 Patch0:         4361293fcf59edb56879c36edcd25f0a91e0edf8.patch
+#http://lists.ffmpeg.org/pipermail/ffmpeg-devel/2019-July/246927.html
+Patch1:         Use-gnutls_set_default_priority.patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 %{?_with_cuda:BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel}
 %{?_with_libnpp:BuildRequires: pkgconfig(nppc-%{_cuda_version})}

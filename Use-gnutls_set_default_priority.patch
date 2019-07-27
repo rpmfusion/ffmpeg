@@ -1,0 +1,35 @@
+From 58eb69d5f471a7d6c13d54e235164595a0968049 Mon Sep 17 00:00:00 2001
+From: Nicolas Chauvet <kwizart@gmail.com>
+Date: Sat, 15 Jun 2019 16:18:42 +0200
+Subject: [PATCH] Use gnutls_set_default_priority
+
+This will use the default priority for gnutls.
+
+When supported, the priority will be set to @SYSTEM which allows to
+adapt the ciphers list at runtime according to the policy set.
+
+See also:
+https://fedoraproject.org/wiki/Packaging:CryptoPolicies
+https://wiki.debian.org/CryptoPolicy
+
+Signed-off-by: Nicolas Chauvet <kwizart@gmail.com>
+---
+ libavformat/tls_gnutls.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/libavformat/tls_gnutls.c b/libavformat/tls_gnutls.c
+index f32bc2821b..b30e8ea007 100644
+--- a/libavformat/tls_gnutls.c
++++ b/libavformat/tls_gnutls.c
+@@ -181,7 +181,7 @@ static int tls_open(URLContext *h, const char *uri, int flags, AVDictionary **op
+     gnutls_transport_set_pull_function(p->session, gnutls_url_pull);
+     gnutls_transport_set_push_function(p->session, gnutls_url_push);
+     gnutls_transport_set_ptr(p->session, c->tcp);
+-    gnutls_priority_set_direct(p->session, "NORMAL", NULL);
++    gnutls_set_default_priority (p->session);
+     do {
+         ret = gnutls_handshake(p->session);
+         if (gnutls_error_is_fatal(ret)) {
+-- 
+2.17.2
+
