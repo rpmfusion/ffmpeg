@@ -9,6 +9,7 @@
 
 %if 0%{?el7}
 %global _without_aom      1
+%global _without_dav1d      1
 %global _without_frei0r   1
 %global _without_mfx      1
 %global _without_opus     1
@@ -17,6 +18,7 @@
 
 %if 0%{?el8}
 %global _without_aom      1
+%global _without_dav1d      1
 %global _without_mfx      1
 %endif
 
@@ -86,8 +88,8 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        4.1.4
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        4.2
+Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -95,9 +97,6 @@ Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 %else
 Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 %endif
-#Backport avutil/mem: Fix invalid use of av_alloc_size
-#See rfbz#5221
-Patch0:         4361293fcf59edb56879c36edcd25f0a91e0edf8.patch
 #http://lists.ffmpeg.org/pipermail/ffmpeg-devel/2019-July/246927.html
 Patch1:         Use-gnutls_set_default_priority.patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
@@ -119,6 +118,7 @@ BuildRequires:  lame-devel >= 3.98.3
 %{!?_without_jack:BuildRequires: jack-audio-connection-kit-devel}
 %{!?_without_ladspa:BuildRequires: ladspa-devel}
 %{!?_without_aom:BuildRequires:  libaom-devel}
+%{!?_without_dav1d:BuildRequires:  libdav1d-devel}
 BuildRequires:  libass-devel
 BuildRequires:  libbluray-devel
 %{?_with_bs2b:BuildRequires: libbs2b-devel}
@@ -251,6 +251,7 @@ This package contains development files for %{name}
     --enable-gnutls \\\
     %{!?_without_ladspa:--enable-ladspa} \\\
     %{!?_without_aom:--enable-libaom} \\\
+    %{!?_without_dav1d:--enable-libdav1d} \\\
     --enable-libass \\\
     --enable-libbluray \\\
     %{?_with_bs2b:--enable-libbs2b} \\\
@@ -323,7 +324,6 @@ echo "git-snapshot-%{?branch}%{date}-rpmfusion" > VERSION
 %else
 %setup -q -n ffmpeg-%{version}
 %endif
-%patch0 -p1
 # fix -O3 -g in host_cflags
 sed -i "s|check_host_cflags -O3|check_host_cflags %{optflags}|" configure
 mkdir -p _doc/examples
@@ -430,6 +430,10 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Mon Aug 05 2019 Leigh Scott <leigh123linux@googlemail.com> - 4.2-1
+- Update to 4.2 release
+- Enable dav1d support
+
 * Sat Jul 27 2019 Nicolas Chauvet <kwizart@gmail.com> - 4.1.4-2
 - Add patch for set_default_priority
 
