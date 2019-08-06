@@ -9,7 +9,7 @@
 
 %if 0%{?el7}
 %global _without_aom      1
-%global _without_dav1d      1
+%global _without_dav1d    1
 %global _without_frei0r   1
 %global _without_mfx      1
 %global _without_opus     1
@@ -18,7 +18,7 @@
 
 %if 0%{?el8}
 %global _without_aom      1
-%global _without_dav1d      1
+%global _without_dav1d    1
 %global _without_mfx      1
 %endif
 
