@@ -89,7 +89,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.2
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -146,7 +146,6 @@ BuildRequires:  libvorbis-devel
 %{?!_without_vpx:BuildRequires: libvpx-devel >= 1.4.0}
 %ifarch %{ix86} x86_64
 %{!?_without_mfx:BuildRequires: libmfx-devel >= 1.23-1}
-BuildRequires:  libXvMC-devel
 BuildRequires:  nasm
 %endif
 %{?_with_webp:BuildRequires: libwebp-devel}
@@ -430,6 +429,10 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Tue Aug 20 2019 Leigh Scott <leigh123linux@gmail.com> - 4.2-3
+- Rebuild for dav1d and aom SONAME bump
+- Drop XvMC support (rfbz #5328)
+
 * Fri Aug 09 2019 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 4.2-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
 
