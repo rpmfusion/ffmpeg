@@ -17,10 +17,8 @@
 %endif
 
 %if 0%{?el8}
-%global _without_ass      1
 %global _without_bluray   1
 %global _without_dav1d    1
-%global _without_fribidi  1
 %global _without_jack     1
 %global _without_mfx      1
 %endif
@@ -111,6 +109,7 @@ BuildRequires:  bzip2-devel
 %{?_with_flite:BuildRequires: flite-devel}
 BuildRequires:  fontconfig-devel
 BuildRequires:  freetype-devel
+BuildRequires:  fribidi-devel
 %{!?_without_frei0r:BuildRequires: frei0r-devel}
 %{?_with_gme:BuildRequires: game-music-emu-devel}
 BuildRequires:  gnutls-devel
