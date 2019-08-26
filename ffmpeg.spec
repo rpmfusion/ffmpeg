@@ -17,7 +17,6 @@
 %endif
 
 %if 0%{?el8}
-%global _without_bluray   1
 %global _without_dav1d    1
 %global _without_jack     1
 %global _without_mfx      1
