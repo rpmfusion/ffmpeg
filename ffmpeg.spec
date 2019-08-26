@@ -17,8 +17,11 @@
 %endif
 
 %if 0%{?el8}
-%global _without_aom      1
+%global _without_ass      1
+%global _without_bluray   1
 %global _without_dav1d    1
+%global _without_fribidi  1
+%global _without_jack     1
 %global _without_mfx      1
 %endif
 
@@ -118,8 +121,8 @@ BuildRequires:  lame-devel >= 3.98.3
 %{!?_without_ladspa:BuildRequires: ladspa-devel}
 %{!?_without_aom:BuildRequires:  libaom-devel}
 %{!?_without_dav1d:BuildRequires:  libdav1d-devel >= 0.2.1}
-BuildRequires:  libass-devel
-BuildRequires:  libbluray-devel
+%{!?_without_ass:BuildRequires:  libass-devel}
+%{!?_without_bluray:BuildRequires:  libbluray-devel}
 %{?_with_bs2b:BuildRequires: libbs2b-devel}
 %{?_with_caca:BuildRequires: libcaca-devel}
 %{!?_without_cdio:BuildRequires: libcdio-paranoia-devel}
@@ -250,8 +253,8 @@ This package contains development files for %{name}
     %{!?_without_ladspa:--enable-ladspa} \\\
     %{!?_without_aom:--enable-libaom} \\\
     %{!?_without_dav1d:--enable-libdav1d} \\\
-    --enable-libass \\\
-    --enable-libbluray \\\
+    %{!?_without_ass:--enable-libass} \\\
+    %{!?_without_bluray:--enable-libbluray} \\\
     %{?_with_bs2b:--enable-libbs2b} \\\
     %{?_with_caca:--enable-libcaca} \\\
     %{?_with_cuda:--enable-cuda-sdk --enable-nonfree} \\\
@@ -264,7 +267,7 @@ This package contains development files for %{name}
     %{?_with_flite:--enable-libflite} \\\
     %{!?_without_jack:--enable-indev=jack} \\\
     --enable-libfreetype \\\
-    --enable-libfribidi \\\
+    %{!?_without_fribidi:--enable-libfribidi} \\\
     %{?_with_gme:--enable-libgme} \\\
     --enable-libgsm \\\
     %{?_with_ilbc:--enable-libilbc} \\\
