@@ -89,7 +89,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.0.4
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -270,7 +270,7 @@ This package contains development files for %{name}
     %{?_with_faac:--enable-libfaac --enable-nonfree} \\\
     %{?_with_fdk_aac:--enable-libfdk-aac --enable-nonfree} \\\
     %{?_with_flite:--enable-libflite} \\\
-    %{!?_without_jack:--enable-indev=jack} \\\
+    %{!?_without_jack:--enable-libjack} \\\
     --enable-libfreetype \\\
     --enable-libfribidi \\\
     %{?_with_gme:--enable-libgme} \\\
@@ -441,6 +441,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Sat Sep 07 2019 Leigh Scott <leigh123linux@googlemail.com> - 4.0.4-3
+- Enable libjack (rfbz #5346)
+
 * Sat Apr 06 2019 Nicolas Chauvet <kwizart@gmail.com> - 4.0.4-2
 - Backport avutil/mem: Fix invalid use of av_alloc_size - rfbz#5149
 - Backport Enable HEVC support for working Nvidia driver versions - rfbz#5149
