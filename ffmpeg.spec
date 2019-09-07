@@ -18,8 +18,6 @@
 
 %if 0%{?el8}
 %global _without_dav1d    1
-%global _without_jack     1
-%global _without_mfx      1
 %endif
 
 %if 0%{?fedora}
@@ -88,8 +86,8 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        4.2
-Release:        4%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        4.2.1
+Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -430,6 +428,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Sat Sep 07 2019 Leigh Scott <leigh123linux@googlemail.com> - 4.2.1-1
+- Update to 4.2.1 release
+
 * Mon Aug 26 2019 Leigh Scott <leigh123linux@gmail.com> - 4.2-4
 - Rebuild for el8
 
