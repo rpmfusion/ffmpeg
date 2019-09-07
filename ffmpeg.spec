@@ -87,7 +87,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.1.4
-Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -262,7 +262,7 @@ This package contains development files for %{name}
     %{?_with_faac:--enable-libfaac --enable-nonfree} \\\
     %{?_with_fdk_aac:--enable-libfdk-aac --enable-nonfree} \\\
     %{?_with_flite:--enable-libflite} \\\
-    %{!?_without_jack:--enable-indev=jack} \\\
+    %{!?_without_jack:--enable-libjack} \\\
     --enable-libfreetype \\\
     --enable-libfribidi \\\
     %{?_with_gme:--enable-libgme} \\\
@@ -429,6 +429,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Sat Sep 07 2019 Leigh Scott <leigh123linux@googlemail.com> - 4.1.4-2
+- Enable libjack (rfbz #5346)
+
 * Tue Jul 09 2019 Leigh Scott <leigh123linux@googlemail.com> - 4.1.4-1
 - Update to 4.1.4 release
 
