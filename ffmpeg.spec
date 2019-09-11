@@ -16,10 +16,6 @@
 %global _without_vpx      1
 %endif
 
-%if 0%{?el8}
-%global _without_dav1d    1
-%endif
-
 %if 0%{?fedora}
 %ifarch x86_64
 %global _with_vmaf        1
