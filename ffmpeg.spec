@@ -16,7 +16,7 @@
 %global _without_vpx      1
 %endif
 
-%if 0%{?fedora}
+%if 0%{?fedora} || 0%{?rhel} > 7
 %ifarch x86_64
 %global _with_vmaf        1
 %endif
