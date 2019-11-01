@@ -174,6 +174,7 @@ BuildRequires:  texinfo
 %{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.31}
 %{!?_without_x265:BuildRequires: x265-devel}
 %{!?_without_xvid:BuildRequires: xvidcore-devel}
+BuildRequires:  zimg-devel >= 2.7.0
 BuildRequires:  zlib-devel
 %{?_with_zmq:BuildRequires: zeromq-devel}
 %{!?_without_zvbi:BuildRequires: zvbi-devel}
@@ -297,6 +298,7 @@ This package contains development files for %{name}
     %{!?_without_x264:--enable-libx264} \\\
     %{!?_without_x265:--enable-libx265} \\\
     %{!?_without_xvid:--enable-libxvid} \\\
+    --enable-libzimg \\\
     %{?_with_zmq:--enable-libzmq} \\\
     %{!?_without_zvbi:--enable-libzvbi} \\\
     --enable-avfilter \\\
