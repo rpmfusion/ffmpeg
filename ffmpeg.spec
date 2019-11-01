@@ -149,6 +149,7 @@ BuildRequires:  nasm
 %{!?_without_nvenc:BuildRequires: nv-codec-headers}
 %{!?_without_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
 %{?_with_omx:BuildRequires: libomxil-bellagio-devel}
+BuildRequires:  libxcb-devel
 %{!?_without_openal:BuildRequires: openal-soft-devel}
 %if 0%{!?_without_opencl:1}
 BuildRequires:  opencl-headers ocl-icd-devel
