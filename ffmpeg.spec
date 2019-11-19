@@ -16,11 +16,7 @@
 %global _without_vpx      1
 %endif
 
-%if 0%{?el8}
-%global _without_dav1d    1
-%endif
-
-%if 0%{?fedora}
+%if 0%{?fedora} || 0%{?rhel} > 7
 %ifarch x86_64
 %global _with_vmaf        1
 %endif
@@ -87,7 +83,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.2.1
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -153,6 +149,7 @@ BuildRequires:  nasm
 %{!?_without_nvenc:BuildRequires: nv-codec-headers}
 %{!?_without_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
 %{?_with_omx:BuildRequires: libomxil-bellagio-devel}
+BuildRequires:  libxcb-devel
 %{!?_without_openal:BuildRequires: openal-soft-devel}
 %if 0%{!?_without_opencl:1}
 BuildRequires:  opencl-headers ocl-icd-devel
@@ -178,6 +175,7 @@ BuildRequires:  texinfo
 %{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.31}
 %{!?_without_x265:BuildRequires: x265-devel}
 %{!?_without_xvid:BuildRequires: xvidcore-devel}
+BuildRequires:  zimg-devel >= 2.7.0
 BuildRequires:  zlib-devel
 %{?_with_zmq:BuildRequires: zeromq-devel}
 %{!?_without_zvbi:BuildRequires: zvbi-devel}
@@ -301,6 +299,7 @@ This package contains development files for %{name}
     %{!?_without_x264:--enable-libx264} \\\
     %{!?_without_x265:--enable-libx265} \\\
     %{!?_without_xvid:--enable-libxvid} \\\
+    --enable-libzimg \\\
     %{?_with_zmq:--enable-libzmq} \\\
     %{!?_without_zvbi:--enable-libzvbi} \\\
     --enable-avfilter \\\
@@ -428,6 +427,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Thu Oct 24 2019 Leigh Scott <leigh123linux@googlemail.com> - 4.2.1-3
+- Rebuild for dav1d SONAME bump
+
 * Sat Sep 07 2019 Leigh Scott <leigh123linux@googlemail.com> - 4.2.1-2
 - Enable libjack (rfbz #5346)
 
