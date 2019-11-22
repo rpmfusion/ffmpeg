@@ -88,8 +88,8 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        4.0.4
-Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        4.0.5
+Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -99,12 +99,9 @@ Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 %endif
 # Backport from master to allow vmaf 1.3.9
 Patch0:         87cc7e8d4ef8fa643d8d4822525b9c95cc9e7307.patch
-#Backport avutil/mem: Fix invalid use of av_alloc_size
-#See rfbz#5221
-Patch1:         4361293fcf59edb56879c36edcd25f0a91e0edf8.patch
 #Backport Enable HEVC support for working Nvidia driver versions
-Patch2:         4a6d5f3cadaabefe6c3548e575bb7e713997762f.patch
-Patch3:         4a976200d7853588336005a394dd31d905f5caf6.patch
+Patch1:         4a6d5f3cadaabefe6c3548e575bb7e713997762f.patch
+Patch2:         4a976200d7853588336005a394dd31d905f5caf6.patch
 
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 %{?_with_cuda:BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel}
@@ -333,7 +330,6 @@ echo "git-snapshot-%{?branch}%{date}-rpmfusion" > VERSION
 %patch0 -p1 -b .vmaf_build
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
 
 # fix -O3 -g in host_cflags
 sed -i "s|check_host_cflags -O3|check_host_cflags %{optflags}|" configure
@@ -441,6 +437,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Fri Nov 22 2019 Leigh Scott <leigh123linux@gmail.com> - 4.0.5-1
+- Update to 4.0.5 release
+
 * Sat Sep 07 2019 Leigh Scott <leigh123linux@googlemail.com> - 4.0.4-3
 - Enable libjack (rfbz #5346)
 
