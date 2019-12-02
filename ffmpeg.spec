@@ -67,7 +67,7 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        3.4.6
+Version:        3.4.7
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
@@ -402,6 +402,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Mon Dec 02 2019 Leigh Scott <leigh123linux@gmail.com> - 3.4.7-1
+- Release 3.4.7
+
 * Sun Mar 31 2019 Leigh Scott <leigh123linux@googlemail.com> - 3.4.6-1
 - Release 3.4.6
 
