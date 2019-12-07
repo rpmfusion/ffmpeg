@@ -140,7 +140,7 @@ BuildRequires:  libvdpau-devel
 BuildRequires:  libvorbis-devel
 %{?!_without_vpx:BuildRequires: libvpx-devel >= 1.4.0}
 %ifarch %{ix86} x86_64
-%{!?_without_mfx:BuildRequires: libmfx-devel >= 1.23-1}
+%{!?_without_mfx:BuildRequires: pkgconfig(libmfx) >= 1.23-1}
 BuildRequires:  nasm
 %endif
 %{?_with_webp:BuildRequires: libwebp-devel}
