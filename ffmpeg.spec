@@ -82,8 +82,8 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        4.2.1
-Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        4.2.2
+Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -140,7 +140,7 @@ BuildRequires:  libvdpau-devel
 BuildRequires:  libvorbis-devel
 %{?!_without_vpx:BuildRequires: libvpx-devel >= 1.4.0}
 %ifarch %{ix86} x86_64
-%{!?_without_mfx:BuildRequires: libmfx-devel >= 1.23-1}
+%{!?_without_mfx:BuildRequires: pkgconfig(libmfx) >= 1.23-1}
 BuildRequires:  nasm
 %endif
 %{?_with_webp:BuildRequires: libwebp-devel}
@@ -427,6 +427,15 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Wed Jan 01 2020 Leigh Scott <leigh123linux@gmail.com> - 4.2.2-1
+- Update to 4.2.2 release
+
+* Tue Dec 17 2019 Sérgio Monteiro Basto <sergio@serjux.com> - 4.2.1-5
+- Mass rebuild for x264
+
+* Thu Nov 28 2019 Leigh Scott <leigh123linux@googlemail.com> - 4.2.1-4
+- Rebuilt for x265
+
 * Thu Oct 24 2019 Leigh Scott <leigh123linux@googlemail.com> - 4.2.1-3
 - Rebuild for dav1d SONAME bump
 
