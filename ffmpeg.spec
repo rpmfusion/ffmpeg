@@ -82,8 +82,8 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        4.2.1
-Release:        5%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        4.2.2
+Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -427,6 +427,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Wed Jan 01 2020 Leigh Scott <leigh123linux@gmail.com> - 4.2.2-1
+- Update to 4.2.2 release
+
 * Tue Dec 17 2019 Sérgio Monteiro Basto <sergio@serjux.com> - 4.2.1-5
 - Mass rebuild for x264
 
