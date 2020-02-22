@@ -4,6 +4,10 @@
 %global date    20200222
 #global rel     rc1
 
+%ifarch ppc64le
+%global _without_opencl   1
+%endif
+
 # Cuda and others are only available on some arches
 %global cuda_arches x86_64
 
