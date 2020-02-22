@@ -15,7 +15,7 @@ pwd=$(pwd)
 date=$(date +%Y%m%d)
 
 pushd "$tmp"
-git clone git://git.videolan.org/ffmpeg.git
+git clone git://git.ffmpeg.org/ffmpeg.git
 cd ffmpeg
 git archive --prefix="ffmpeg-${date}/" --format=tar master | bzip2 > "$pwd"/ffmpeg-${date}.tar.bz2
 popd
