@@ -87,7 +87,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.3
-Release:        0.1.%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        0.2.%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -175,6 +175,7 @@ BuildRequires:  texinfo
 %{?_with_vmaf:BuildRequires: libvmaf-devel}
 %{?_with_wavpack:BuildRequires: wavpack-devel}
 %{!?_without_vidstab:BuildRequires:  vid.stab-devel}
+%{!?_without_vulkan:BuildRequires:  vulkan-loader-devel glslang-devel}
 %{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.31}
 %{!?_without_x265:BuildRequires: x265-devel}
 %{!?_without_xvid:BuildRequires: xvidcore-devel}
@@ -298,6 +299,7 @@ This package contains development files for %{name}
     %{!?_without_vidstab:--enable-libvidstab} \\\
     %{?_with_vmaf:--enable-libvmaf} \\\
     %{!?_without_vpx:--enable-libvpx} \\\
+    %{!?_without_vulkan:--enable-vulkan --enable-libglslang} \\\
     %{?_with_webp:--enable-libwebp} \\\
     %{!?_without_x264:--enable-libx264} \\\
     %{!?_without_x265:--enable-libx265} \\\
@@ -429,6 +431,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Sun Feb 23 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-0.2.20200222git
+- Enable vulkan
+
 * Sat Feb 22 2020 Leigh Scott <leigh123linux@googlemail.com> - 4.3-0.1.20200222git
 - Update to 20200222git 
 
