@@ -8,6 +8,12 @@
 %global _without_opencl   1
 %endif
 
+# rav1e has a broken .pc file
+# https://bugzilla.redhat.com/show_bug.cgi?id=1811550
+%if 0%{?fedora} > 33
+%global _with_rav1e       1
+%endif
+
 # Cuda and others are only available on some arches
 %global cuda_arches x86_64
 
@@ -163,6 +169,7 @@ BuildRequires:  openjpeg2-devel
 %{!?_without_opus:BuildRequires: opus-devel >= 1.1.3}
 %{!?_without_pulse:BuildRequires: pulseaudio-libs-devel}
 BuildRequires:  perl(Pod::Man)
+%{?_with_rav1e:BuildRequires: rav1e-devel}
 %{?_with_rubberband:BuildRequires: rubberband-devel}
 %{!?_without_tools:BuildRequires: SDL2-devel}
 %{?_with_snappy:BuildRequires: snappy-devel}
@@ -284,6 +291,7 @@ This package contains development files for %{name}
     %{!?_without_opus:--enable-libopus} \\\
     %{!?_without_pulse:--enable-libpulse} \\\
     --enable-librsvg \\\
+    %{?_with_rav1e:--enable-librav1e} \\\
     %{?_with_rtmp:--enable-librtmp} \\\
     %{?_with_rubberband:--enable-librubberband} \\\
     %{?_with_smb:--enable-libsmbclient} \\\
