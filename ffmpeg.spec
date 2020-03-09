@@ -10,7 +10,7 @@
 
 # rav1e has a broken .pc file
 # https://bugzilla.redhat.com/show_bug.cgi?id=1811550
-%if 0%{?fedora} > 33
+%if 0%{?fedora} > 32
 %global _with_rav1e       1
 %endif
 
@@ -93,7 +93,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.3
-Release:        0.5.%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        0.6.%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -439,6 +439,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Mon Mar 09 2020 leigh123linux <leigh123linux@googlemail.com> - 4.3-0.6.20200305git
+- Enable rav1e support
+
 * Thu Mar 05 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-0.5.20200305git
 - Update to 20200305git
 
@@ -449,7 +452,7 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 - Rebuild for x265
 
 * Sun Feb 23 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-0.2.20200222git
-- Enable vulkan
+- Enable vulkan support
 
 * Sat Feb 22 2020 Leigh Scott <leigh123linux@googlemail.com> - 4.3-0.1.20200222git
 - Update to 20200222git 
