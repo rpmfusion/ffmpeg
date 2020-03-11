@@ -11,13 +11,13 @@
 %global _without_aom      1
 %global _without_dav1d    1
 %global _without_frei0r   1
-%global _without_mfx      1
 %global _without_opus     1
 %global _without_vpx      1
 %endif
 
 %if 0%{?fedora} || 0%{?rhel} > 7
 %ifarch x86_64
+%global _with_mfx         1
 %global _with_vmaf        1
 %endif
 %endif
@@ -139,8 +139,8 @@ BuildRequires:  libv4l-devel
 BuildRequires:  libvdpau-devel
 BuildRequires:  libvorbis-devel
 %{?!_without_vpx:BuildRequires: libvpx-devel >= 1.4.0}
+%{?_with_mfx:BuildRequires: pkgconfig(libmfx) >= 1.23-1}
 %ifarch %{ix86} x86_64
-%{!?_without_mfx:BuildRequires: pkgconfig(libmfx) >= 1.23-1}
 BuildRequires:  nasm
 %endif
 %{?_with_webp:BuildRequires: libwebp-devel}
@@ -337,9 +337,7 @@ cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
 %ifarch %{ix86}
     --cpu=%{_target_cpu} \
 %endif
-%ifarch %{ix86} x86_64
-    %{!?_without_mfx:--enable-libmfx} \
-%endif
+    %{?_with_mfx:--enable-libmfx} \
 %ifarch %{ix86} x86_64 %{power64}
     --enable-runtime-cpudetect \
 %endif
