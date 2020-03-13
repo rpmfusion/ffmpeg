@@ -1,7 +1,7 @@
 # TODO: add make test to %%check section
 
 #global branch  oldabi-
-%global date    20200305
+%global date    20200313
 #global rel     rc1
 
 %ifarch ppc64le
@@ -93,7 +93,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.3
-Release:        0.7.%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        0.8.%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -437,6 +437,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Fri Mar 13 2020 leigh123linux <leigh123linux@googlemail.com> - 4.3-0.8.20200313git
+- Update to 20200313git
+
 * Wed Mar 11 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-0.7.20200305git
 - Rebuilt for i686
 
