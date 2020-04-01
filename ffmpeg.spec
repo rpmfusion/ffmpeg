@@ -4,10 +4,6 @@
 %global date    20200401
 #global rel     rc1
 
-%ifarch ppc64le
-%global _without_opencl   1
-%endif
-
 # rav1e has a broken .pc file
 # https://bugzilla.redhat.com/show_bug.cgi?id=1811550
 %if 0%{?fedora} > 32
@@ -93,7 +89,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.3
-Release:        0.10.%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        0.11.%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -437,6 +433,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Wed Apr 01 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-0.11.20200401git
+- Update snapshot, fixes rfbz#5537
+
 * Wed Apr 01 2020 leigh123linux <leigh123linux@googlemail.com> - 4.3-0.10.20200401git
 - Update to 20200401git
 
