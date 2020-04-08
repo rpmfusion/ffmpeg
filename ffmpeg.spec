@@ -171,6 +171,7 @@ BuildRequires:  perl(Pod::Man)
 %{?_with_snappy:BuildRequires: snappy-devel}
 BuildRequires:  soxr-devel
 BuildRequires:  speex-devel
+BuildRequires:  pkgconfig(srt)
 %{?_with_tesseract:BuildRequires: tesseract-devel}
 #BuildRequires:  texi2html
 BuildRequires:  texinfo
