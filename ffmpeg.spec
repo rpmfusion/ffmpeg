@@ -84,7 +84,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.2.2
-Release:        4%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        5%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -428,6 +428,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Fri Apr 10 2020 Nicolas Chauvet <kwizart@gmail.com> - 4.2.2-5
+- Enable libsrt by default
+
 * Thu Mar 12 2020 leigh123linux <leigh123linux@googlemail.com> - 4.2.2-4
 - Rebuilt for i686
 
