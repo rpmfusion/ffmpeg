@@ -12,6 +12,7 @@
 %global _without_dav1d    1
 %global _without_frei0r   1
 %global _without_opus     1
+%global _without_srt      1
 %global _without_vpx      1
 %endif
 
@@ -132,6 +133,7 @@ BuildRequires:  libmodplug-devel
 BuildRequires:  librsvg2-devel
 %{?_with_rtmp:BuildRequires: librtmp-devel}
 %{?_with_smb:BuildRequires: libsmbclient-devel}
+%{!?_without_srt:BuildRequires: srt-devel > 1.3.0}
 BuildRequires:  libssh-devel
 BuildRequires:  libtheora-devel
 BuildRequires:  libv4l-devel
@@ -284,6 +286,7 @@ This package contains development files for %{name}
     %{?_with_rubberband:--enable-librubberband} \\\
     %{?_with_smb:--enable-libsmbclient} \\\
     %{?_with_snappy:--enable-libsnappy} \\\
+    %{!?_without_srt:--enable-libsrt} \\\
     --enable-libsoxr \\\
     --enable-libspeex \\\
     --enable-libssh \\\
