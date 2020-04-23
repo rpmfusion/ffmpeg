@@ -1,7 +1,7 @@
 # TODO: add make test to %%check section
 
 #global branch  oldabi-
-%global date    20200419
+%global date    20200423
 #global rel     rc1
 
 # rav1e has a broken .pc file
@@ -49,7 +49,7 @@
 %endif
 
 # Disable nvenc when not relevant
-%ifnarch %{cuda_arches}
+%ifnarch %{cuda_arches} aarch64
 %global _without_nvenc    1
 %endif
 
@@ -89,7 +89,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.3
-Release:        0.14.%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        0.15.%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -434,6 +434,10 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Thu Apr 23 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-0.15.20200423git
+- Update to 20200423git
+- Enable nvdec for aarch64
+
 * Sun Apr 19 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-0.14.20200419git
 - Update to 20200419git
 
