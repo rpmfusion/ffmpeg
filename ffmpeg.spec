@@ -434,8 +434,14 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 * Fri Apr 10 2020 Nicolas Chauvet <kwizart@gmail.com> - 4.2.2-5
 - Enable libsrt by default
 
-* Fri Mar 13 2020 Leigh Scott <leigh123linux@gmail.com> - 4.2.2-2
+* Thu Mar 12 2020 leigh123linux <leigh123linux@googlemail.com> - 4.2.2-4
 - Rebuilt for i686
+
+* Sun Feb 23 2020 Leigh Scott <leigh123linux@gmail.com> - 4.2.2-3
+- Rebuild for x265
+
+* Tue Feb 04 2020 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 4.2.2-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
 
 * Wed Jan 01 2020 Leigh Scott <leigh123linux@gmail.com> - 4.2.2-1
 - Update to 4.2.2 release
