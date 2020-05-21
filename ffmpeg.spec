@@ -432,7 +432,7 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 - Enable libsrt by default
 
 * Fri Mar 13 2020 Leigh Scott <leigh123linux@gmail.com> - 4.2.2-2
-- rebuilt
+- Rebuilt for i686
 
 * Wed Jan 01 2020 Leigh Scott <leigh123linux@gmail.com> - 4.2.2-1
 - Update to 4.2.2 release
