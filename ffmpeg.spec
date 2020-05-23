@@ -84,7 +84,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.2.3
-Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -428,6 +428,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Sat May 23 2020 Leigh Scott <leigh123linux@gmail.com> - 4.2.3-2
+- Fix vmaf model path
+
 * Thu May 21 2020 Leigh Scott <leigh123linux@gmail.com> - 4.2.3-1
 - Update to 4.2.3 release
 
