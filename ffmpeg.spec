@@ -84,7 +84,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.2.3
-Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -93,6 +93,7 @@ Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 %endif
 Patch0:         fix_ppc_build.patch
+Patch1:         fix-vmaf-model-path.patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 %{?_with_cuda:BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel}
 %{?_with_libnpp:BuildRequires: pkgconfig(nppc-%{_cuda_version})}
@@ -318,12 +319,11 @@ This package contains development files for %{name}
 
 %prep
 %if 0%{?date}
-%setup -q -n ffmpeg-%{?branch}%{date}
+%autosetup -p1 -n ffmpeg-%{?branch}%{date}
 echo "git-snapshot-%{?branch}%{date}-rpmfusion" > VERSION
 %else
-%setup -q -n ffmpeg-%{version}
+%autosetup -p1 -n ffmpeg-%{version}
 %endif
-%patch0 -p1
 # fix -O3 -g in host_cflags
 sed -i "s|check_host_cflags -O3|check_host_cflags %{optflags}|" configure
 mkdir -p _doc/examples
@@ -428,6 +428,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Sat May 23 2020 Leigh Scott <leigh123linux@gmail.com> - 4.2.3-2
+- Fix vmaf model path
+
 * Thu May 21 2020 Leigh Scott <leigh123linux@gmail.com> - 4.2.3-1
 - Update to 4.2.3 release
 
