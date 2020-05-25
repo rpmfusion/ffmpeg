@@ -28,6 +28,11 @@
 %endif
 %endif
 
+%if 0%{?rhel} 
+%global _without_lensfun  1
+%global _without_vulkan   1
+%endif
+
 # flavor nonfree
 %if 0%{?_with_cuda:1}
 %global debug_package %{nil}
@@ -89,7 +94,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.3
-Release:        0.20.%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        0.21.%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -126,6 +131,7 @@ BuildRequires:  lame-devel >= 3.98.3
 %{!?_without_cdio:BuildRequires: libcdio-paranoia-devel}
 %{?_with_chromaprint:BuildRequires: libchromaprint-devel}
 %{?_with_crystalhd:BuildRequires: libcrystalhd-devel}
+%{!?_without_lensfun:BuildRequires: lensfun-devel}
 %if 0%{?_with_ieee1394}
 BuildRequires:  libavc1394-devel
 BuildRequires:  libdc1394-devel
@@ -274,6 +280,7 @@ This package contains development files for %{name}
     %{?_with_gme:--enable-libgme} \\\
     --enable-libgsm \\\
     %{?_with_ilbc:--enable-libilbc} \\\
+    %{!?_without_lensfun:--enable-liblensfun} \\\
     %{?_with_libnpp:--enable-libnpp --enable-nonfree} \\\
     --enable-libmp3lame \\\
     %{?_with_netcdf:--enable-netcdf} \\\
@@ -435,6 +442,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Mon May 25 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-0.21.20200524git
+- Enable lensfun
+
 * Sun May 24 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-0.20.20200524git
 - Rebuild for dav1d SONAME bump
 
