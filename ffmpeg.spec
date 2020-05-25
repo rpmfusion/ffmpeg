@@ -13,7 +13,6 @@
 
 %if 0%{?rhel}
 %global _without_frei0r   1
-%global _without_vpx      1
 %endif
 
 # flavor nonfree
@@ -68,7 +67,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        3.4.7
-Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -168,7 +167,6 @@ and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
 
 %package        libs
 Summary:        Libraries for %{name}
-%{?el7:BuildRequires: epel-rpm-macros}
 
 %description    libs
 FFmpeg is a complete and free Internet live audio and video
@@ -402,6 +400,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Mon May 25 2020 Nicolas Chauvet <kwizart@gmail.com> - 3.4.7-2
+- Enable libvpx codec
+
 * Mon Dec 02 2019 Leigh Scott <leigh123linux@gmail.com> - 3.4.7-1
 - Release 3.4.7
 
