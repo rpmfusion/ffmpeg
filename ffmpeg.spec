@@ -1,7 +1,7 @@
 # TODO: add make test to %%check section
 
 #global branch  oldabi-
-%global date    20200524
+%global date    20200531
 #global rel     rc1
 
 # rav1e has a broken .pc file
@@ -94,7 +94,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.3
-Release:        0.21.%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        0.22.%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -442,6 +442,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Sun May 31 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-0.22.20200531git
+- Update to 20200531git
+
 * Mon May 25 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-0.21.20200524git
 - Enable lensfun
 
