@@ -276,6 +276,7 @@ This package contains development files for %{name}
     %{!?_without_zvbi:--enable-libzvbi} \\\
     --enable-avfilter \\\
     --enable-avresample \\\
+    --enable-libmodplug \\\
     --enable-postproc \\\
     --enable-pthreads \\\
     --disable-static \\\
