@@ -67,7 +67,7 @@
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        3.4.7
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -401,6 +401,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Sat Jun 06 2020 Leigh Scott <leigh123linux@gmail.com> - 3.4.7-3
+- Enable libmodplug (rfbz#5670)
+
 * Mon May 25 2020 Nicolas Chauvet <kwizart@gmail.com> - 3.4.7-2
 - Enable libvpx codec
 
