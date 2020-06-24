@@ -19,6 +19,7 @@
 %global _without_frei0r   1
 %global _without_opus     1
 %global _without_vpx      1
+%global _without_vapoursynth 1
 %endif
 
 %if 0%{?fedora} || 0%{?rhel} > 7
@@ -150,6 +151,7 @@ BuildRequires:  libv4l-devel
 %{?!_without_vaapi:BuildRequires: libva-devel >= 0.31.0}
 BuildRequires:  libvdpau-devel
 BuildRequires:  libvorbis-devel
+%{?!_without_vapoursynth:BuildRequires: vapoursynth-devel}
 %{?!_without_vpx:BuildRequires: libvpx-devel >= 1.4.0}
 %{?_with_mfx:BuildRequires: pkgconfig(libmfx) >= 1.23-1}
 %ifarch %{ix86} x86_64
@@ -311,6 +313,7 @@ This package contains development files for %{name}
     --enable-libv4l2 \\\
     %{!?_without_vidstab:--enable-libvidstab} \\\
     %{?_with_vmaf:--enable-libvmaf --enable-version3} \\\
+    %{!?_without_vapoursynth:--enable-vapoursynth} \\\
     %{!?_without_vpx:--enable-libvpx} \\\
     %{!?_without_vulkan:--enable-vulkan --enable-libglslang} \\\
     %{?_with_webp:--enable-libwebp} \\\
