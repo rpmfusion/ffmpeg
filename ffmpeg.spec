@@ -297,7 +297,7 @@ This package contains development files for %{name}
     --enable-libvorbis \\\
     --enable-libv4l2 \\\
     %{!?_without_vidstab:--enable-libvidstab} \\\
-    %{?_with_vmaf:--enable-libvmaf} \\\
+    %{?_with_vmaf:--enable-libvmaf --enable-version3} \\\
     %{!?_without_vpx:--enable-libvpx} \\\
     %{?_with_webp:--enable-libwebp} \\\
     %{!?_without_x264:--enable-libx264} \\\
