@@ -87,7 +87,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.2.3
-Release:        4%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        5%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -434,6 +434,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Thu Jul 02 2020 Leigh Scott <leigh123linux@gmail.com> - 4.2.3-5
+- Rebuilt
+
 * Wed Jun 24 2020 Leigh Scott <leigh123linux@gmail.com> - 4.2.3-4
 - Enable vapoursynth
 
