@@ -17,8 +17,10 @@
 %endif
 
 %if 0%{?fedora} || 0%{?rhel} > 7
+%if 0%{?rhel} > 7
 %ifarch x86_64 i686
-#global _with_vapoursynth 1
+%global _with_vapoursynth 1
+%endif
 %endif
 %ifarch x86_64
 %global _with_mfx         1
@@ -86,8 +88,8 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        4.2.3
-Release:        6%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        4.2.4
+Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -434,6 +436,10 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Thu Jul 09 2020 Leigh Scott <leigh123linux@gmail.com> - 4.2.4-1
+- Update to 4.2.4 release
+- Enable vapoursynth for el8
+
 * Sat Jul 04 2020 Leigh Scott <leigh123linux@gmail.com> - 4.2.3-6
 - Disable vapoursynth
 
