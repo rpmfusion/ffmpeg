@@ -97,7 +97,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.3.1
-Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -144,6 +144,7 @@ BuildRequires:  libdrm-devel
 BuildRequires:  libgcrypt-devel
 BuildRequires:  libGL-devel
 BuildRequires:  libmodplug-devel
+BuildRequires:  libmysofa-devel
 BuildRequires:  librsvg2-devel
 %{?_with_rtmp:BuildRequires: librtmp-devel}
 %{?_with_smb:BuildRequires: libsmbclient-devel}
@@ -287,6 +288,7 @@ This package contains development files for %{name}
     %{!?_without_lensfun:--enable-liblensfun} \\\
     %{?_with_libnpp:--enable-libnpp --enable-nonfree} \\\
     --enable-libmp3lame \\\
+    --enable-libmysofa \\\
     %{?_with_netcdf:--enable-netcdf} \\\
     %{?_with_mmal:--enable-mmal} \\\
     %{!?_without_nvenc:--enable-nvenc} \\\
@@ -448,6 +450,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Tue Jul 14 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-2
+- Enable libmysofa
+
 * Sat Jul 11 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-1
 - Update to 4.3.1 release
 
