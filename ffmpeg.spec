@@ -13,10 +13,6 @@
 # Cuda and others are only available on some arches
 %global cuda_arches x86_64
 
-%ifnarch %{arm}
-%global _with_openmpt 1
-%endif
-
 %if 0%{?el7}
 %global _without_aom      1
 %global _without_dav1d    1
@@ -149,7 +145,7 @@ BuildRequires:  libgcrypt-devel
 BuildRequires:  libGL-devel
 BuildRequires:  libmodplug-devel
 BuildRequires:  libmysofa-devel
-%{?_with_openmpt:BuildRequires: libopenmpt-devel}
+BuildRequires:  libopenmpt-devel
 BuildRequires:  librsvg2-devel
 %{?_with_rtmp:BuildRequires: librtmp-devel}
 %{?_with_smb:BuildRequires: libsmbclient-devel}
@@ -304,7 +300,7 @@ This package contains development files for %{name}
     %{?_with_opencv:--enable-libopencv} \\\
     %{!?_without_opengl:--enable-opengl} \\\
     --enable-libopenjpeg \\\
-    %{?_with_openmpt:--enable-libopenmpt} \\\
+    --enable-libopenmpt \\\
     %{!?_without_opus:--enable-libopus} \\\
     %{!?_without_pulse:--enable-libpulse} \\\
     --enable-librsvg \\\
