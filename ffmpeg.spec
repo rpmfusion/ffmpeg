@@ -101,7 +101,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.3.1
-Release:        2%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -456,6 +456,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Wed Jul 15 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-3
+- Enabled libopenmpt
+
 * Tue Jul 14 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-2
 - Enable libmysofa
 
