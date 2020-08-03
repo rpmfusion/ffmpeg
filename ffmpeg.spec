@@ -97,7 +97,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.3.1
-Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        5%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -354,6 +354,10 @@ mkdir -p _doc/examples
 cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
 
 %build
+%ifarch x86_64
+# Fails due to asm issue
+%define _lto_cflags %{nil}
+%endif
 %{?_with_cuda:export PATH=${PATH}:%{_cuda_bindir}}
 %{ff_configure}\
     --shlibdir=%{_libdir} \
@@ -452,6 +456,12 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Mon Aug 03 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-5
+- Disable LTO for x86_64
+
+* Mon Aug 03 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-4
+- Add patch to fix x86_64 LTO build issue
+
 * Wed Jul 15 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-3
 - Enabled libopenmpt
 
