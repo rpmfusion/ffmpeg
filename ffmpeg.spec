@@ -97,7 +97,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.3.1
-Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        4%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -106,6 +106,9 @@ Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 %endif
 Patch0:         fix-vmaf-model-path.patch
+# Fix for LTO build
+# https://github.com/OpenMandrivaAssociation/ffmpeg/blob/master/ffmpeg-2.5-fix-build-with-flto-and-inline-assembly.patch
+Patch1:         ffmpeg-2.5-fix-build-with-flto-and-inline-assembly.patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 %{?_with_cuda:BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel}
 %{?_with_libnpp:BuildRequires: pkgconfig(nppc-%{_cuda_version})}
@@ -452,6 +455,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Mon Aug 03 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-4
+- Add patch to fix x86_64 LTO build issue
+
 * Wed Jul 15 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-3
 - Enabled libopenmpt
 

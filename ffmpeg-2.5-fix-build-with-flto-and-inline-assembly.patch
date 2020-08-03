@@ -1,0 +1,183 @@
+diff -up ffmpeg-4.3/libavcodec/cabac.c.flto_inline_asm~ ffmpeg-4.3/libavcodec/cabac.c
+--- ffmpeg-4.3/libavcodec/cabac.c.flto_inline_asm~	2020-06-15 20:54:24.000000000 +0200
++++ ffmpeg-4.3/libavcodec/cabac.c	2020-06-21 02:01:43.471722832 +0200
+@@ -31,7 +31,7 @@
+ #include "cabac.h"
+ #include "cabac_functions.h"
+ 
+-DECLARE_ASM_ALIGNED(1, const uint8_t, ff_h264_cabac_tables)[512 + 4*2*64 + 4*64 + 63] = {
++__attribute__((used)) __attribute__((visibility("protected"))) DECLARE_ASM_ALIGNED(1, const uint8_t, ff_h264_cabac_tables)[512 + 4*2*64 + 4*64 + 63] = {
+     9,8,7,7,6,6,6,6,5,5,5,5,5,5,5,5,
+     4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,
+     3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
+diff -up ffmpeg-4.3/libavcodec/x86/lpc.c.flto_inline_asm~ ffmpeg-4.3/libavcodec/x86/lpc.c
+--- ffmpeg-4.3/libavcodec/x86/lpc.c.flto_inline_asm~	2020-05-21 17:55:31.000000000 +0200
++++ ffmpeg-4.3/libavcodec/x86/lpc.c	2020-06-21 02:01:43.471722832 +0200
+@@ -26,8 +26,8 @@
+ #include "libavutil/x86/cpu.h"
+ #include "libavcodec/lpc.h"
+ 
+-DECLARE_ASM_CONST(16, double, pd_1)[2] = { 1.0, 1.0 };
+-DECLARE_ASM_CONST(16, double, pd_2)[2] = { 2.0, 2.0 };
++DECLARE_ASM_CONST_VISIBLE(16, double, pd_1)[2] = { 1.0, 1.0 };
++DECLARE_ASM_CONST_VISIBLE(16, double, pd_2)[2] = { 2.0, 2.0 };
+ 
+ #if HAVE_SSE2_INLINE
+ 
+diff -up ffmpeg-4.3/libavutil/mem.h.flto_inline_asm~ ffmpeg-4.3/libavutil/mem.h
+--- ffmpeg-4.3/libavutil/mem.h.flto_inline_asm~	2020-05-21 17:55:31.000000000 +0200
++++ ffmpeg-4.3/libavutil/mem.h	2020-06-21 02:01:43.471722832 +0200
+@@ -104,14 +104,16 @@
+     #define DECLARE_ALIGNED(n,t,v)      t __attribute__ ((aligned (n))) v
+     #define DECLARE_ASM_ALIGNED(n,t,v)  t __attribute__ ((aligned (n))) v
+     #define DECLARE_ASM_CONST(n,t,v)    const t __attribute__ ((aligned (n))) v
++    #define DECLARE_ASM_CONST_VISIBLE(n,t,v)   __attribute__ ((externally_visible)) DECLARE_ASM_CONST(n,t,v)
+ #elif defined(__DJGPP__)
+     #define DECLARE_ALIGNED(n,t,v)      t __attribute__ ((aligned (FFMIN(n, 16)))) v
+     #define DECLARE_ASM_ALIGNED(n,t,v)  t av_used __attribute__ ((aligned (FFMIN(n, 16)))) v
+     #define DECLARE_ASM_CONST(n,t,v)    static const t av_used __attribute__ ((aligned (FFMIN(n, 16)))) v
+ #elif defined(__GNUC__) || defined(__clang__)
+-    #define DECLARE_ALIGNED(n,t,v)      t __attribute__ ((aligned (n))) v
++    #define DECLARE_ALIGNED(n,t,v)      t __attribute__ ((aligned (n))) __attribute__((used)) __attribute__((visibility("default"))) v
+     #define DECLARE_ASM_ALIGNED(n,t,v)  t av_used __attribute__ ((aligned (n))) v
+     #define DECLARE_ASM_CONST(n,t,v)    static const t av_used __attribute__ ((aligned (n))) v
++    #define DECLARE_ASM_CONST_VISIBLE(n,t,v)    __attribute__ ((externally_visible)) const t av_used __attribute__ ((aligned (n))) v
+ #elif defined(_MSC_VER)
+     #define DECLARE_ALIGNED(n,t,v)      __declspec(align(n)) t v
+     #define DECLARE_ASM_ALIGNED(n,t,v)  __declspec(align(n)) t v
+@@ -120,6 +122,7 @@
+     #define DECLARE_ALIGNED(n,t,v)      t v
+     #define DECLARE_ASM_ALIGNED(n,t,v)  t v
+     #define DECLARE_ASM_CONST(n,t,v)    static const t v
++    #define DECLARE_ASM_CONST_VISIBLE(n,t,v)    __attribute__((externally_visible)) const t v
+ #endif
+ 
+ /**
+diff -up ffmpeg-4.3/libpostproc/postprocess.c.flto_inline_asm~ ffmpeg-4.3/libpostproc/postprocess.c
+--- ffmpeg-4.3/libpostproc/postprocess.c.flto_inline_asm~	2020-06-15 20:54:24.000000000 +0200
++++ ffmpeg-4.3/libpostproc/postprocess.c	2020-06-21 02:01:43.471722832 +0200
+@@ -118,17 +118,17 @@ const char *postproc_license(void)
+ //#define NUM_BLOCKS_AT_ONCE 16 //not used yet
+ 
+ #if ARCH_X86 && HAVE_INLINE_ASM
+-DECLARE_ASM_CONST(8, uint64_t, w05)= 0x0005000500050005LL;
+-DECLARE_ASM_CONST(8, uint64_t, w04)= 0x0004000400040004LL;
+-DECLARE_ASM_CONST(8, uint64_t, w20)= 0x0020002000200020LL;
+-DECLARE_ASM_CONST(8, uint64_t, b00)= 0x0000000000000000LL;
+-DECLARE_ASM_CONST(8, uint64_t, b01)= 0x0101010101010101LL;
++DECLARE_ASM_CONST_VISIBLE(8, uint64_t, w05)= 0x0005000500050005LL;
++DECLARE_ASM_CONST_VISIBLE(8, uint64_t, w04)= 0x0004000400040004LL;
++DECLARE_ASM_CONST_VISIBLE(8, uint64_t, w20)= 0x0020002000200020LL;
++DECLARE_ASM_CONST_VISIBLE(8, uint64_t, b00)= 0x0000000000000000LL;
++DECLARE_ASM_CONST_VISIBLE(8, uint64_t, b01)= 0x0101010101010101LL;
+ DECLARE_ASM_CONST(8, uint64_t, b02)= 0x0202020202020202LL;
+-DECLARE_ASM_CONST(8, uint64_t, b08)= 0x0808080808080808LL;
+-DECLARE_ASM_CONST(8, uint64_t, b80)= 0x8080808080808080LL;
++DECLARE_ASM_CONST_VISIBLE(8, uint64_t, b08)= 0x0808080808080808LL;
++DECLARE_ASM_CONST_VISIBLE(8, uint64_t, b80)= 0x8080808080808080LL;
+ #endif
+ 
+-DECLARE_ASM_CONST(8, int, deringThreshold)= 20;
++DECLARE_ASM_CONST_VISIBLE(8, int, deringThreshold)= 20;
+ 
+ 
+ static const struct PPFilter filters[]=
+diff -up ffmpeg-4.3/libswscale/x86/rgb2rgb.c.flto_inline_asm~ ffmpeg-4.3/libswscale/x86/rgb2rgb.c
+--- ffmpeg-4.3/libswscale/x86/rgb2rgb.c.flto_inline_asm~	2020-05-21 17:55:31.000000000 +0200
++++ ffmpeg-4.3/libswscale/x86/rgb2rgb.c	2020-06-21 02:01:43.471722832 +0200
+@@ -36,7 +36,7 @@
+ 
+ #if HAVE_INLINE_ASM
+ 
+-DECLARE_ASM_CONST(8, uint64_t, mmx_ff)       = 0x00000000000000FFULL;
++DECLARE_ASM_CONST_VISIBLE(8, uint64_t, mmx_ff)       = 0x00000000000000FFULL;
+ DECLARE_ASM_CONST(8, uint64_t, mmx_null)     = 0x0000000000000000ULL;
+ DECLARE_ASM_CONST(8, uint64_t, mmx_one)      = 0xFFFFFFFFFFFFFFFFULL;
+ DECLARE_ASM_CONST(8, uint64_t, mask32b)      = 0x000000FF000000FFULL;
+@@ -49,11 +49,11 @@ DECLARE_ASM_CONST(8, uint64_t, mask3216g
+ DECLARE_ASM_CONST(8, uint64_t, mask3215g)    = 0x0000F8000000F800ULL;
+ DECLARE_ASM_CONST(8, uint64_t, mul3216)      = 0x2000000420000004ULL;
+ DECLARE_ASM_CONST(8, uint64_t, mul3215)      = 0x2000000820000008ULL;
+-DECLARE_ASM_CONST(8, uint64_t, mask24b)      = 0x00FF0000FF0000FFULL;
+-DECLARE_ASM_CONST(8, uint64_t, mask24g)      = 0xFF0000FF0000FF00ULL;
+-DECLARE_ASM_CONST(8, uint64_t, mask24r)      = 0x0000FF0000FF0000ULL;
+-DECLARE_ASM_CONST(8, uint64_t, mask24l)      = 0x0000000000FFFFFFULL;
+-DECLARE_ASM_CONST(8, uint64_t, mask24h)      = 0x0000FFFFFF000000ULL;
++DECLARE_ASM_CONST_VISIBLE(8, uint64_t, mask24b)      = 0x00FF0000FF0000FFULL;
++DECLARE_ASM_CONST_VISIBLE(8, uint64_t, mask24g)      = 0xFF0000FF0000FF00ULL;
++DECLARE_ASM_CONST_VISIBLE(8, uint64_t, mask24r)      = 0x0000FF0000FF0000ULL;
++DECLARE_ASM_CONST_VISIBLE(8, uint64_t, mask24l)      = 0x0000000000FFFFFFULL;
++DECLARE_ASM_CONST_VISIBLE(8, uint64_t, mask24h)      = 0x0000FFFFFF000000ULL;
+ DECLARE_ASM_CONST(8, uint64_t, mask24hh)     = 0xffff000000000000ULL;
+ DECLARE_ASM_CONST(8, uint64_t, mask24hhh)    = 0xffffffff00000000ULL;
+ DECLARE_ASM_CONST(8, uint64_t, mask24hhhh)   = 0xffffffffffff0000ULL;
+@@ -71,9 +71,9 @@ DECLARE_ASM_CONST(8, uint64_t, blue_16ma
+ DECLARE_ASM_CONST(8, uint64_t, red_15mask)   = 0x00007c0000007c00ULL;
+ DECLARE_ASM_CONST(8, uint64_t, green_15mask) = 0x000003e0000003e0ULL;
+ DECLARE_ASM_CONST(8, uint64_t, blue_15mask)  = 0x0000001f0000001fULL;
+-DECLARE_ASM_CONST(8, uint64_t, mul15_mid)    = 0x4200420042004200ULL;
+-DECLARE_ASM_CONST(8, uint64_t, mul15_hi)     = 0x0210021002100210ULL;
+-DECLARE_ASM_CONST(8, uint64_t, mul16_mid)    = 0x2080208020802080ULL;
++DECLARE_ASM_CONST_VISIBLE(8, uint64_t, mul15_mid)    = 0x4200420042004200ULL;
++DECLARE_ASM_CONST_VISIBLE(8, uint64_t, mul15_hi)     = 0x0210021002100210ULL;
++DECLARE_ASM_CONST_VISIBLE(8, uint64_t, mul16_mid)    = 0x2080208020802080ULL;
+ 
+ DECLARE_ALIGNED(8, extern const uint64_t, ff_bgr2YOffset);
+ DECLARE_ALIGNED(8, extern const uint64_t, ff_w1111);
+diff -up ffmpeg-4.3/libswscale/x86/swscale.c.flto_inline_asm~ ffmpeg-4.3/libswscale/x86/swscale.c
+--- ffmpeg-4.3/libswscale/x86/swscale.c.flto_inline_asm~	2020-06-15 20:54:24.000000000 +0200
++++ ffmpeg-4.3/libswscale/x86/swscale.c	2020-06-21 02:01:43.471722832 +0200
+@@ -41,8 +41,8 @@ const DECLARE_ALIGNED(8, uint64_t, ff_di
+ 
+ #define DITHER1XBPP
+ 
+-DECLARE_ASM_CONST(8, uint64_t, bF8)=       0xF8F8F8F8F8F8F8F8LL;
+-DECLARE_ASM_CONST(8, uint64_t, bFC)=       0xFCFCFCFCFCFCFCFCLL;
++DECLARE_ASM_CONST_VISIBLE(8, uint64_t, bF8)=       0xF8F8F8F8F8F8F8F8LL;
++DECLARE_ASM_CONST_VISIBLE(8, uint64_t, bFC)=       0xFCFCFCFCFCFCFCFCLL;
+ DECLARE_ASM_CONST(8, uint64_t, w10)=       0x0010001000100010LL;
+ DECLARE_ASM_CONST(8, uint64_t, w02)=       0x0002000200020002LL;
+ 
+@@ -53,13 +53,13 @@ DECLARE_ASM_CONST(8, uint64_t, b15Mask)=
+ DECLARE_ASM_CONST(8, uint64_t, g15Mask)=   0x03E003E003E003E0LL;
+ DECLARE_ASM_CONST(8, uint64_t, r15Mask)=   0x7C007C007C007C00LL;
+ 
+-DECLARE_ASM_ALIGNED(8, const uint64_t, ff_M24A)         = 0x00FF0000FF0000FFLL;
+-DECLARE_ASM_ALIGNED(8, const uint64_t, ff_M24B)         = 0xFF0000FF0000FF00LL;
+-DECLARE_ASM_ALIGNED(8, const uint64_t, ff_M24C)         = 0x0000FF0000FF0000LL;
+-
+-DECLARE_ASM_ALIGNED(8, const uint64_t, ff_bgr2YOffset)  = 0x1010101010101010ULL;
+-DECLARE_ASM_ALIGNED(8, const uint64_t, ff_bgr2UVOffset) = 0x8080808080808080ULL;
+-DECLARE_ASM_ALIGNED(8, const uint64_t, ff_w1111)        = 0x0001000100010001ULL;
++DECLARE_ASM_ALIGNED(8, __attribute__ ((externally_visible)) const uint64_t, ff_M24A)         = 0x00FF0000FF0000FFLL;
++DECLARE_ASM_ALIGNED(8, __attribute__ ((externally_visible)) const uint64_t, ff_M24B)         = 0xFF0000FF0000FF00LL;
++DECLARE_ASM_ALIGNED(8, __attribute__ ((externally_visible)) const uint64_t, ff_M24C)         = 0x0000FF0000FF0000LL;
++
++DECLARE_ASM_ALIGNED(8, __attribute__ ((externally_visible)) const uint64_t, ff_bgr2YOffset)  = 0x1010101010101010ULL;
++DECLARE_ASM_ALIGNED(8, __attribute__ ((externally_visible)) const uint64_t, ff_bgr2UVOffset) = 0x8080808080808080ULL;
++DECLARE_ASM_ALIGNED(8, __attribute__ ((externally_visible)) const uint64_t, ff_w1111)        = 0x0001000100010001ULL;
+ 
+ 
+ //MMX versions
+diff -up ffmpeg-4.3/libswscale/x86/yuv2rgb.c.flto_inline_asm~ ffmpeg-4.3/libswscale/x86/yuv2rgb.c
+--- ffmpeg-4.3/libswscale/x86/yuv2rgb.c.flto_inline_asm~	2020-06-21 02:01:43.471722832 +0200
++++ ffmpeg-4.3/libswscale/x86/yuv2rgb.c	2020-06-21 02:03:04.922671766 +0200
+@@ -42,12 +42,12 @@
+ #define DITHER1XBPP // only for MMX
+ 
+ /* hope these constant values are cache line aligned */
+-DECLARE_ASM_CONST(8, uint64_t, mmx_00ffw)   = 0x00ff00ff00ff00ffULL;
+-DECLARE_ASM_CONST(8, uint64_t, mmx_redmask) = 0xf8f8f8f8f8f8f8f8ULL;
++DECLARE_ASM_CONST_VISIBLE(8, uint64_t, mmx_00ffw)   = 0x00ff00ff00ff00ffULL;
++DECLARE_ASM_CONST_VISIBLE(8, uint64_t, mmx_redmask) = 0xf8f8f8f8f8f8f8f8ULL;
+ DECLARE_ASM_CONST(8, uint64_t, mmx_grnmask) = 0xfcfcfcfcfcfcfcfcULL;
+-DECLARE_ASM_CONST(8, uint64_t, pb_e0) = 0xe0e0e0e0e0e0e0e0ULL;
+-DECLARE_ASM_CONST(8, uint64_t, pb_03) = 0x0303030303030303ULL;
+-DECLARE_ASM_CONST(8, uint64_t, pb_07) = 0x0707070707070707ULL;
++DECLARE_ASM_CONST_VISIBLE(8, uint64_t, pb_e0) = 0xe0e0e0e0e0e0e0e0ULL;
++DECLARE_ASM_CONST_VISIBLE(8, uint64_t, pb_03) = 0x0303030303030303ULL;
++DECLARE_ASM_CONST_VISIBLE(8, uint64_t, pb_07) = 0x0707070707070707ULL;
+ 
+ //MMX versions
+ #if HAVE_MMX
+diff -up ffmpeg-4.3/libswscale/x86/yuv2rgb_template.c.flto_inline_asm~ ffmpeg-4.3/libswscale/x86/yuv2rgb_template.c
