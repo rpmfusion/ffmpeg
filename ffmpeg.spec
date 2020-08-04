@@ -239,6 +239,10 @@ VCR. It can encode in real time in many formats including MPEG1 audio
 and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
 This package contains development files for %{name}
 
+%ifarch %{ix86} x86_64
+# Fails due to asm issue
+%global _lto_cflags %{nil}
+%endif
 # Don't use the %%configure macro as this is not an autotool script
 %global ff_configure \
 ./configure \\\
@@ -354,10 +358,6 @@ mkdir -p _doc/examples
 cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
 
 %build
-%ifarch x86_64
-# Fails due to asm issue
-%define _lto_cflags %{nil}
-%endif
 %{?_with_cuda:export PATH=${PATH}:%{_cuda_bindir}}
 %{ff_configure}\
     --shlibdir=%{_libdir} \
@@ -457,7 +457,7 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 %changelog
 * Mon Aug 03 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-5
-- Disable LTO for x86_64
+- Disable LTO for x86
 
 * Mon Aug 03 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-4
 - Add patch to fix x86_64 LTO build issue
