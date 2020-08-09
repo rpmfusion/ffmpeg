@@ -97,7 +97,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.3.1
-Release:        5%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        6%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -106,6 +106,12 @@ Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 %endif
 Patch0:         fix-vmaf-model-path.patch
+Patch1:         glslang_linker_flags.patch
+# upstream glslang commit
+Patch2:         libavfilter_glslang.cpp.patch
+# upstream asm commits
+Patch3:         libavutil_x86_x86inc.asm.patch
+Patch4:         tests_checkasm_vf_blend.c.patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 %{?_with_cuda:BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel}
 %{?_with_libnpp:BuildRequires: pkgconfig(nppc-%{_cuda_version})}
@@ -192,7 +198,7 @@ BuildRequires:  texinfo
 %{?_with_vmaf:BuildRequires: libvmaf-devel}
 %{?_with_wavpack:BuildRequires: wavpack-devel}
 %{!?_without_vidstab:BuildRequires:  vid.stab-devel}
-%{!?_without_vulkan:BuildRequires:  vulkan-loader-devel glslang-devel}
+%{!?_without_vulkan:BuildRequires:  vulkan-loader-devel glslang-devel >= 11.0}
 %{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.31}
 %{!?_without_x265:BuildRequires: x265-devel}
 %{!?_without_xvid:BuildRequires: xvidcore-devel}
@@ -239,10 +245,6 @@ VCR. It can encode in real time in many formats including MPEG1 audio
 and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
 This package contains development files for %{name}
 
-%ifarch %{ix86} x86_64
-# Fails due to asm issue
-%global _lto_cflags %{nil}
-%endif
 # Don't use the %%configure macro as this is not an autotool script
 %global ff_configure \
 ./configure \\\
@@ -342,7 +344,8 @@ This package contains development files for %{name}
     --enable-shared \\\
     %{!?_without_gpl:--enable-gpl} \\\
     --disable-debug \\\
-    --disable-stripping
+    --disable-stripping \\\
+    --enable-lto
 
 
 %prep
@@ -456,6 +459,11 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Sun Aug 09 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-6
+- Enable LTO for x86
+- Add glslang patches and bump version for build requires
+- Add upstream patches to suppress asm warnings
+
 * Mon Aug 03 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-5
 - Disable LTO for x86
 

@@ -1,0 +1,15 @@
+X-Git-Url: http://git.ffmpeg.org/gitweb/ffmpeg.git/blobdiff_plain/320694ff84a609c5b0438c1f10da355cb48a0be3..55e1bc39cb3e485e5b0b6b13a41a2fd6f18ed3af:/tests/checkasm/vf_blend.c
+
+diff --git a/tests/checkasm/vf_blend.c b/tests/checkasm/vf_blend.c
+index a7578fe..bdd21d4 100644
+--- a/tests/checkasm/vf_blend.c
++++ b/tests/checkasm/vf_blend.c
+@@ -99,7 +99,7 @@ void checkasm_check_blend(void)
+ 
+ #define check_and_report(name, val, depth)        \
+     param.mode = val;                             \
+-    ff_blend_init(&param, depth - 1);             \
++    ff_blend_init(&param, depth * 8);             \
+     if (check_func(param.blend, #name))           \
+         check_blend_func(depth);
+ 
