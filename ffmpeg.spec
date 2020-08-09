@@ -4,6 +4,11 @@
 #global date    20200606
 #global rel     rc1
 
+%ifarch %{ix86}
+# Fails due to asm issue
+%global _lto_cflags %{nil}
+%endif
+
 # rav1e has a broken .pc file
 # https://bugzilla.redhat.com/show_bug.cgi?id=1811550
 %if 0%{?fedora} > 32
