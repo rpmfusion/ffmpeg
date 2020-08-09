@@ -349,8 +349,7 @@ This package contains development files for %{name}
     --enable-shared \\\
     %{!?_without_gpl:--enable-gpl} \\\
     --disable-debug \\\
-    --disable-stripping \\\
-    --enable-lto
+    --disable-stripping
 
 
 %prep
@@ -372,6 +371,9 @@ cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
 %if 0%{?_without_tools:1}
     --disable-doc \
     --disable-ffmpeg --disable-ffplay --disable-ffprobe \
+%endif
+%ifnarch %{ix86}
+    --enable-lto \
 %endif
 %ifarch %{ix86}
     --cpu=%{_target_cpu} \
