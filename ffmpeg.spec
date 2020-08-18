@@ -7,6 +7,8 @@
 %ifarch %{ix86}
 # Fails due to asm issue
 %global _lto_cflags %{nil}
+# libavfilter has undefined glslang symbols
+%global _without_vulkan   1
 %endif
 
 # rav1e is rawhide only so there is no point enabling it.
@@ -101,7 +103,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.3.1
-Release:        8%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        9%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -465,6 +467,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Tue Aug 18 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-9
+- Disable vulkan on i686
+
 * Mon Aug 17 2020 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 4.3.1-8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
 
