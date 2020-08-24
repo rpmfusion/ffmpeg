@@ -11,9 +11,8 @@
 %global _without_vulkan   1
 %endif
 
-# rav1e is rawhide only so there is no point enabling it.
-%if 0%{?fedora} > 33
-#global _with_rav1e       1
+%if 0%{?fedora} > 32
+%global _with_rav1e       1
 %endif
 
 # Cuda and others are only available on some arches
