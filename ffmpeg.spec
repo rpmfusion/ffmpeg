@@ -102,7 +102,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.3.1
-Release:        10%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        11%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -117,7 +117,6 @@ Patch2:         libavfilter_glslang.cpp.patch
 # upstream asm commits
 Patch3:         libavutil_x86_x86inc.asm.patch
 Patch4:         tests_checkasm_vf_blend.c.patch
-Patch5:         vp9_vdpau.patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 %{?_with_cuda:BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel}
 %{?_with_libnpp:BuildRequires: pkgconfig(nppc-%{_cuda_version})}
@@ -467,6 +466,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Sat Oct 10 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-11
+- Revert last commit
+
 * Sat Oct 10 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-10
 - Add VP9 10/12 Bit support for VDPAU 
 
