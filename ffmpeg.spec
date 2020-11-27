@@ -263,7 +263,7 @@ This package contains development files for %{name}
     --arch=%{_target_cpu} \\\
     --optflags="%{optflags}" \\\
     --extra-ldflags="%{?__global_ldflags} %{?cuda_ldflags} %{?libnpp_ldlags}" \\\
-    --extra-cflags="%{?cuda_cflags} %{?libnpp_cflags}" \\\
+    --extra-cflags="%{?cuda_cflags} %{?libnpp_cflags} -I%{_includedir}/rav1e" \\\
     %{?flavor:--disable-manpages} \\\
     %{?progs_suffix:--progs-suffix=%{progs_suffix}} \\\
     %{?build_suffix:--build-suffix=%{build_suffix}} \\\
