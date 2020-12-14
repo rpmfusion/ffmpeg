@@ -102,7 +102,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.3.1
-Release:        12%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        13%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -466,6 +466,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Mon Dec 14 2020 Robert-André Mauchin <zebob.m@gmail.com> - 4.3.1-13
+- Rebuild for dav1d SONAME bump
+
 * Fri Nov 27 2020 Sérgio Basto <sergio@serjux.com> - 4.3.1-12
 - Mass rebuild for x264-0.161
 
