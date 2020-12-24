@@ -161,6 +161,7 @@ BuildRequires:  nasm
 %{!?_without_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
 %{?_with_omx:BuildRequires: libomxil-bellagio-devel}
 BuildRequires:  libxcb-devel
+BuildRequires:  libxml2-devel
 %{!?_without_openal:BuildRequires: openal-soft-devel}
 %if 0%{!?_without_opencl:1}
 BuildRequires:  opencl-headers ocl-icd-devel
@@ -314,6 +315,7 @@ This package contains development files for %{name}
     %{!?_without_x264:--enable-libx264} \\\
     %{!?_without_x265:--enable-libx265} \\\
     %{!?_without_xvid:--enable-libxvid} \\\
+    --enable-libxml2 \\\
     --enable-libzimg \\\
     %{?_with_zmq:--enable-libzmq} \\\
     %{!?_without_zvbi:--enable-libzvbi} \\\
