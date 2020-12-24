@@ -38,6 +38,7 @@
 
 %if 0%{?rhel} 
 %global _without_lensfun  1
+%global _without_lv2      1
 %global _without_vulkan   1
 %endif
 
@@ -180,6 +181,7 @@ BuildRequires:  nasm
 %{?_with_omx:BuildRequires: libomxil-bellagio-devel}
 BuildRequires:  libxcb-devel
 BuildRequires:  libxml2-devel
+%{!?_without_lv2:BuildRequires:  lilv-devel}
 %{!?_without_openal:BuildRequires: openal-soft-devel}
 %if 0%{!?_without_opencl:1}
 BuildRequires:  opencl-headers ocl-icd-devel
@@ -342,6 +344,7 @@ This package contains development files for %{name}
     --enable-libzimg \\\
     %{?_with_zmq:--enable-libzmq} \\\
     %{!?_without_zvbi:--enable-libzvbi} \\\
+    %{!?_without_lv2:--enable-lv2} \\\
     --enable-avfilter \\\
     --enable-avresample \\\
     --enable-libmodplug \\\
