@@ -80,7 +80,7 @@ ExclusiveArch: armv7hnl
 %global lesser L
 %endif
 
-%if 0%{!?_without_amr} || 0%{?_with_gmp} || 0%{?_with_smb}
+%if 0%{!?_without_amr} || 0%{?_with_gmp} || 0%{?_with_smb} || 0%{?_with_vmaf}
 %global ffmpeg_license %{?lesser}GPLv3+
 %else
 %global ffmpeg_license %{?lesser}GPLv2+
