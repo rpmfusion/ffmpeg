@@ -1,8 +1,9 @@
 # TODO: add make test to %%check section
 
 #global branch  oldabi-
-#global date    20200606
-#global rel     rc1
+%global date    20201231
+%global commit  477dd2df60e6419ad8776a9865c421e8d42f68fe
+%global rel %(c=%{commit}; echo ${c:0:7})
 
 %ifarch %{ix86}
 # Fails due to asm issue
@@ -102,8 +103,8 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        4.3.1
-Release:        15%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        4.4
+Release:        0.1%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -112,12 +113,7 @@ Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 %endif
 Patch0:         fix-vmaf-model-path.patch
-Patch1:         glslang_linker_flags.patch
-# upstream glslang commit
-Patch2:         libavfilter_glslang.cpp.patch
 # upstream asm commits
-Patch3:         libavutil_x86_x86inc.asm.patch
-Patch4:         tests_checkasm_vf_blend.c.patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 %{?_with_cuda:BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel}
 %{?_with_libnpp:BuildRequires: pkgconfig(nppc-%{_cuda_version})}
@@ -471,6 +467,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Thu Dec 31 2020 Leigh Scott <leigh123linux@gmail.com> - 4.4-0.1.20201231git477dd2d
+- Update to 20201231git477dd2d
+
 * Thu Dec 24 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-15
 - Enable dash demuxer (rfbz#5876)
 - Enable lv2 support (rfbz#5863)
