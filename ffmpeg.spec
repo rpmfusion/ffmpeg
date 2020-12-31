@@ -27,6 +27,9 @@
 %endif
 
 %if 0%{?fedora} || 0%{?rhel} > 7
+%ifnarch i686
+%global _with_smb         1
+%endif
 %ifarch x86_64 i686
 %global _with_vapoursynth 1
 %endif
@@ -321,7 +324,7 @@ This package contains development files for %{name}
     %{?_with_rav1e:--enable-librav1e} \\\
     %{?_with_rtmp:--enable-librtmp} \\\
     %{?_with_rubberband:--enable-librubberband} \\\
-    %{?_with_smb:--enable-libsmbclient} \\\
+    %{?_with_smb:--enable-libsmbclient --enable-version3} \\\
     %{?_with_snappy:--enable-libsnappy} \\\
     --enable-libsoxr \\\
     --enable-libspeex \\\
