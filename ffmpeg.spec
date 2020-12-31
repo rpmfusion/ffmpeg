@@ -199,7 +199,7 @@ BuildRequires:  pkgconfig(srt)
 #BuildRequires:  texi2html
 BuildRequires:  texinfo
 %{?_with_twolame:BuildRequires: twolame-devel}
-%{?_with_vmaf:BuildRequires: libvmaf-devel}
+%{?_with_vmaf:BuildRequires: libvmaf-devel >= 1.5.2}
 %{?_with_wavpack:BuildRequires: wavpack-devel}
 %{!?_without_vidstab:BuildRequires:  vid.stab-devel}
 %{!?_without_vulkan:BuildRequires:  vulkan-loader-devel glslang-devel >= 11.0}
