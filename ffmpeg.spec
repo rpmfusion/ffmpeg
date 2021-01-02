@@ -106,7 +106,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.3.1
-Release:        15%{?date}%{?date:git}%{?rel}%{?dist}
+Release:        16%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -474,6 +474,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Sat Jan  2 2021 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-16
+- Enable smb support (rfbz#5880)
+
 * Thu Dec 24 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-15
 - Enable dash demuxer (rfbz#5876)
 - Enable lv2 support (rfbz#5863)
