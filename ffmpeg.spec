@@ -36,6 +36,7 @@
 %endif
 %ifarch x86_64
 %global _with_mfx         1
+%global _with_svtav1      1
 %global _with_vmaf        1
 %endif
 %endif
@@ -198,6 +199,7 @@ BuildRequires:  perl(Pod::Man)
 BuildRequires:  soxr-devel
 BuildRequires:  speex-devel
 BuildRequires:  pkgconfig(srt)
+%{?_with_svtav1:BuildRequires: svt-av1-devel}
 %{?_with_tesseract:BuildRequires: tesseract-devel}
 #BuildRequires:  texi2html
 BuildRequires:  texinfo
@@ -325,6 +327,7 @@ This package contains development files for %{name}
     --enable-libsoxr \\\
     --enable-libspeex \\\
     --enable-libssh \\\
+    %{?_with_svtav1:--enable-libsvtav1} \\\
     %{?_with_tesseract:--enable-libtesseract} \\\
     --enable-libtheora \\\
     %{?_with_twolame:--enable-libtwolame} \\\
