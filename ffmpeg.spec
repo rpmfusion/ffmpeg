@@ -326,6 +326,7 @@ This package contains development files for %{name}
     %{?_with_snappy:--enable-libsnappy} \\\
     --enable-libsoxr \\\
     --enable-libspeex \\\
+    --enable-libsrt \\\
     --enable-libssh \\\
     %{?_with_svtav1:--enable-libsvtav1} \\\
     %{?_with_tesseract:--enable-libtesseract} \\\
