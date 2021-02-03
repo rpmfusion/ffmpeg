@@ -108,7 +108,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.4
-Release:        0.2%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        0.3%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -474,6 +474,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Wed Feb 03 2021 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 4.4-0.3.20210125gitc7016e3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
+
 * Mon Jan 25 2021 Leigh Scott <leigh123linux@gmail.com> - 4.4-0.2.20210125gitc7016e3
 - Update to 20210125gitc7016e3
 
