@@ -28,6 +28,8 @@
 %endif
 
 %if 0%{?fedora} || 0%{?rhel} > 7
+# Disable because of gcc issue
+%global _without_lensfun  1
 %ifnarch i686
 %global _with_smb         1
 %endif
