@@ -1,8 +1,8 @@
 # TODO: add make test to %%check section
 
 #global branch  oldabi-
-%global date    20210125
-%global commit  c7016e35a624a75bb5b82bee932ddfe28d013b3f
+%global date    20210218
+%global commit  c2bf1dcace8d331e672b955f9cf5b59211749f00
 %global rel %(c=%{commit}; echo ${c:0:7})
 
 %ifarch %{ix86}
@@ -108,7 +108,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.4
-Release:        0.3%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        0.4%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -474,6 +474,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Thu Feb 18 2021 Leigh Scott <leigh123linux@gmail.com> - 4.4-0.4.20210218gitc2bf1dc
+- Update to 20210218gitc2bf1dc
+
 * Wed Feb 03 2021 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 4.4-0.3.20210125gitc7016e3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
 
