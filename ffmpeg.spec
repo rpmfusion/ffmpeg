@@ -105,8 +105,8 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        4.3.1
-Release:        16%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        4.3.2
+Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -474,6 +474,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Sun Feb 21 2021 Leigh Scott <leigh123linux@gmail.com> - 4.3.2-1
+- Update to 4.3.2 release
+
 * Sat Jan  2 2021 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-16
 - Enable smb support (rfbz#5880)
 
