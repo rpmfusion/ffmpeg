@@ -118,9 +118,6 @@ Patch0:         fix-vmaf-model-path.patch
 Patch1:         glslang_linker_flags.patch
 # upstream glslang commit
 Patch2:         libavfilter_glslang.cpp.patch
-# upstream asm commits
-Patch3:         libavutil_x86_x86inc.asm.patch
-Patch4:         tests_checkasm_vf_blend.c.patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 %{?_with_cuda:BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel}
 %{?_with_libnpp:BuildRequires: pkgconfig(nppc-%{_cuda_version})}
