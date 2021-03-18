@@ -67,6 +67,7 @@
 %global _without_x264    1
 %global _without_x265    1
 %global _without_xvid    1
+%undefine _with_smb
 %endif
 
 # Disable nvenc when not relevant
@@ -122,6 +123,7 @@ Patch0:         fix-vmaf-model-path.patch
 # upstream asm commits
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 %{?_with_cuda:BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel}
+%{?_with_cuda:%{?!_with_cuda_nvcc:BuildRequires: clang}}
 %{?_with_libnpp:BuildRequires: pkgconfig(nppc-%{_cuda_version})}
 BuildRequires:  alsa-lib-devel
 BuildRequires:  bzip2-devel
@@ -289,7 +291,7 @@ This package contains development files for %{name}
     %{!?_without_bluray:--enable-libbluray} \\\
     %{?_with_bs2b:--enable-libbs2b} \\\
     %{?_with_caca:--enable-libcaca} \\\
-    %{?_with_cuda:--enable-cuda-sdk --enable-nonfree} \\\
+    %{?_with_cuda_nvcc:--enable-cuda-nvcc --enable-nonfree} \\\
     %{?_with_cuvid:--enable-cuvid --enable-nonfree} \\\
     %{!?_without_cdio:--enable-libcdio} \\\
     %{?_with_ieee1394:--enable-libdc1394 --enable-libiec61883} \\\
