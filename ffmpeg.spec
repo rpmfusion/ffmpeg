@@ -111,7 +111,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.4
-Release:        0.6%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        0.7%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -478,6 +478,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Wed Mar 24 2021 Leigh Scott <leigh123linux@gmail.com> - 4.4-0.7.20210323git0be265e
+- rebuilt
+
 * Tue Mar 23 2021 Leigh Scott <leigh123linux@gmail.com> - 4.4-0.6.20210323git0be265e
 - Update to 4.4-0.6.20210323git0be265e
 - Switch to release/4.4 branch
