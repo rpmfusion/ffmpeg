@@ -1,9 +1,9 @@
 # TODO: add make test to %%check section
 
 #global branch  oldabi-
-%global date    20210408
-%global commit  25e794a1ea13ad0ed9f5c4792ab3727fe7a3ace1
-%global rel %(c=%{commit}; echo ${c:0:7})
+#global date    20210408
+#global commit  25e794a1ea13ad0ed9f5c4792ab3727fe7a3ace1
+#global rel %(c=%{commit}; echo ${c:0:7})
 
 %ifarch %{ix86}
 # Fails due to asm issue
@@ -111,7 +111,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.4
-Release:        0.8%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        1%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -478,6 +478,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Fri Apr 09 2021 Leigh Scott <leigh123linux@gmail.com> - 4.4-1
+- Update to 4.4 release
+
 * Thu Apr 08 2021 Leigh Scott <leigh123linux@gmail.com> - 4.4-0.8.20210408git25e794a
 - Update to 4.4-0.8.20210408git25e794a
 
