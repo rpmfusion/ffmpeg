@@ -111,7 +111,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.4
-Release:        4%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        5%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -478,6 +478,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Sat Jul 10 2021 Sérgio Basto <sergio@serjux.com> - 4.4-5
+- Mass rebuild for x264-0.163
+
 * Sun Jun 13 2021 Leigh Scott <leigh123linux@gmail.com> - 4.4-4
 - Rebuild for aom bump
 
