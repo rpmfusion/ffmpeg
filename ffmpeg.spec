@@ -30,6 +30,7 @@
 %if 0%{?fedora} || 0%{?rhel} > 7
 # Disable because of gcc issue
 %global _without_lensfun  1
+%global _with_webp        1
 %ifnarch i686
 %global _with_smb         1
 %endif
@@ -111,7 +112,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.4
-Release:        5%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        6%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -478,6 +479,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Wed Jul 28 2021 Leigh Scott <leigh123linux@gmail.com> - 4.4-6
+- Enable libwebp support
+
 * Sat Jul 10 2021 Sérgio Basto <sergio@serjux.com> - 4.4-5
 - Mass rebuild for x264-0.163
 
