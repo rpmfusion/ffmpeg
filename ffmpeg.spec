@@ -112,7 +112,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        4.4
-Release:        6%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        7%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -479,6 +479,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Mon Aug 02 2021 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 4.4-7
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
 * Wed Jul 28 2021 Leigh Scott <leigh123linux@gmail.com> - 4.4-6
 - Enable libwebp support
 
