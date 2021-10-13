@@ -66,7 +66,7 @@
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        3.4.8
+Version:        3.4.9
 Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
@@ -401,6 +401,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Wed Oct 13 2021 Leigh Scott <leigh123linux@gmail.com> - 3.4.9-1
+- Release 3.4.9
+
 * Sun Jul 05 2020 Leigh Scott <leigh123linux@gmail.com> - 3.4.8-1
 - Release 3.4.8
 
