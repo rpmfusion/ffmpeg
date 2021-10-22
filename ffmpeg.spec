@@ -106,8 +106,8 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        4.3.2
-Release:        3%{?date}%{?date:git}%{?rel}%{?dist}
+Version:        4.3.3
+Release:        1%{?date}%{?date:git}%{?rel}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -473,6 +473,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Fri Oct 22 2021 Leigh Scott <leigh123linux@gmail.com> - 4.3.3-1
+- Update to 4.3.3 release
+
 * Sun Jun 13 2021 Leigh Scott <leigh123linux@gmail.com> - 4.3.2-3
 - Rebuild for aom bump
 
