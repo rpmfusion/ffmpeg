@@ -1,9 +1,9 @@
 # TODO: add make test to %%check section
 
 #global branch  oldabi-
-#global date    20210408
-#global commit  25e794a1ea13ad0ed9f5c4792ab3727fe7a3ace1
-#global rel %(c=%{commit}; echo ${c:0:7})
+%global date    20211108
+%global commit  45dc668aea0edac34969b5a1ff76cf9ad3a09be1
+%global rel %(c=%{commit}; echo ${c:0:7})
 
 %ifarch %{ix86}
 # Fails due to asm issue
@@ -111,8 +111,8 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        4.4.1
-Release:        1%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Version:        4.5
+Release:        0.1%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -354,7 +354,6 @@ This package contains development files for %{name}
     %{!?_without_zvbi:--enable-libzvbi} \\\
     %{!?_without_lv2:--enable-lv2} \\\
     --enable-avfilter \\\
-    --enable-avresample \\\
     --enable-libmodplug \\\
     --enable-postproc \\\
     --enable-pthreads \\\
@@ -479,6 +478,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Mon Nov 08 2021 Leigh Scott <leigh123linux@gmail.com> - 4.5-0.1.20211108git45dc668
+- Update to 4.5-0.1.20211108git45dc668
+
 * Mon Oct 25 2021 Leigh Scott <leigh123linux@gmail.com> - 4.4.1-1
 - Update to 4.4.1 release
 
