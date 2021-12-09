@@ -12,10 +12,6 @@
 %global _without_vulkan   1
 %endif
 
-%if 0%{?fedora} > 32
-%global _with_rav1e       1
-%endif
-
 # Cuda and others are only available on some arches
 %global cuda_arches x86_64
 
@@ -30,16 +26,27 @@
 %if 0%{?fedora} || 0%{?rhel} > 7
 # Disable because of gcc issue
 %global _without_lensfun  1
-%global _with_webp        1
+%if 0%{?fedora}
 %ifnarch i686
+%global _with_bs2b        1
+%global _with_chromaprint 1
+%global _with_ilbc        1
+%global _with_rav1e       1
+%global _with_rtmp        1
+%global _with_rubberband  1
 %global _with_smb         1
+%global _with_snappy      1
+%global _with_tesseract   1
+%global _with_twolame     1
+%global _with_wavpack     1
+%global _with_webp        1
+%global _with_zmq         1
 %endif
-%ifarch x86_64 i686
-%global _with_vapoursynth 1
 %endif
 %ifarch x86_64
 %global _with_mfx         1
 %global _with_svtav1      1
+%global _with_vapoursynth 1
 %global _with_vmaf        1
 %endif
 %endif
