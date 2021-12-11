@@ -236,6 +236,7 @@ and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
 
 %package        libs
 Summary:        Libraries for %{name}
+%{?_with_vmaf:Recommends:     vmaf-models}
 
 %description    libs
 FFmpeg is a complete and free Internet live audio and video
