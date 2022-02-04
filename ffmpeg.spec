@@ -5,6 +5,8 @@
 #global commit  311ea9c529117fb8e38abd6ca7e81782b6b21257
 #global rel %(c=%{commit}; echo ${c:0:7})
 
+%undefine _package_note_file
+
 %ifarch %{ix86}
 # Fails due to asm issue
 %global _lto_cflags %{nil}
