@@ -121,7 +121,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        5.0
-Release:        2%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        3%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -130,7 +130,7 @@ Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 %endif
 Patch0:         fix-vmaf-model-path.patch
-# upstream asm commits
+Patch1:         ffmpeg-support-chromium.patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 %{?_with_cuda:BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel}
 %{?_with_cuda:%{?!_with_cuda_nvcc:BuildRequires: clang}}
@@ -488,6 +488,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Fri Feb 11 2022 Leigh Scott <leigh123linux@gmail.com> - 5.0-3
+- Add patch for chrome
+
 * Fri Feb 04 2022 Leigh Scott <leigh123linux@gmail.com> - 5.0-2
 - rebuilt
 
