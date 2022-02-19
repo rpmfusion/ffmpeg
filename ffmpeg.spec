@@ -130,7 +130,7 @@ Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 %endif
 Patch0:         fix-vmaf-model-path.patch
-Patch1:         ffmpeg-support-chromium.patch
+# upstream asm commits
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 # Fedora dev's decided to conflict with our package
 Provides:       %{name}-free%{?_isa} = 100:%{version}-%{release}
