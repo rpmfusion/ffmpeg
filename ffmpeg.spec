@@ -132,8 +132,6 @@ Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 Patch0:         fix-vmaf-model-path.patch
 # upstream asm commits
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
-# Fedora dev's decided to conflict with our package
-Provides:       %{name}-free%{?_isa} = 100:%{version}-%{release}
 %{?_with_cuda:BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel}
 %{?_with_cuda:%{?!_with_cuda_nvcc:BuildRequires: clang}}
 %{?_with_libnpp:BuildRequires: pkgconfig(nppc-%{_cuda_version})}
@@ -241,13 +239,6 @@ and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
 %package        libs
 Summary:        Libraries for %{name}
 %{?_with_vmaf:Recommends:     vmaf-models}
-Provides:       libavcodec-free%{?_isa} = 100:%{version}-%{release}
-Provides:       libavfilter-free%{?_isa} = 100:%{version}-%{release}
-Provides:       libavformat-free%{?_isa} = 100:%{version}-%{release}
-Provides:       libavutil-free%{?_isa} = 100:%{version}-%{release}
-Provides:       libpostproc-free%{?_isa} = 100:%{version}-%{release}
-Provides:       libswresample-free%{?_isa} = 100:%{version}-%{release}
-Provides:       libswscale-free%{?_isa} = 100:%{version}-%{release}
 
 %description    libs
 FFmpeg is a complete and free Internet live audio and video
@@ -258,8 +249,7 @@ This package contains the libraries for %{name}
 
 %package     -n libavdevice%{?flavor}
 Summary:        Special devices muxing/demuxing library
-Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
-Provides:       libavdevice-free%{?_isa} = 100:%{version}-%{release}
+Requires:       %{name}-libs%{_isa} = %{version}-%{release}
 
 %description -n libavdevice%{?flavor}
 Libavdevice is a complementary library to libavf "libavformat". It provides
@@ -268,8 +258,8 @@ devices, audio capture and playback etc.
 
 %package        devel
 Summary:        Development package for %{name}
-Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
-Requires:       libavdevice%{?flavor}%{?_isa} = %{version}-%{release}
+Requires:       %{name}-libs%{_isa} = %{version}-%{release}
+Requires:       libavdevice%{?flavor}%{_isa} = %{version}-%{release}
 Requires:       pkgconfig
 
 %description    devel
