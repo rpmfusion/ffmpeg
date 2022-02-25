@@ -10,25 +10,14 @@
 %ifarch %{ix86}
 # Fails due to asm issue
 %global _lto_cflags %{nil}
-# libavfilter has undefined glslang symbols
-%global _without_vulkan   1
 %endif
 
 # Cuda and others are only available on some arches
 %global cuda_arches x86_64
 
-%if 0%{?el7}
-%global _without_aom      1
-%global _without_dav1d    1
-%global _without_frei0r   1
-%global _without_opus     1
-%global _without_vpx      1
-%endif
-
-%if 0%{?fedora} || 0%{?rhel} > 7
+%if 0%{?fedora}
 # Disable because of gcc issue
 %global _without_lensfun  1
-%if 0%{?fedora}
 %ifnarch i686
 %global _with_bs2b        1
 %global _with_chromaprint 1
@@ -43,7 +32,9 @@
 %global _with_wavpack     1
 %global _with_webp        1
 %global _with_zmq         1
-%endif
+%else
+# libavfilter has undefined glslang symbols
+%global _without_vulkan   1
 %endif
 %ifarch x86_64
 %global _with_mfx         1
@@ -57,6 +48,32 @@
 %global _without_lensfun  1
 %global _without_lv2      1
 %global _without_vulkan   1
+%if 0%{?el7}
+%global _without_aom      1
+%global _without_dav1d    1
+%global _without_frei0r   1
+%global _without_opus     1
+%global _without_vpx      1
+%endif
+%if 0%{?rhel} > 7
+%ifarch x86_64
+%global _with_mfx         1
+%global _with_svtav1      1
+%global _with_vapoursynth 1
+%global _with_vmaf        1
+%endif
+%endif
+%if 0%{?el9}
+%global _without_ass      1
+%global _without_frei0r   1
+%global _without_jack     1
+%global _without_zimg     1
+%undefine _with_caca
+%undefine _with_vapoursynth
+%ifnarch x86_64
+%global _without_vaapi    1
+%endif
+%endif
 %endif
 
 # flavor nonfree
@@ -225,7 +242,7 @@ BuildRequires:  texinfo
 %{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.31}
 %{!?_without_x265:BuildRequires: x265-devel}
 %{!?_without_xvid:BuildRequires: xvidcore-devel}
-BuildRequires:  zimg-devel >= 2.7.0
+%{!?_without_zimg:BuildRequires:  zimg-devel >= 2.7.0}
 BuildRequires:  zlib-devel
 %{?_with_zmq:BuildRequires: zeromq-devel}
 %{!?_without_zvbi:BuildRequires: zvbi-devel}
@@ -359,7 +376,7 @@ This package contains development files for %{name}
     %{!?_without_x265:--enable-libx265} \\\
     %{!?_without_xvid:--enable-libxvid} \\\
     --enable-libxml2 \\\
-    --enable-libzimg \\\
+    %{!?_without_zimg--enable-libzimg} \\\
     %{?_with_zmq:--enable-libzmq} \\\
     %{!?_without_zvbi:--enable-libzvbi} \\\
     %{!?_without_lv2:--enable-lv2} \\\
