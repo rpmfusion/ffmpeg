@@ -138,7 +138,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        5.0
-Release:        6%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        7%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -506,6 +506,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Sun Mar 13 2022 Leigh Scott <leigh123linux@gmail.com> - 5.0-7
+- Rebuilt
+
 * Fri Mar 11 2022 Leigh Scott <leigh123linux@gmail.com> - 5.0-6
 - Enable AMF support
 
