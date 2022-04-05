@@ -144,7 +144,7 @@ Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 %endif
 Patch0:         fix-vmaf-model-path.patch
-# upstream asm commits
+Conflicts:      %{name}-free
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 %{?_with_cuda:BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel}
 %{?_with_cuda:%{?!_with_cuda_nvcc:BuildRequires: clang}}
@@ -253,6 +253,13 @@ and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
 
 %package        libs
 Summary:        Libraries for %{name}
+Conflicts:      libavcodec-free
+Conflicts:      libavfilter-free
+Conflicts:      libavformat-free
+Conflicts:      libavutil-free
+Conflicts:      libpostproc-free
+Conflicts:      libswresample-free
+Conflicts:      libswscale-free
 %{?_with_vmaf:Recommends:     vmaf-models}
 
 %description    libs
@@ -264,6 +271,7 @@ This package contains the libraries for %{name}
 
 %package     -n libavdevice%{?flavor}
 Summary:        Special devices muxing/demuxing library
+Conflicts:      libavdevice-free
 Requires:       %{name}-libs%{_isa} = %{version}-%{release}
 
 %description -n libavdevice%{?flavor}
@@ -273,6 +281,7 @@ devices, audio capture and playback etc.
 
 %package        devel
 Summary:        Development package for %{name}
+Conflicts:      %{name}-free-devel
 Requires:       %{name}-libs%{_isa} = %{version}-%{release}
 Requires:       libavdevice%{?flavor}%{_isa} = %{version}-%{release}
 Requires:       pkgconfig
