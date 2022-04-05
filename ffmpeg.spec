@@ -64,12 +64,9 @@
 %endif
 %endif
 %if 0%{?el9}
-%global _without_ass      1
 %global _without_frei0r   1
 %global _without_jack     1
-%global _without_zimg     1
 %undefine _with_caca
-%undefine _with_vapoursynth
 %ifnarch x86_64
 %global _without_vaapi    1
 %endif
