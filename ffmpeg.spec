@@ -135,7 +135,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        5.0.1
-Release:        2%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        3%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -383,7 +383,7 @@ This package contains development files for %{name}
     %{!?_without_x265:--enable-libx265} \\\
     %{!?_without_xvid:--enable-libxvid} \\\
     --enable-libxml2 \\\
-    %{!?_without_zimg--enable-libzimg} \\\
+    %{!?_without_zimg:--enable-libzimg} \\\
     %{?_with_zmq:--enable-libzmq} \\\
     %{!?_without_zvbi:--enable-libzvbi} \\\
     %{!?_without_lv2:--enable-lv2} \\\
@@ -512,6 +512,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Fri Apr 29 2022 Leigh Scott <leigh123linux@gmail.com> - 5.0.1-3
+- Fix zimg
+
 * Tue Apr 05 2022 Leigh Scott <leigh123linux@gmail.com> - 5.0.1-2
 - Add conflicts
 
