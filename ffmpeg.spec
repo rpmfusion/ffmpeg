@@ -20,7 +20,7 @@
 %global _without_lensfun  1
 %ifnarch i686
 %global _with_bs2b        1
-%global _with_chromaprint 1
+#global _with_chromaprint 1
 %global _with_ilbc        1
 %global _with_rav1e       1
 %global _with_rtmp        1
