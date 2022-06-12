@@ -20,7 +20,7 @@
 %global _without_lensfun  1
 %ifnarch i686
 %global _with_bs2b        1
-#global _with_chromaprint 1
+%global _with_chromaprint 1
 %global _with_ilbc        1
 %global _with_rav1e       1
 %global _with_rtmp        1
@@ -135,7 +135,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        5.0.1
-Release:        6%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        7%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -512,6 +512,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Sun Jun 12 2022 Sérgio Basto <sergio@serjux.com> - 5.0.1-7
+- unbootstrap
+
 * Sun Jun 12 2022 Sérgio Basto <sergio@serjux.com> - 5.0.1-6
 - Mass rebuild for x264-0.164
 - Bootstrap build without chromaprint
