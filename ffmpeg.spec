@@ -302,6 +302,7 @@ This package contains development files for %{name}
     --docdir=%{_docdir}/%{name} \\\
     --incdir=%{_includedir}/%{name} \\\
     --libdir=%{_libdir} \\\
+    --shlibdir=%{_libdir} \\\
     --mandir=%{_mandir} \\\
     --arch=%{_target_cpu} \\\
     --optflags="%{optflags}" \\\
@@ -413,7 +414,6 @@ cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
 %build
 %{?_with_cuda:export PATH=${PATH}:%{_cuda_bindir}}
 %{ff_configure}\
-    --shlibdir=%{_libdir} \
 %if 0%{?_without_tools:1}
     --disable-doc \
     --disable-ffmpeg --disable-ffplay --disable-ffprobe \
