@@ -27,7 +27,6 @@
 %global _with_rubberband  1
 %global _with_smb         1
 %global _with_snappy      1
-%global _with_tesseract   1
 %global _with_twolame     1
 %global _with_wavpack     1
 %global _with_webp        1
