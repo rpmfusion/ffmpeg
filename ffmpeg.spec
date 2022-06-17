@@ -135,7 +135,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        5.0.1
-Release:        7%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        8%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -512,6 +512,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Fri Jun 17 2022 Nicolas Chauvet <kwizart@gmail.com> - 5.0.1-8
+- Rebuilt
+
 * Sun Jun 12 2022 Sérgio Basto <sergio@serjux.com> - 5.0.1-7
 - unbootstrap
 
