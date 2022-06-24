@@ -221,7 +221,7 @@ BuildRequires:  openjpeg2-devel
 %{!?_without_opus:BuildRequires: opus-devel >= 1.1.3}
 %{!?_without_pulse:BuildRequires: pulseaudio-libs-devel}
 BuildRequires:  perl(Pod::Man)
-%{?_with_rav1e:BuildRequires: rav1e-devel}
+%{?_with_rav1e:BuildRequires: pkgconfig(rav1e)}
 %{?_with_rubberband:BuildRequires: rubberband-devel}
 %{!?_without_tools:BuildRequires: SDL2-devel}
 %{?_with_snappy:BuildRequires: snappy-devel}
