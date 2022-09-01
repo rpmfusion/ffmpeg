@@ -143,6 +143,7 @@ Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 %else
 Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 %endif
+Patch0:         lv2_headers_fix.patch
 Conflicts:      %{name}-free
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 %{?_with_cuda:BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel}
@@ -209,7 +210,7 @@ BuildRequires:  nasm
 %{?_with_omx:BuildRequires: libomxil-bellagio-devel}
 BuildRequires:  libxcb-devel
 BuildRequires:  libxml2-devel
-%{!?_without_lv2:BuildRequires:  lilv-devel}
+%{!?_without_lv2:BuildRequires:  lilv-devel lv2-devel >= 1.18.8 }
 %{!?_without_openal:BuildRequires: openal-soft-devel}
 %if 0%{!?_without_opencl:1}
 BuildRequires:  opencl-headers ocl-icd-devel

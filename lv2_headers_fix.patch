@@ -1,0 +1,13 @@
+--- a/libavfilter/af_lv2.c	2022-07-22 18:58:39.000000000 +0100
++++ b/libavfilter/af_lv2.c	2022-09-01 09:18:44.308960087 +0100
+@@ -25,8 +25,8 @@
+  */
+ 
+ #include <lilv/lilv.h>
+-#include <lv2/lv2plug.in/ns/ext/atom/atom.h>
+-#include <lv2/lv2plug.in/ns/ext/buf-size/buf-size.h>
++#include <lv2/atom/atom.h>
++#include <lv2/buf-size/buf-size.h>
+ 
+ #include "libavutil/avstring.h"
+ #include "libavutil/channel_layout.h"
