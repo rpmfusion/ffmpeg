@@ -135,7 +135,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        5.1.1
-Release:        1%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        2%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -253,6 +253,7 @@ and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
 
 %package        libs
 Summary:        Libraries for %{name}
+%if 0%{?fedora} < 38
 Conflicts:      libavcodec-free
 Conflicts:      libavfilter-free
 Conflicts:      libavformat-free
@@ -260,6 +261,7 @@ Conflicts:      libavutil-free
 Conflicts:      libpostproc-free
 Conflicts:      libswresample-free
 Conflicts:      libswscale-free
+%endif
 %{?_with_vmaf:Recommends:     vmaf-models}
 
 %description    libs
@@ -271,7 +273,9 @@ This package contains the libraries for %{name}
 
 %package     -n libavdevice%{?flavor}
 Summary:        Special devices muxing/demuxing library
+%if 0%{?fedora} < 38
 Conflicts:      libavdevice-free
+%endif
 Requires:       %{name}-libs%{_isa} = %{version}-%{release}
 
 %description -n libavdevice%{?flavor}
@@ -301,7 +305,6 @@ This package contains development files for %{name}
     --datadir=%{_datadir}/%{name} \\\
     --docdir=%{_docdir}/%{name} \\\
     --incdir=%{_includedir}/%{name} \\\
-    --libdir=%{_libdir} \\\
     --mandir=%{_mandir} \\\
     --arch=%{_target_cpu} \\\
     --optflags="%{optflags}" \\\
@@ -413,7 +416,13 @@ cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
 %build
 %{?_with_cuda:export PATH=${PATH}:%{_cuda_bindir}}
 %{ff_configure}\
+%if 0%{?fedora} > 37
+    --libdir=%{_libdir}/%{name} \
+    --shlibdir=%{_libdir}/%{name} \
+%else
+    --libdir=%{_libdir} \
     --shlibdir=%{_libdir} \
+%endif
 %if 0%{?_without_tools:1}
     --disable-doc \
     --disable-ffmpeg --disable-ffplay --disable-ffprobe \
@@ -472,6 +481,12 @@ rm -r %{buildroot}%{_datadir}/%{name}/examples
 install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 %endif
 
+%if 0%{?fedora} > 37
+install -m 0755 -d  %{buildroot}%{_sysconfdir}/ld.so.conf.d/
+echo -e "%{_libdir}/%{name}\n" > %{buildroot}%{_sysconfdir}/ld.so.conf.d/%{name}-%{_lib}.conf
+mv %{buildroot}%{_libdir}{/%{name},}/pkgconfig
+%endif
+
 %ldconfig_scriptlets  libs
 %ldconfig_scriptlets -n libavdevice%{?flavor}
 
@@ -492,14 +507,24 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 %files libs
 %doc  CREDITS README.md
 %license COPYING.*
+%if 0%{?fedora} > 37
+%{_sysconfdir}/ld.so.conf.d/%{name}-%{_lib}.conf
+%{_libdir}/%{name}/lib*.so.*
+%exclude %{_libdir}/%{name}/libavdevice%{?build_suffix}.so.*
+%else
 %{_libdir}/lib*.so.*
 %exclude %{_libdir}/libavdevice%{?build_suffix}.so.*
+%endif
 %{!?flavor:%{_mandir}/man3/lib*.3.*
 %exclude %{_mandir}/man3/libavdevice.3*
 }
 
 %files -n libavdevice%{?flavor}
+%if 0%{?fedora} > 37
+%{_libdir}/%{name}/libavdevice%{?build_suffix}.so.*
+%else
 %{_libdir}/libavdevice%{?build_suffix}.so.*
+%endif
 %{!?flavor:%{_mandir}/man3/libavdevice.3*}
 
 %files devel
@@ -508,10 +533,17 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 %doc %{_docdir}/%{name}/*.{css,html}
 %{_includedir}/%{name}
 %{_libdir}/pkgconfig/lib*.pc
+%if 0%{?fedora} > 37
+%{_libdir}/%{name}/lib*.so
+%else
 %{_libdir}/lib*.so
+%endif
 
 
 %changelog
+* Sun Sep 04 2022 Leigh Scott <leigh123linux@gmail.com> - 5.1.1-2
+- move libs to a subdirectory to allow parallel installation with ffmpeg-free
+
 * Thu Sep 01 2022 Leigh Scott <leigh123linux@gmail.com> - 5.1.1-1
 - Update to 5.1.1 release
 
