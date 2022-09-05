@@ -15,14 +15,19 @@
 # Cuda and others are only available on some arches
 %global cuda_arches x86_64
 
-%if 0%{?fedora}
 # Disable because of gcc issue
 %global _without_lensfun  1
 %ifnarch i686
 %global _with_bs2b        1
-#global _with_chromaprint 1
+%global _with_chromaprint 1
 %global _with_ilbc        1
+%if 0%{?fedora}
 %global _with_rav1e       1
+%else
+%global _without_vulkan   1
+%global _without_frei0r   1
+%global _without_lv2      1
+%endif
 %global _with_rtmp        1
 %global _with_rubberband  1
 %global _with_smb         1
@@ -38,39 +43,11 @@
 %endif
 %ifarch x86_64
 %global _with_mfx         1
+%if 0%{?fedora}
 %global _with_svtav1      1
+%endif
 %global _with_vapoursynth 1
 %global _with_vmaf        1
-%endif
-%endif
-
-%if 0%{?rhel} 
-%global _without_lensfun  1
-%global _without_lv2      1
-%global _without_vulkan   1
-%if 0%{?el7}
-%global _without_aom      1
-%global _without_dav1d    1
-%global _without_frei0r   1
-%global _without_opus     1
-%global _without_vpx      1
-%endif
-%if 0%{?rhel} > 7
-%ifarch x86_64
-%global _with_mfx         1
-%global _with_svtav1      1
-%global _with_vapoursynth 1
-%global _with_vmaf        1
-%endif
-%endif
-%if 0%{?el9}
-%global _without_frei0r   1
-%global _without_jack     1
-%undefine _with_caca
-%ifnarch x86_64
-%global _without_vaapi    1
-%endif
-%endif
 %endif
 
 # flavor nonfree
@@ -228,7 +205,7 @@ BuildRequires:  perl(Pod::Man)
 BuildRequires:  soxr-devel
 BuildRequires:  speex-devel
 BuildRequires:  pkgconfig(srt)
-%{?_with_svtav1:BuildRequires: svt-av1-devel}
+%{?_with_svtav1:BuildRequires: svt-av1-devel >= 0.9.0}
 %{?_with_tesseract:BuildRequires: tesseract-devel}
 #BuildRequires:  texi2html
 BuildRequires:  texinfo
