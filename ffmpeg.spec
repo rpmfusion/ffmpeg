@@ -229,7 +229,7 @@ and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
 
 %package        libs
 Summary:        Libraries for %{name}
-%if 0%{?fedora} && 0%{?fedora} < 38
+%if 0%{?rhel}
 Conflicts:      libavcodec-free
 Conflicts:      libavfilter-free
 Conflicts:      libavformat-free
@@ -249,7 +249,7 @@ This package contains the libraries for %{name}
 
 %package     -n libavdevice%{?flavor}
 Summary:        Special devices muxing/demuxing library
-%if 0%{?fedora} && 0%{?fedora} < 38
+%if 0%{?rhel}
 Conflicts:      libavdevice-free
 %endif
 Requires:       %{name}-libs%{_isa} = %{version}-%{release}
@@ -392,7 +392,7 @@ cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
 %build
 %{?_with_cuda:export PATH=${PATH}:%{_cuda_bindir}}
 %{ff_configure}\
-%if 0%{?fedora} && 0%{?fedora} > 37
+%if 0%{?fedora}
     --libdir=%{_libdir}/%{name} \
     --shlibdir=%{_libdir}/%{name} \
 %else
@@ -457,7 +457,7 @@ rm -r %{buildroot}%{_datadir}/%{name}/examples
 install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 %endif
 
-%if 0%{?fedora} && 0%{?fedora} > 37 
+%if 0%{?fedora}
 install -m 0755 -d  %{buildroot}%{_sysconfdir}/ld.so.conf.d/
 echo -e "%{_libdir}/%{name}\n" > %{buildroot}%{_sysconfdir}/ld.so.conf.d/%{name}-%{_lib}.conf
 mv %{buildroot}%{_libdir}{/%{name},}/pkgconfig
@@ -483,7 +483,7 @@ mv %{buildroot}%{_libdir}{/%{name},}/pkgconfig
 %files libs
 %doc  CREDITS README.md
 %license COPYING.*
-%if 0%{?fedora} && 0%{?fedora} > 37
+%if 0%{?fedora}
 %{_sysconfdir}/ld.so.conf.d/%{name}-%{_lib}.conf
 %{_libdir}/%{name}/lib*.so.*
 %exclude %{_libdir}/%{name}/libavdevice%{?build_suffix}.so.*
@@ -496,7 +496,7 @@ mv %{buildroot}%{_libdir}{/%{name},}/pkgconfig
 }
 
 %files -n libavdevice%{?flavor}
-%if 0%{?fedora} && 0%{?fedora} > 37
+%if 0%{?fedora}
 %{_libdir}/%{name}/libavdevice%{?build_suffix}.so.*
 %else
 %{_libdir}/libavdevice%{?build_suffix}.so.*
@@ -509,7 +509,7 @@ mv %{buildroot}%{_libdir}{/%{name},}/pkgconfig
 %doc %{_docdir}/%{name}/*.{css,html}
 %{_includedir}/%{name}
 %{_libdir}/pkgconfig/lib*.pc
-%if 0%{?fedora} > 37
+%%if 0%{?fedora}
 %{_libdir}/%{name}/lib*.so
 %else
 %{_libdir}/lib*.so
