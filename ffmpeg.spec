@@ -110,8 +110,8 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        5.1.1
-Release:        3%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Version:        5.1.2
+Release:        1%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -516,6 +516,9 @@ mv %{buildroot}%{_libdir}{/%{name},}/pkgconfig
 
 
 %changelog
+* Sun Sep 25 2022 Leigh Scott <leigh123linux@gmail.com> - 5.1.2-1
+- Update to 5.1.2 release
+
 * Mon Sep 05 2022 Leigh Scott <leigh123linux@gmail.com> - 5.1.1-3
 - Switch from glslang to shaderc
 
