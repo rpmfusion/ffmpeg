@@ -5,6 +5,12 @@
 #global commit  311ea9c529117fb8e38abd6ca7e81782b6b21257
 #global rel %(c=%{commit}; echo ${c:0:7})
 
+%if 0%{?fedora} >= 37 || 0%{?rhel} >= 9
+%bcond_without libavcodec_freeworld
+%else
+%bcond_with libavcodec_freeworld
+%endif
+
 %undefine _package_note_file
 
 %ifarch %{ix86}
@@ -268,6 +274,17 @@ VCR. It can encode in real time in many formats including MPEG1 audio
 and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
 This package contains development files for %{name}
 
+%if %{with libavcodec_freeworld}
+%package -n     libavcodec-freeworld
+Summary:        Freeworld libavcodec to complement the distro counterparts
+# Supplements doesn't work well yet - we can rely on comps for now
+#Supplements:    libavcodec-free >= %%{version}
+
+%description -n libavcodec-freeworld
+Freeworld libavcodec to complement the distro counterparts
+%endif
+
+
 # Don't use the %%configure macro as this is not an autotool script
 %global ff_configure \
 ./configure \\\
@@ -447,6 +464,17 @@ rm -r %{buildroot}%{_datadir}/%{name}/examples
 install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 %endif
 
+%if %{with libavcodec_freeworld}
+# Install the libavcodec freeworld counterpart
+mkdir -p %{buildroot}%{_sysconfdir}/ld.so.conf.d/
+mkdir -p %{buildroot}%{_libdir}/%{name}
+echo -e "%{_libdir}/%{name}\n" > %{buildroot}%{_sysconfdir}/ld.so.conf.d/%{name}-%{_lib}.conf
+cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
+ %{buildroot}%{_libdir}/%{name}
+# Strip to prevent debuginfo duplication
+strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
+%endif
+
 %ldconfig_scriptlets  libs
 %ldconfig_scriptlets -n libavdevice%{?flavor}
 
@@ -484,6 +512,12 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 %{_includedir}/%{name}
 %{_libdir}/pkgconfig/lib*.pc
 %{_libdir}/lib*.so
+
+%if %{with libavcodec_freeworld}
+%files -n libavcodec-freeworld
+%{_sysconfdir}/ld.so.conf.d/%{name}-%{_lib}.conf
+%{_libdir}/%{name}/libavcodec.so.*
+%endif
 
 
 %changelog
