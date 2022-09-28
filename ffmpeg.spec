@@ -117,7 +117,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        5.1.2
-Release:        1%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        2%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -521,6 +521,9 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 
 
 %changelog
+* Wed Sep 28 2022 Nicolas Chauvet <kwizart@gmail.com> - 5.1.2-2
+- Implement libavcodec-freeworld
+
 * Sun Sep 25 2022 Leigh Scott <leigh123linux@gmail.com> - 5.1.2-1
 - Update to 5.1.2 release
 
