@@ -5,6 +5,12 @@
 #global commit  311ea9c529117fb8e38abd6ca7e81782b6b21257
 #global rel %(c=%{commit}; echo ${c:0:7})
 
+%if 0%{?fedora} >= 37 || 0%{?rhel} >= 9
+%bcond_without libavcodec_freeworld
+%else
+%bcond_with libavcodec_freeworld
+%endif
+
 %undefine _package_note_file
 
 %ifarch %{ix86}
@@ -111,7 +117,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        5.1.2
-Release:        1%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        2%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -228,7 +234,6 @@ and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
 
 %package        libs
 Summary:        Libraries for %{name}
-%if 0%{?rhel}
 Conflicts:      libavcodec-free
 Conflicts:      libavfilter-free
 Conflicts:      libavformat-free
@@ -236,7 +241,6 @@ Conflicts:      libavutil-free
 Conflicts:      libpostproc-free
 Conflicts:      libswresample-free
 Conflicts:      libswscale-free
-%endif
 %{?_with_vmaf:Recommends:     vmaf-models}
 
 %description    libs
@@ -248,9 +252,7 @@ This package contains the libraries for %{name}
 
 %package     -n libavdevice%{?flavor}
 Summary:        Special devices muxing/demuxing library
-%if 0%{?rhel}
 Conflicts:      libavdevice-free
-%endif
 Requires:       %{name}-libs%{_isa} = %{version}-%{release}
 
 %description -n libavdevice%{?flavor}
@@ -272,6 +274,17 @@ VCR. It can encode in real time in many formats including MPEG1 audio
 and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
 This package contains development files for %{name}
 
+%if %{with libavcodec_freeworld}
+%package -n     libavcodec-freeworld
+Summary:        Freeworld libavcodec to complement the distro counterparts
+# Supplements doesn't work well yet - we can rely on comps for now
+#Supplements:    libavcodec-free >= %%{version}
+
+%description -n libavcodec-freeworld
+Freeworld libavcodec to complement the distro counterparts
+%endif
+
+
 # Don't use the %%configure macro as this is not an autotool script
 %global ff_configure \
 ./configure \\\
@@ -280,6 +293,7 @@ This package contains development files for %{name}
     --datadir=%{_datadir}/%{name} \\\
     --docdir=%{_docdir}/%{name} \\\
     --incdir=%{_includedir}/%{name} \\\
+    --libdir=%{_libdir} \\\
     --mandir=%{_mandir} \\\
     --arch=%{_target_cpu} \\\
     --optflags="%{optflags}" \\\
@@ -391,13 +405,7 @@ cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
 %build
 %{?_with_cuda:export PATH=${PATH}:%{_cuda_bindir}}
 %{ff_configure}\
-%if 0%{?fedora}
-    --libdir=%{_libdir}/%{name} \
-    --shlibdir=%{_libdir}/%{name} \
-%else
-    --libdir=%{_libdir} \
     --shlibdir=%{_libdir} \
-%endif
 %if 0%{?_without_tools:1}
     --disable-doc \
     --disable-ffmpeg --disable-ffplay --disable-ffprobe \
@@ -456,10 +464,15 @@ rm -r %{buildroot}%{_datadir}/%{name}/examples
 install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 %endif
 
-%if 0%{?fedora}
-install -m 0755 -d  %{buildroot}%{_sysconfdir}/ld.so.conf.d/
+%if %{with libavcodec_freeworld}
+# Install the libavcodec freeworld counterpart
+mkdir -p %{buildroot}%{_sysconfdir}/ld.so.conf.d/
+mkdir -p %{buildroot}%{_libdir}/%{name}
 echo -e "%{_libdir}/%{name}\n" > %{buildroot}%{_sysconfdir}/ld.so.conf.d/%{name}-%{_lib}.conf
-mv %{buildroot}%{_libdir}{/%{name},}/pkgconfig
+cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
+ %{buildroot}%{_libdir}/%{name}
+# Strip to prevent debuginfo duplication
+strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 %endif
 
 %ldconfig_scriptlets  libs
@@ -482,24 +495,14 @@ mv %{buildroot}%{_libdir}{/%{name},}/pkgconfig
 %files libs
 %doc  CREDITS README.md
 %license COPYING.*
-%if 0%{?fedora}
-%{_sysconfdir}/ld.so.conf.d/%{name}-%{_lib}.conf
-%{_libdir}/%{name}/lib*.so.*
-%exclude %{_libdir}/%{name}/libavdevice%{?build_suffix}.so.*
-%else
 %{_libdir}/lib*.so.*
 %exclude %{_libdir}/libavdevice%{?build_suffix}.so.*
-%endif
 %{!?flavor:%{_mandir}/man3/lib*.3.*
 %exclude %{_mandir}/man3/libavdevice.3*
 }
 
 %files -n libavdevice%{?flavor}
-%if 0%{?fedora}
-%{_libdir}/%{name}/libavdevice%{?build_suffix}.so.*
-%else
 %{_libdir}/libavdevice%{?build_suffix}.so.*
-%endif
 %{!?flavor:%{_mandir}/man3/libavdevice.3*}
 
 %files devel
@@ -508,14 +511,19 @@ mv %{buildroot}%{_libdir}{/%{name},}/pkgconfig
 %doc %{_docdir}/%{name}/*.{css,html}
 %{_includedir}/%{name}
 %{_libdir}/pkgconfig/lib*.pc
-%%if 0%{?fedora}
-%{_libdir}/%{name}/lib*.so
-%else
 %{_libdir}/lib*.so
+
+%if %{with libavcodec_freeworld}
+%files -n libavcodec-freeworld
+%{_sysconfdir}/ld.so.conf.d/%{name}-%{_lib}.conf
+%{_libdir}/%{name}/libavcodec.so.*
 %endif
 
 
 %changelog
+* Wed Sep 28 2022 Nicolas Chauvet <kwizart@gmail.com> - 5.1.2-2
+- Implement libavcodec-freeworld
+
 * Sun Sep 25 2022 Leigh Scott <leigh123linux@gmail.com> - 5.1.2-1
 - Update to 5.1.2 release
 
