@@ -34,7 +34,6 @@
 %global _without_frei0r   1
 %global _without_lv2      1
 %endif
-%global _with_rtmp        1
 %global _with_rubberband  1
 %global _with_smb         1
 %global _with_snappy      1
@@ -117,7 +116,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        5.1.2
-Release:        2%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        3%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -169,6 +168,7 @@ BuildRequires:  libmodplug-devel
 BuildRequires:  libmysofa-devel
 BuildRequires:  libopenmpt-devel
 BuildRequires:  librsvg2-devel
+# Disable rtmp because of rfbz: 6441 & 2399
 %{?_with_rtmp:BuildRequires: librtmp-devel}
 %{?_with_smb:BuildRequires: libsmbclient-devel}
 BuildRequires:  libssh-devel
@@ -521,6 +521,9 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 
 
 %changelog
+* Mon Oct 17 2022 Leigh Scott <leigh123linux@gmail.com> - 5.1.2-3
+- Disable rtmp because of rfbz: 6441 & 2399
+
 * Wed Sep 28 2022 Nicolas Chauvet <kwizart@gmail.com> - 5.1.2-2
 - Implement libavcodec-freeworld
 
