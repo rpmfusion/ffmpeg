@@ -23,7 +23,6 @@
 %global _with_chromaprint 1
 %global _with_ilbc        1
 %global _with_rav1e       1
-%global _with_rtmp        1
 %global _with_rubberband  1
 %global _with_smb         1
 %global _with_snappy      1
@@ -134,7 +133,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        5.0.1
-Release:        7%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        8%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -187,6 +186,7 @@ BuildRequires:  libmodplug-devel
 BuildRequires:  libmysofa-devel
 BuildRequires:  libopenmpt-devel
 BuildRequires:  librsvg2-devel
+# Disable rtmp because of rfbz: 6441 & 2399
 %{?_with_rtmp:BuildRequires: librtmp-devel}
 %{?_with_smb:BuildRequires: libsmbclient-devel}
 BuildRequires:  libssh-devel
@@ -511,6 +511,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Mon Oct 17 2022 Leigh Scott <leigh123linux@gmail.com> - 5.0.1-8
+- Disable rtmp because of rfbz: 6441 & 2399
+
 * Sun Jun 12 2022 Sérgio Basto <sergio@serjux.com> - 5.0.1-7
 - unbootstrap
 
