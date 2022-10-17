@@ -142,6 +142,9 @@ Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 %endif
 Patch0:         fix-vmaf-model-path.patch
+# Fix sdl test
+# https://git.ffmpeg.org/gitweb/ffmpeg.git/commit/c6fdbe26ef30fff817581e5ed6e078d96111248a
+Patch1:         c6fdbe26ef30fff817581e5ed6e078d96111248a.patch
 Conflicts:      %{name}-free
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 %{?_with_cuda:BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel}
