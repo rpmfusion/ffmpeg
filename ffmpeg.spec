@@ -285,109 +285,6 @@ Freeworld libavcodec to complement the distro counterparts
 %endif
 
 
-# Don't use the %%configure macro as this is not an autotool script
-%global ff_configure \
-./configure \\\
-    --prefix=%{_prefix} \\\
-    --bindir=%{_bindir} \\\
-    --datadir=%{_datadir}/%{name} \\\
-    --docdir=%{_docdir}/%{name} \\\
-    --incdir=%{_includedir}/%{name} \\\
-    --libdir=%{_libdir} \\\
-    --mandir=%{_mandir} \\\
-    --arch=%{_target_cpu} \\\
-    --optflags="%{optflags}" \\\
-    --extra-ldflags="%{?__global_ldflags} %{?cuda_ldflags} %{?libnpp_ldlags}" \\\
-    --extra-cflags="%{?cuda_cflags} %{?libnpp_cflags} -I%{_includedir}/rav1e" \\\
-    %{?flavor:--disable-manpages} \\\
-    %{?progs_suffix:--progs-suffix=%{progs_suffix}} \\\
-    %{?build_suffix:--build-suffix=%{build_suffix}} \\\
-    %{!?_without_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3} \\\
-    --enable-bzlib \\\
-    %{?_with_chromaprint:--enable-chromaprint} \\\
-    %{!?_with_crystalhd:--disable-crystalhd} \\\
-    --enable-fontconfig \\\
-    %{!?_without_frei0r:--enable-frei0r} \\\
-    --enable-gcrypt \\\
-    %{?_with_gmp:--enable-gmp --enable-version3} \\\
-    --enable-gnutls \\\
-    %{!?_without_ladspa:--enable-ladspa} \\\
-    %{!?_without_aom:--enable-libaom} \\\
-    %{!?_without_dav1d:--enable-libdav1d} \\\
-    %{!?_without_ass:--enable-libass} \\\
-    %{!?_without_bluray:--enable-libbluray} \\\
-    %{?_with_bs2b:--enable-libbs2b} \\\
-    %{?_with_caca:--enable-libcaca} \\\
-    %{?_with_cuda_nvcc:--enable-cuda-nvcc --enable-nonfree} \\\
-    %{?_with_cuvid:--enable-cuvid --enable-nonfree} \\\
-    %{!?_without_cdio:--enable-libcdio} \\\
-    %{?_with_ieee1394:--enable-libdc1394 --enable-libiec61883} \\\
-    --enable-libdrm \\\
-    %{?_with_faac:--enable-libfaac --enable-nonfree} \\\
-    %{?_with_fdk_aac:--enable-libfdk-aac --enable-nonfree} \\\
-    %{?_with_flite:--enable-libflite} \\\
-    %{!?_without_jack:--enable-libjack} \\\
-    --enable-libfreetype \\\
-    %{!?_without_fribidi:--enable-libfribidi} \\\
-    %{?_with_gme:--enable-libgme} \\\
-    --enable-libgsm \\\
-    %{?_with_ilbc:--enable-libilbc} \\\
-    %{!?_without_lensfun:--enable-liblensfun} \\\
-    %{?_with_libnpp:--enable-libnpp --enable-nonfree} \\\
-    --enable-libmp3lame \\\
-    --enable-libmysofa \\\
-    %{?_with_netcdf:--enable-netcdf} \\\
-    %{?_with_mmal:--enable-mmal} \\\
-    %{!?_without_nvenc:--enable-nvenc} \\\
-    %{?_with_omx:--enable-omx} \\\
-    %{?_with_omx_rpi:--enable-omx-rpi} \\\
-    %{!?_without_openal:--enable-openal} \\\
-    %{!?_without_opencl:--enable-opencl} \\\
-    %{?_with_opencv:--enable-libopencv} \\\
-    %{!?_without_opengl:--enable-opengl} \\\
-    --enable-libopenjpeg \\\
-    --enable-libopenmpt \\\
-    %{!?_without_opus:--enable-libopus} \\\
-    %{!?_without_pulse:--enable-libpulse} \\\
-    --enable-librsvg \\\
-    %{?_with_rav1e:--enable-librav1e} \\\
-    %{?_with_rtmp:--enable-librtmp} \\\
-    %{?_with_rubberband:--enable-librubberband} \\\
-    %{?_with_smb:--enable-libsmbclient --enable-version3} \\\
-    %{?_with_snappy:--enable-libsnappy} \\\
-    --enable-libsoxr \\\
-    --enable-libspeex \\\
-    --enable-libsrt \\\
-    --enable-libssh \\\
-    %{?_with_svtav1:--enable-libsvtav1} \\\
-    %{?_with_tesseract:--enable-libtesseract} \\\
-    --enable-libtheora \\\
-    %{?_with_twolame:--enable-libtwolame} \\\
-    --enable-libvorbis \\\
-    --enable-libv4l2 \\\
-    %{!?_without_vidstab:--enable-libvidstab} \\\
-    %{?_with_vmaf:--enable-libvmaf --enable-version3} \\\
-    %{?_with_vapoursynth:--enable-vapoursynth} \\\
-    %{!?_without_vpx:--enable-libvpx} \\\
-    %{!?_without_vulkan:--enable-vulkan --enable-libshaderc} \\\
-    %{?_with_webp:--enable-libwebp} \\\
-    %{!?_without_x264:--enable-libx264} \\\
-    %{!?_without_x265:--enable-libx265} \\\
-    %{!?_without_xvid:--enable-libxvid} \\\
-    --enable-libxml2 \\\
-    %{!?_without_zimg:--enable-libzimg} \\\
-    %{?_with_zmq:--enable-libzmq} \\\
-    %{!?_without_zvbi:--enable-libzvbi} \\\
-    %{!?_without_lv2:--enable-lv2} \\\
-    --enable-avfilter \\\
-    --enable-libmodplug \\\
-    --enable-postproc \\\
-    --enable-pthreads \\\
-    --disable-static \\\
-    --enable-shared \\\
-    %{!?_without_gpl:--enable-gpl} \\\
-    --disable-debug \\\
-    --disable-stripping
 
 
 %prep
@@ -404,7 +301,108 @@ cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
 
 %build
 %{?_with_cuda:export PATH=${PATH}:%{_cuda_bindir}}
-%{ff_configure}\
+# Don't use the %%configure macro as this is not an autotool script
+./configure \
+    --prefix=%{_prefix} \
+    --bindir=%{_bindir} \
+    --datadir=%{_datadir}/%{name} \
+    --docdir=%{_docdir}/%{name} \
+    --incdir=%{_includedir}/%{name} \
+    --libdir=%{_libdir} \
+    --mandir=%{_mandir} \
+    --arch=%{_target_cpu} \
+    --optflags="%{optflags}" \
+    --extra-ldflags="%{?__global_ldflags} %{?cuda_ldflags} %{?libnpp_ldlags}" \
+    --extra-cflags="%{?cuda_cflags} %{?libnpp_cflags} -I%{_includedir}/rav1e" \
+    %{?flavor:--disable-manpages} \
+    %{?progs_suffix:--progs-suffix=%{progs_suffix}} \
+    %{?build_suffix:--build-suffix=%{build_suffix}} \
+    %{!?_without_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3} \
+    --enable-bzlib \
+    %{?_with_chromaprint:--enable-chromaprint} \
+    %{!?_with_crystalhd:--disable-crystalhd} \
+    --enable-fontconfig \
+    %{!?_without_frei0r:--enable-frei0r} \
+    --enable-gcrypt \
+    %{?_with_gmp:--enable-gmp --enable-version3} \
+    --enable-gnutls \
+    %{!?_without_ladspa:--enable-ladspa} \
+    %{!?_without_aom:--enable-libaom} \
+    %{!?_without_dav1d:--enable-libdav1d} \
+    %{!?_without_ass:--enable-libass} \
+    %{!?_without_bluray:--enable-libbluray} \
+    %{?_with_bs2b:--enable-libbs2b} \
+    %{?_with_caca:--enable-libcaca} \
+    %{?_with_cuda_nvcc:--enable-cuda-nvcc --enable-nonfree} \
+    %{?_with_cuvid:--enable-cuvid --enable-nonfree} \
+    %{!?_without_cdio:--enable-libcdio} \
+    %{?_with_ieee1394:--enable-libdc1394 --enable-libiec61883} \
+    --enable-libdrm \
+    %{?_with_faac:--enable-libfaac --enable-nonfree} \
+    %{?_with_fdk_aac:--enable-libfdk-aac --enable-nonfree} \
+    %{?_with_flite:--enable-libflite} \
+    %{!?_without_jack:--enable-libjack} \
+    --enable-libfreetype \
+    %{!?_without_fribidi:--enable-libfribidi} \
+    %{?_with_gme:--enable-libgme} \
+    --enable-libgsm \
+    %{?_with_ilbc:--enable-libilbc} \
+    %{!?_without_lensfun:--enable-liblensfun} \
+    %{?_with_libnpp:--enable-libnpp --enable-nonfree} \
+    --enable-libmp3lame \
+    --enable-libmysofa \
+    %{?_with_netcdf:--enable-netcdf} \
+    %{?_with_mmal:--enable-mmal} \
+    %{!?_without_nvenc:--enable-nvenc} \
+    %{?_with_omx:--enable-omx} \
+    %{?_with_omx_rpi:--enable-omx-rpi} \
+    %{!?_without_openal:--enable-openal} \
+    %{!?_without_opencl:--enable-opencl} \
+    %{?_with_opencv:--enable-libopencv} \
+    %{!?_without_opengl:--enable-opengl} \
+    --enable-libopenjpeg \
+    --enable-libopenmpt \
+    %{!?_without_opus:--enable-libopus} \
+    %{!?_without_pulse:--enable-libpulse} \
+    --enable-librsvg \
+    %{?_with_rav1e:--enable-librav1e} \
+    %{?_with_rtmp:--enable-librtmp} \
+    %{?_with_rubberband:--enable-librubberband} \
+    %{?_with_smb:--enable-libsmbclient --enable-version3} \
+    %{?_with_snappy:--enable-libsnappy} \
+    --enable-libsoxr \
+    --enable-libspeex \
+    --enable-libsrt \
+    --enable-libssh \
+    %{?_with_svtav1:--enable-libsvtav1} \
+    %{?_with_tesseract:--enable-libtesseract} \
+    --enable-libtheora \
+    %{?_with_twolame:--enable-libtwolame} \
+    --enable-libvorbis \
+    --enable-libv4l2 \
+    %{!?_without_vidstab:--enable-libvidstab} \
+    %{?_with_vmaf:--enable-libvmaf --enable-version3} \
+    %{?_with_vapoursynth:--enable-vapoursynth} \
+    %{!?_without_vpx:--enable-libvpx} \
+    %{!?_without_vulkan:--enable-vulkan --enable-libshaderc} \
+    %{?_with_webp:--enable-libwebp} \
+    %{!?_without_x264:--enable-libx264} \
+    %{!?_without_x265:--enable-libx265} \
+    %{!?_without_xvid:--enable-libxvid} \
+    --enable-libxml2 \
+    %{!?_without_zimg:--enable-libzimg} \
+    %{?_with_zmq:--enable-libzmq} \
+    %{!?_without_zvbi:--enable-libzvbi} \
+    %{!?_without_lv2:--enable-lv2} \
+    --enable-avfilter \
+    --enable-libmodplug \
+    --enable-postproc \
+    --enable-pthreads \
+    --disable-static \
+    --enable-shared \
+    %{!?_without_gpl:--enable-gpl} \
+    --disable-debug \
+    --disable-stripping \
     --shlibdir=%{_libdir} \
 %if 0%{?_without_tools:1}
     --disable-doc \
