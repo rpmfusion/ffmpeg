@@ -27,13 +27,7 @@
 %global _with_bs2b        1
 %global _with_chromaprint 1
 %global _with_ilbc        1
-%if 0%{?fedora}
 %global _with_rav1e       1
-%else
-%global _without_vulkan   1
-%global _without_frei0r   1
-%global _without_lv2      1
-%endif
 %global _with_rubberband  1
 %global _with_smb         1
 %global _with_snappy      1
@@ -116,7 +110,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        5.1.2
-Release:        4%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        5%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -521,8 +515,8 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 
 
 %changelog
-* Wed Nov 16 2022 Nicolas Chauvet <kwizart@gmail.com> - 5.1.2-4
-- rebuilt
+* Thu Nov 17 2022 Nicolas Chauvet <kwizart@gmail.com> - 5.1.2-5
+- Rework el9 cases
 
 * Mon Oct 17 2022 Leigh Scott <leigh123linux@gmail.com> - 5.1.2-3
 - Disable rtmp because of rfbz: 6441 & 2399
