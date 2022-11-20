@@ -132,8 +132,8 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        5.0.1
-Release:        8%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Version:        5.0.2
+Release:        1%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -514,6 +514,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Sun Nov 20 2022 Leigh Scott <leigh123linux@gmail.com> - 5.0.2-1
+- Update to 5.0.2 release
+
 * Mon Oct 17 2022 Leigh Scott <leigh123linux@gmail.com> - 5.0.1-8
 - Disable rtmp because of rfbz: 6441 & 2399
 
