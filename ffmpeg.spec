@@ -140,7 +140,7 @@ BuildRequires:  lame-devel >= 3.98.3
 %{!?_without_jxl:BuildRequires: libjxl-devel}
 %{!?_without_ladspa:BuildRequires: ladspa-devel}
 %{!?_without_aom:BuildRequires:  libaom-devel}
-%{!?_without_dav1d:BuildRequires:  libdav1d-devel >= 0.2.1}
+%{!?_without_dav1d:BuildRequires:  libdav1d-devel}
 %{!?_without_ass:BuildRequires:  libass-devel}
 %{!?_without_bluray:BuildRequires:  libbluray-devel}
 %{?_with_bs2b:BuildRequires: libbs2b-devel}
