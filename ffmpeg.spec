@@ -41,9 +41,7 @@
 %endif
 %ifarch x86_64
 %global _with_mfx         1
-%if 0%{?fedora}
 %global _with_svtav1      1
-%endif
 %global _with_vapoursynth 1
 %global _with_vmaf        1
 %endif
