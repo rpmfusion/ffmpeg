@@ -137,6 +137,7 @@ BuildRequires:  gsm-devel
 %{?_with_ilbc:BuildRequires: ilbc-devel}
 BuildRequires:  lame-devel >= 3.98.3
 %{!?_without_jack:BuildRequires: jack-audio-connection-kit-devel}
+%{!?_without_jxl:BuildRequires: libjxl-devel}
 %{!?_without_ladspa:BuildRequires: ladspa-devel}
 %{!?_without_aom:BuildRequires:  libaom-devel}
 %{!?_without_dav1d:BuildRequires:  libdav1d-devel >= 0.2.1}
@@ -319,6 +320,7 @@ Freeworld libavcodec to complement the distro counterparts
     %{?_with_fdk_aac:--enable-libfdk-aac --enable-nonfree} \\\
     %{?_with_flite:--enable-libflite} \\\
     %{!?_without_jack:--enable-libjack} \\\
+    %{!?_without_jxl:--enable-libjxl} \\\
     --enable-libfreetype \\\
     %{!?_without_fribidi:--enable-libfribidi} \\\
     %{?_with_gme:--enable-libgme} \\\
