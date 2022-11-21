@@ -108,7 +108,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        5.1.2
-Release:        5%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        6%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -515,6 +515,10 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 
 
 %changelog
+* Mon Nov 21 2022 Nicolas Chauvet <kwizart@gmail.com> - 5.1.2-6
+- Enable libjxl
+- Enable svt-av1 on el9 x86_64
+
 * Thu Nov 17 2022 Nicolas Chauvet <kwizart@gmail.com> - 5.1.2-5
 - Rework el9 cases
 
