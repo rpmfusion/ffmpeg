@@ -25,7 +25,7 @@
 %global _without_lensfun  1
 %ifnarch i686
 %global _with_bs2b        1
-#global _with_chromaprint 1
+%global _with_chromaprint 1
 %global _with_ilbc        1
 %global _with_rav1e       1
 %global _with_rubberband  1
@@ -108,7 +108,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        5.1.2
-Release:        7%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        8%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -515,8 +515,8 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 
 
 %changelog
-* Fri Dec 23 2022 Nicolas Chauvet <kwizart@gmail.com> - 5.1.2-7
-- rebuilt
+* Fri Dec 23 2022 Nicolas Chauvet <kwizart@gmail.com> - 5.1.2-8
+- rebuild
 
 * Mon Nov 21 2022 Nicolas Chauvet <kwizart@gmail.com> - 5.1.2-6
 - Enable libjxl
