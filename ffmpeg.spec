@@ -23,6 +23,9 @@
 
 # Disable because of gcc issue
 %global _without_lensfun  1
+%if 0%{?fedora}
+%global _with_placebo     1
+%endif
 %ifnarch i686
 %global _with_bs2b        1
 %global _with_chromaprint 1
@@ -160,7 +163,7 @@ BuildRequires:  libGL-devel
 BuildRequires:  libmodplug-devel
 BuildRequires:  libmysofa-devel
 BuildRequires:  libopenmpt-devel
-BuildRequires:  libplacebo-devel
+%{?_with_placebo:BuildRequires: libplacebo-devel}
 BuildRequires:  librsvg2-devel
 # Disable rtmp because of rfbz: 6441 & 2399
 %{?_with_rtmp:BuildRequires: librtmp-devel}
@@ -344,7 +347,7 @@ Freeworld libavcodec to complement the distro counterparts
     --enable-libopenmpt \\\
     %{!?_without_opus:--enable-libopus} \\\
     %{!?_without_pulse:--enable-libpulse} \\\
-    --enable-libplacebo \\\
+    %{?_with_placebo:--enable-libplacebo} \\\
     --enable-librsvg \\\
     %{?_with_rav1e:--enable-librav1e} \\\
     %{?_with_rtmp:--enable-librtmp} \\\
