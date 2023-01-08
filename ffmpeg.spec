@@ -108,7 +108,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        5.1.2
-Release:        8%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        9%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -160,6 +160,7 @@ BuildRequires:  libGL-devel
 BuildRequires:  libmodplug-devel
 BuildRequires:  libmysofa-devel
 BuildRequires:  libopenmpt-devel
+BuildRequires:  libplacebo-devel
 BuildRequires:  librsvg2-devel
 # Disable rtmp because of rfbz: 6441 & 2399
 %{?_with_rtmp:BuildRequires: librtmp-devel}
@@ -343,6 +344,7 @@ Freeworld libavcodec to complement the distro counterparts
     --enable-libopenmpt \\\
     %{!?_without_opus:--enable-libopus} \\\
     %{!?_without_pulse:--enable-libpulse} \\\
+    --enable-libplacebo \\\
     --enable-librsvg \\\
     %{?_with_rav1e:--enable-librav1e} \\\
     %{?_with_rtmp:--enable-librtmp} \\\
@@ -515,6 +517,9 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 
 
 %changelog
+* Sun Jan 08 2023 Leigh Scott <leigh123linux@gmail.com> - 5.1.2-9
+- Enable libplacebo (rfbz#6549)
+
 * Fri Dec 23 2022 Nicolas Chauvet <kwizart@gmail.com> - 5.1.2-8
 - rebuild
 
