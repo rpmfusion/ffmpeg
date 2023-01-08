@@ -163,7 +163,7 @@ BuildRequires:  libGL-devel
 BuildRequires:  libmodplug-devel
 BuildRequires:  libmysofa-devel
 BuildRequires:  libopenmpt-devel
-%{?_with_placebo:BuildRequires: libplacebo-devel}
+%{?_with_placebo:BuildRequires: libplacebo-devel >= 4.192.0}
 BuildRequires:  librsvg2-devel
 # Disable rtmp because of rfbz: 6441 & 2399
 %{?_with_rtmp:BuildRequires: librtmp-devel}
