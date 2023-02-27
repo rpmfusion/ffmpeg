@@ -1,8 +1,8 @@
 # TODO: add make test to %%check section
 
 #global branch  oldabi-
-#global date    20220104
-#global commit  311ea9c529117fb8e38abd6ca7e81782b6b21257
+#global date    20230221
+#global commit  691d01989936d4b0681aa226aea8a19f06c04cea
 #global rel %(c=%{commit}; echo ${c:0:7})
 
 %if 0%{?fedora} >= 37 || 0%{?rhel} >= 9
@@ -43,7 +43,8 @@
 %global _without_vulkan   1
 %endif
 %ifarch x86_64
-%global _with_mfx         1
+#global _with_mfx         1
+%global _with_vpl         1
 %global _with_svtav1      1
 %global _with_vapoursynth 1
 %global _with_vmaf        1
@@ -110,8 +111,8 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        5.1.2
-Release:        9%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Version:        6.0
+Release:        1%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -212,6 +213,7 @@ BuildRequires:  pkgconfig(srt)
 BuildRequires:  texinfo
 %{?_with_twolame:BuildRequires: twolame-devel}
 %{?_with_vmaf:BuildRequires: libvmaf-devel >= 1.5.2}
+%{?_with_vpl:BuildRequires: pkgconfig(vpl) >= 2.6}
 %{?_with_wavpack:BuildRequires: wavpack-devel}
 %{!?_without_vidstab:BuildRequires:  vid.stab-devel}
 %{!?_without_vulkan:BuildRequires:  vulkan-loader-devel pkgconfig(shaderc)}
@@ -416,6 +418,7 @@ cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
     --cpu=%{_target_cpu} \
 %endif
     %{?_with_mfx:--enable-libmfx} \
+    %{?_with_vpl:--enable-libvpl} \
 %ifarch %{ix86} x86_64 %{power64}
     --enable-runtime-cpudetect \
 %endif
@@ -520,6 +523,9 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 
 
 %changelog
+* Tue Feb 21 2023 Leigh Scott <leigh123linux@gmail.com> - 6.0-1
+- Update to 6.0 release
+
 * Sun Jan 08 2023 Leigh Scott <leigh123linux@gmail.com> - 5.1.2-9
 - Enable libplacebo (rfbz#6549)
 
