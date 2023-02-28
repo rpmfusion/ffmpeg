@@ -28,7 +28,7 @@
 %endif
 %ifnarch i686
 %global _with_bs2b        1
-%global _with_chromaprint 1
+#global _with_chromaprint 1
 %global _with_ilbc        1
 %global _with_rav1e       1
 %global _with_rubberband  1
@@ -43,7 +43,6 @@
 %global _without_vulkan   1
 %endif
 %ifarch x86_64
-#global _with_mfx         1
 %global _with_vpl         1
 %global _with_svtav1      1
 %global _with_vapoursynth 1
@@ -112,7 +111,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        6.0
-Release:        1%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        2%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -523,6 +522,9 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 
 
 %changelog
+* Tue Feb 28 2023 Leigh Scott <leigh123linux@gmail.com> - 6.0-2
+- Disable chromaprint
+
 * Tue Feb 21 2023 Leigh Scott <leigh123linux@gmail.com> - 6.0-1
 - Update to 6.0 release
 
