@@ -121,6 +121,8 @@ Source0:        https://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 Source1:        https://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz.asc
 Source2:        https://ffmpeg.org/ffmpeg-devel.asc
 %endif
+Patch0:         0001-avfilter-vf_libplacebo-wrap-deprecated-opts-in-FF_AP.patch
+Patch1:         0001-avfilter-vf_libplacebo-remove-deprecated-field.patch
 Conflicts:      %{name}-free
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 %{?_with_cuda:BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel}
