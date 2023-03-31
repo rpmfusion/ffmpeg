@@ -110,14 +110,16 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        5.1.2
-Release:        9%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Version:        5.1.3
+Release:        1%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
-URL:            http://ffmpeg.org/
+URL:            https://ffmpeg.org/
 %if 0%{?date}
 Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 %else
-Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
+Source0:        https://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
+Source1:        https://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz.asc
+Source2:        https://ffmpeg.org/ffmpeg-devel.asc
 %endif
 Conflicts:      %{name}-free
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
@@ -135,6 +137,7 @@ BuildRequires:  freetype-devel
 BuildRequires:  fribidi-devel
 %{!?_without_frei0r:BuildRequires: frei0r-devel}
 %{?_with_gme:BuildRequires: game-music-emu-devel}
+BuildRequires:  gnupg2
 BuildRequires:  gnutls-devel
 BuildRequires:  gsm-devel
 %{?_with_ilbc:BuildRequires: ilbc-devel}
@@ -394,6 +397,7 @@ Freeworld libavcodec to complement the distro counterparts
 %autosetup -p1 -n ffmpeg-%{?branch}%{date}
 echo "git-snapshot-%{?branch}%{date}-rpmfusion" > VERSION
 %else
+%{gpgverify} --keyring='%{SOURCE2}' --signature='%{SOURCE1}' --data='%{SOURCE0}'
 %autosetup -p1 -n ffmpeg-%{version}
 %endif
 # fix -O3 -g in host_cflags
@@ -520,6 +524,10 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 
 
 %changelog
+* Fri Mar 31 2023 Leigh Scott <leigh123linux@gmail.com> - 5.1.3-1
+- Update to 5.1.3 release
+- verify upstream source signature
+
 * Sun Jan 08 2023 Leigh Scott <leigh123linux@gmail.com> - 5.1.2-9
 - Enable libplacebo (rfbz#6549)
 
