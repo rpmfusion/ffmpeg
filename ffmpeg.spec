@@ -126,6 +126,7 @@ Source2:        https://ffmpeg.org/ffmpeg-devel.asc
 # We don't endorse adding this patch but fedora insists on breaking the ffmpeg ABI
 Patch0:         ffmpeg-chromium.patch
 Conflicts:      %{name}-free
+Provides:       %{name}-bin = %{version}-%{release}
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 %{?_with_cuda:BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel}
 %{?_with_cuda:%{?!_with_cuda_nvcc:BuildRequires: clang}}
