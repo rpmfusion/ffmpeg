@@ -111,7 +111,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        6.0
-Release:        8%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        9%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -529,6 +529,9 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 
 
 %changelog
+* Mon Apr 24 2023 Nicolas Chauvet <kwizart@gmail.com> - 6.0-9
+- Add ffmpeg-bin for deps
+
 * Fri Apr 07 2023 Leigh Scott <leigh123linux@gmail.com> - 6.0-8
 - rebuilt
 
