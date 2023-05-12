@@ -18,6 +18,7 @@
 %if 0%{?fedora}
 # Disable because of gcc issue
 %global _without_lensfun  1
+%global _with_openh264    1
 %ifnarch i686
 %global _with_bs2b        1
 %global _with_chromaprint 1
@@ -133,7 +134,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        5.0.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -187,6 +188,7 @@ BuildRequires:  libgcrypt-devel
 BuildRequires:  libGL-devel
 BuildRequires:  libmodplug-devel
 BuildRequires:  libmysofa-devel
+%{?_with_openh264:BuildRequires: openh264-devel}
 BuildRequires:  libopenmpt-devel
 BuildRequires:  librsvg2-devel
 # Disable rtmp because of rfbz: 6441 & 2399
@@ -355,6 +357,7 @@ This package contains development files for %{name}
     %{!?_without_opencl:--enable-opencl} \\\
     %{?_with_opencv:--enable-libopencv} \\\
     %{!?_without_opengl:--enable-opengl} \\\
+    %{?_with_openh264:--enable-libopenh264} \\\
     --enable-libopenjpeg \\\
     --enable-libopenmpt \\\
     %{!?_without_opus:--enable-libopus} \\\
@@ -514,6 +517,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Fri May 12 2023 Leigh Scott <leigh123linux@gmail.com> - 5.0.3-2
+- Enable openh264 for fedora
+
 * Tue Apr 04 2023 Nicolas Chauvet <kwizart@gmail.com> - 5.0.3-1
 - Update to 5.0.3
 
