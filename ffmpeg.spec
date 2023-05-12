@@ -24,6 +24,7 @@
 # Disable because of gcc issue
 %global _without_lensfun  1
 %if 0%{?fedora}
+%global _with_openh264    1
 %global _with_placebo     1
 %endif
 %ifnarch i686
@@ -111,7 +112,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        5.1.3
-Release:        1%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        2%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -165,6 +166,7 @@ BuildRequires:  libgcrypt-devel
 BuildRequires:  libGL-devel
 BuildRequires:  libmodplug-devel
 BuildRequires:  libmysofa-devel
+%{?_with_openh264:BuildRequires: openh264-devel}
 BuildRequires:  libopenmpt-devel
 %{?_with_placebo:BuildRequires: libplacebo-devel}
 BuildRequires:  librsvg2-devel
@@ -346,6 +348,7 @@ Freeworld libavcodec to complement the distro counterparts
     %{!?_without_opencl:--enable-opencl} \\\
     %{?_with_opencv:--enable-libopencv} \\\
     %{!?_without_opengl:--enable-opengl} \\\
+    %{?_with_openh264:--enable-libopenh264} \\\
     --enable-libopenjpeg \\\
     --enable-libopenmpt \\\
     %{!?_without_opus:--enable-libopus} \\\
@@ -524,6 +527,9 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 
 
 %changelog
+* Fri May 12 2023 Leigh Scott <leigh123linux@gmail.com> - 5.1.3-2
+- Enable openh264 for fedora
+
 * Fri Mar 31 2023 Leigh Scott <leigh123linux@gmail.com> - 5.1.3-1
 - Update to 5.1.3 release
 - verify upstream source signature
