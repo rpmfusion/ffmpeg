@@ -18,11 +18,11 @@
 %if 0%{?fedora}
 # Disable because of gcc issue
 %global _without_lensfun  1
-%global _with_openh264    1
 %ifnarch i686
 %global _with_bs2b        1
 %global _with_chromaprint 1
 %global _with_ilbc        1
+%global _with_openh264    1
 %global _with_rav1e       1
 %global _with_rubberband  1
 %global _with_smb         1
@@ -134,7 +134,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        5.0.3
-Release:        2%{?dist}
+Release:        3%{?dist}
 License:        %{ffmpeg_license}
 URL:            http://ffmpeg.org/
 %if 0%{?date}
@@ -517,6 +517,9 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
+* Sun May 14 2023 Leigh Scott <leigh123linux@gmail.com> - 5.0.3-3
+- fedora cisco repo isn't multiarch
+
 * Fri May 12 2023 Leigh Scott <leigh123linux@gmail.com> - 5.0.3-2
 - Enable openh264 for fedora
 
