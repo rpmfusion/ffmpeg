@@ -112,7 +112,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        6.0
-Release:        10%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        11%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -532,6 +532,9 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 
 
 %changelog
+* Sun May 14 2023 Leigh Scott <leigh123linux@gmail.com> - 6.0-11
+- fedora cisco repo isn't multiarch
+
 * Fri May 12 2023 Leigh Scott <leigh123linux@gmail.com> - 6.0-10
 - Enable openh264 for fedora
 
