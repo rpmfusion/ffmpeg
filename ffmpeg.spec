@@ -24,13 +24,13 @@
 # Disable because of gcc issue
 %global _without_lensfun  1
 %if 0%{?fedora}
-%global _with_openh264    1
 %global _with_placebo     1
 %endif
 %ifnarch i686
 %global _with_bs2b        1
 %global _with_chromaprint 1
 %global _with_ilbc        1
+%global _with_openh264    1
 %global _with_rav1e       1
 %global _with_rubberband  1
 %global _with_smb         1
