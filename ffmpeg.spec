@@ -112,7 +112,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        6.0
-Release:        11%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        12%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -532,6 +532,9 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 
 
 %changelog
+* Wed Jun 14 2023 Leigh Scott <leigh123linux@gmail.com> - 6.0-12
+- rebuilt
+
 * Sun May 14 2023 Leigh Scott <leigh123linux@gmail.com> - 6.0-11
 - fedora cisco repo isn't multiarch
 
