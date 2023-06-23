@@ -112,7 +112,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        6.0
-Release:        13%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        14%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -532,6 +532,9 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 
 
 %changelog
+* Fri Jun 23 2023 Leigh Scott <leigh123linux@gmail.com> - 6.0-14
+- rebuilt
+
 * Fri Jun 23 2023 Leigh Scott <leigh123linux@gmail.com> - 6.0-13
 - rebuilt
 
