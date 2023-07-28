@@ -24,7 +24,9 @@
 # Disable because of gcc issue
 %global _without_lensfun  1
 %if 0%{?fedora}
+%ifnarch i686
 %global _with_placebo     1
+%endif
 %endif
 %ifnarch i686
 %global _with_bs2b        1
