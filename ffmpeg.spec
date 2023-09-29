@@ -124,6 +124,7 @@ Source2:        https://ffmpeg.org/ffmpeg-devel.asc
 %endif
 Patch0:         0001-avfilter-vf_libplacebo-wrap-deprecated-opts-in-FF_AP.patch
 Patch1:         0001-avfilter-vf_libplacebo-remove-deprecated-field.patch
+Patch2:         0001-avcodec-x86-mathops-clip-constants-used-with-shift-i.patch
 Conflicts:      %{name}-free
 Provides:       %{name}-bin = %{version}-%{release}
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
