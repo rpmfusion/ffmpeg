@@ -111,8 +111,8 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        6.0
-Release:        18%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Version:        6.0.1
+Release:        1%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -124,10 +124,9 @@ Source2:        https://ffmpeg.org/ffmpeg-devel.asc
 %endif
 Patch0:         0001-avfilter-vf_libplacebo-wrap-deprecated-opts-in-FF_AP.patch
 Patch1:         0001-avfilter-vf_libplacebo-remove-deprecated-field.patch
-Patch2:         0001-avcodec-x86-mathops-clip-constants-used-with-shift-i.patch
 # Backport fix for segfault when passing non-existent filter option
 # See: https://bugzilla.rpmfusion.org/show_bug.cgi?id=6773
-Patch3:         0001-fftools-ffmpeg_filter-initialize-the-o-to-silence-th.patch
+Patch2:         0001-fftools-ffmpeg_filter-initialize-the-o-to-silence-th.patch
 Conflicts:      %{name}-free
 Provides:       %{name}-bin = %{version}-%{release}
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
@@ -536,6 +535,9 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 
 
 %changelog
+* Fri Nov 10 2023 Leigh Scott <leigh123linux@gmail.com> - 6.0.1-1
+- Update to 6.0.1 release
+
 * Sun Oct 08 2023 Dominik Mierzejewski <dominik@greysector.net> - 6.0-18
 - Backport upstream patch to fix segfault when passing non-existent filter
   option (rfbz#6773)
