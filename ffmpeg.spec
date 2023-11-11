@@ -111,7 +111,7 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        6.0.1
+Version:        6.1
 Release:        1%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
@@ -122,11 +122,6 @@ Source0:        https://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 Source1:        https://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz.asc
 Source2:        https://ffmpeg.org/ffmpeg-devel.asc
 %endif
-Patch0:         0001-avfilter-vf_libplacebo-wrap-deprecated-opts-in-FF_AP.patch
-Patch1:         0001-avfilter-vf_libplacebo-remove-deprecated-field.patch
-# Backport fix for segfault when passing non-existent filter option
-# See: https://bugzilla.rpmfusion.org/show_bug.cgi?id=6773
-Patch2:         0001-fftools-ffmpeg_filter-initialize-the-o-to-silence-th.patch
 Conflicts:      %{name}-free
 Provides:       %{name}-bin = %{version}-%{release}
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
@@ -226,7 +221,7 @@ BuildRequires:  texinfo
 %{?_with_vpl:BuildRequires: pkgconfig(vpl) >= 2.6}
 %{?_with_wavpack:BuildRequires: wavpack-devel}
 %{!?_without_vidstab:BuildRequires:  vid.stab-devel}
-%{!?_without_vulkan:BuildRequires:  vulkan-loader-devel pkgconfig(shaderc)}
+%{!?_without_vulkan:BuildRequires: pkgconfig(shaderc) pkgconfig(vulkan) >= 1.3.255}
 %{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.31}
 %{!?_without_x265:BuildRequires: x265-devel}
 %{!?_without_xvid:BuildRequires: xvidcore-devel}
@@ -535,6 +530,9 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 
 
 %changelog
+* Sat Nov 11 2023 Leigh Scott <leigh123linux@gmail.com> - 6.1-1
+- Update to 6.1 release
+
 * Fri Nov 10 2023 Leigh Scott <leigh123linux@gmail.com> - 6.0.1-1
 - Update to 6.0.1 release
 
