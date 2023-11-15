@@ -112,7 +112,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        6.1
-Release:        2%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        3%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -534,6 +534,9 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 
 
 %changelog
+* Wed Nov 15 2023 Nicolas Chauvet <kwizart@gmail.com> - 6.1-3
+- Bump
+
 * Wed Nov 15 2023 Leigh Scott <leigh123linux@gmail.com> - 6.1-2
 - Add patch to fix fedora ffmpeg brokenABI change
 
