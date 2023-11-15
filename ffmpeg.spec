@@ -112,7 +112,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        6.0.1
-Release:        1%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        2%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -127,6 +127,8 @@ Patch1:         0001-avfilter-vf_libplacebo-remove-deprecated-field.patch
 # Backport fix for segfault when passing non-existent filter option
 # See: https://bugzilla.rpmfusion.org/show_bug.cgi?id=6773
 Patch2:         0001-fftools-ffmpeg_filter-initialize-the-o-to-silence-th.patch
+# We don't endorse adding this patch but fedora insists on breaking the ffmpeg ABI
+Patch3:         ffmpeg-chromium.patch
 Conflicts:      %{name}-free
 Provides:       %{name}-bin = %{version}-%{release}
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
@@ -535,6 +537,9 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 
 
 %changelog
+* Wed Nov 15 2023 Leigh Scott <leigh123linux@gmail.com> - 6.0.1-2
+- Add patch to fix fedora ffmpeg brokenABI change
+
 * Fri Nov 10 2023 Leigh Scott <leigh123linux@gmail.com> - 6.0.1-1
 - Update to 6.0.1 release
 
