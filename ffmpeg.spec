@@ -112,7 +112,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        6.1
-Release:        1%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        2%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -122,6 +122,8 @@ Source0:        https://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 Source1:        https://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz.asc
 Source2:        https://ffmpeg.org/ffmpeg-devel.asc
 %endif
+# We don't endorse adding this patch but fedora insists on breaking the ffmpeg ABI
+Patch0:         ffmpeg-chromium.patch
 Conflicts:      %{name}-free
 Provides:       %{name}-bin = %{version}-%{release}
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
@@ -530,6 +532,9 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 
 
 %changelog
+* Wed Nov 15 2023 Leigh Scott <leigh123linux@gmail.com> - 6.1-2
+- Add patch to fix fedora ffmpeg brokenABI change
+
 * Sat Nov 11 2023 Leigh Scott <leigh123linux@gmail.com> - 6.1-1
 - Update to 6.1 release
 
