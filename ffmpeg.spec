@@ -248,6 +248,7 @@ Conflicts:      libpostproc-free
 Conflicts:      libswresample-free
 Conflicts:      libswscale-free
 %{?_with_vmaf:Recommends:     vmaf-models}
+Provides: libavcodec-freeworld = %{version}-%{release}
 
 %description    libs
 FFmpeg is a complete and free Internet live audio and video
@@ -285,6 +286,7 @@ This package contains development files for %{name}
 Summary:        Freeworld libavcodec to complement the distro counterparts
 # Supplements doesn't work well yet - we can rely on comps for now
 #Supplements:    libavcodec-free >= %%{version}
+Conflicts: libavcodec-free < %{version}
 
 %description -n libavcodec-freeworld
 Freeworld libavcodec to complement the distro counterparts
