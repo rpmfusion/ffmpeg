@@ -25,7 +25,6 @@
 %global _without_lensfun  1
 %if 0%{?fedora}
 %global _with_placebo     1
-%endif
 %ifnarch i686
 %global _with_bs2b        1
 %global _with_chromaprint 1
@@ -42,6 +41,7 @@
 %global _with_zmq         1
 %else
 %global _without_vulkan   1
+%endif
 %endif
 %ifarch x86_64
 %global _with_mfx         1
