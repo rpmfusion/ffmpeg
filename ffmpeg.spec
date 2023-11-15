@@ -122,6 +122,8 @@ Source0:        https://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 Source1:        https://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz.asc
 Source2:        https://ffmpeg.org/ffmpeg-devel.asc
 %endif
+# We don't endorse adding this patch but fedora insists on breaking the ffmpeg ABI
+Patch0:         ffmpeg-chromium.patch
 Conflicts:      %{name}-free
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 %{?_with_cuda:BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel}
