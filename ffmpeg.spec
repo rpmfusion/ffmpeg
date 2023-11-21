@@ -547,6 +547,9 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 
 
 %changelog
+* Tue Nov 21 2023 Nicolas Chauvet <kwizart@gmail.com> - 6.0.1-3
+- Backport AV1 VA-API encode support - Thomas Crider
+
 * Wed Nov 15 2023 Leigh Scott <leigh123linux@gmail.com> - 6.0.1-2
 - Add patch to fix fedora ffmpeg brokenABI change
 
