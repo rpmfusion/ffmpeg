@@ -112,7 +112,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        6.0.1
-Release:        2%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        3%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -129,6 +129,14 @@ Patch1:         0001-avfilter-vf_libplacebo-remove-deprecated-field.patch
 Patch2:         0001-fftools-ffmpeg_filter-initialize-the-o-to-silence-th.patch
 # We don't endorse adding this patch but fedora insists on breaking the ffmpeg ABI
 Patch3:         ffmpeg-chromium.patch
+# Backport AV1 VA-API encode support
+# Adapted from: https://patchwork.ffmpeg.org/project/ffmpeg/list/?series=9594
+Patch4:         ffmpeg-ge-av1-vaapi-encode-support.patch
+# Backport patches for enhanced rtmp support
+# Cf. https://patchwork.ffmpeg.org/project/ffmpeg/list/?series=8926
+# From: https://patchwork.ffmpeg.org/series/8926/mbox/
+Patch5:         FFmpeg-devel-v10-Support-enhanced-flv-in-FFmpeg.patch
+
 Conflicts:      %{name}-free
 Provides:       %{name}-bin = %{version}-%{release}
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
@@ -770,7 +778,7 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 - Revert last commit
 
 * Sat Oct 10 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-10
-- Add VP9 10/12 Bit support for VDPAU 
+- Add VP9 10/12 Bit support for VDPAU
 
 * Tue Aug 18 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-9
 - Disable vulkan on i686
@@ -884,7 +892,7 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 - Enable vulkan support
 
 * Sat Feb 22 2020 Leigh Scott <leigh123linux@googlemail.com> - 4.3-0.1.20200222git
-- Update to 20200222git 
+- Update to 20200222git
 
 * Tue Feb 04 2020 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 4.2.2-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
