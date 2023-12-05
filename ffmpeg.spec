@@ -64,6 +64,7 @@
 %global _without_cdio    1
 %global _without_frei0r  1
 %global _without_gpl     1
+%global _without_rubberband 1
 %global _without_vidstab 1
 %global _without_x264    1
 %global _without_x265    1
@@ -363,7 +364,7 @@ Freeworld libavcodec to complement the distro counterparts
     --enable-librsvg \\\
     %{?_with_rav1e:--enable-librav1e} \\\
     %{?_with_rtmp:--enable-librtmp} \\\
-    %{?_with_rubberband:--enable-librubberband} \\\
+    %{?_with_rubberband:--enable-librubberband}%{?_without_rubberband: --disable-librubberband} \\\
     %{?_with_smb:--enable-libsmbclient --enable-version3} \\\
     %{?_with_snappy:--enable-libsnappy} \\\
     --enable-libsoxr \\\
