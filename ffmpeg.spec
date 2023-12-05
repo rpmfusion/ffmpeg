@@ -5,7 +5,7 @@
 #global commit  311ea9c529117fb8e38abd6ca7e81782b6b21257
 #global rel %(c=%{commit}; echo ${c:0:7})
 
-%if 0%{?fedora} >= 37 || 0%{?rhel} >= 9
+%if (0%{?fedora} >= 37 || 0%{?rhel} >= 9) && 0%{!?_with_cuda:0}
 %bcond_without libavcodec_freeworld
 %else
 %bcond_with libavcodec_freeworld
