@@ -377,7 +377,7 @@ Freeworld libavcodec to complement the distro counterparts
     --enable-librsvg \\\
     %{?_with_rav1e:--enable-librav1e} \\\
     %{?_with_rtmp:--enable-librtmp} \\\
-    %{?_with_rubberband:--enable-librubberband}%{?_without_rubberband: --disable-librubberband} \\\
+    %{!?_without_rubberband:--enable-librubberband} \\\
     %{?_with_smb:--enable-libsmbclient --enable-version3} \\\
     %{?_with_snappy:--enable-libsnappy} \\\
     --enable-libsoxr \\\
