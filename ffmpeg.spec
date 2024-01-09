@@ -25,6 +25,7 @@
 %global _without_lensfun  1
 %ifnarch i686
 %global _with_bs2b        1
+%global _with_codec2      1
 %global _with_chromaprint 1
 %global _with_ilbc        1
 %global _with_openh264    1
@@ -147,6 +148,7 @@ Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 BuildRequires:  alsa-lib-devel
 BuildRequires:  AMF-devel
 BuildRequires:  bzip2-devel
+%{?_with_codec2:BuildRequires: codec2-devel}
 %{?_with_faac:BuildRequires: faac-devel}
 %{?_with_fdk_aac:BuildRequires: fdk-aac-devel}
 %{?_with_flite:BuildRequires: flite-devel}
@@ -340,6 +342,7 @@ Freeworld libavcodec to complement the distro counterparts
     %{!?_without_bluray:--enable-libbluray} \\\
     %{?_with_bs2b:--enable-libbs2b} \\\
     %{?_with_caca:--enable-libcaca} \\\
+    %{?_with_codec2:--enable-libcodec2} \\\
     %{?_with_cuda_nvcc:--enable-cuda-nvcc --enable-nonfree} \\\
     %{?_with_cuvid:--enable-cuvid --enable-nonfree} \\\
     %{!?_without_cdio:--enable-libcdio} \\\
