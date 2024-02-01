@@ -114,7 +114,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        6.1.1
-Release:        4%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        5%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -544,6 +544,9 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 
 
 %changelog
+* Thu Feb 01 2024 Leigh Scott <leigh123linux@gmail.com> - 6.1.1-5
+- rebuilt
+
 * Thu Feb 01 2024 Leigh Scott <leigh123linux@gmail.com> - 6.1.1-4
 - Switch to noopenh264-devel for f39+
 
