@@ -114,7 +114,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        6.1.1
-Release:        3%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        4%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -172,7 +172,11 @@ BuildRequires:  libgcrypt-devel
 BuildRequires:  libGL-devel
 BuildRequires:  libmodplug-devel
 BuildRequires:  libmysofa-devel
+%if 0%{?fedora} && 0%{?fedora} > 39
+%{?_with_openh264:BuildRequires: noopenh264-devel}
+%else
 %{?_with_openh264:BuildRequires: openh264-devel}
+%endif
 BuildRequires:  libopenmpt-devel
 %{?_with_placebo:BuildRequires: libplacebo-devel >= 4.192.0}
 BuildRequires:  librsvg2-devel
@@ -538,6 +542,9 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 
 
 %changelog
+* Thu Feb 01 2024 Leigh Scott <leigh123linux@gmail.com> - 6.1.1-4
+- Switch to noopenh264-devel for f39+
+
 * Tue Jan 16 2024 Nicolas Chauvet <kwizart@gmail.com> - 6.1.1-3
 - Rebuilt for libavcodec-freeworld
 
