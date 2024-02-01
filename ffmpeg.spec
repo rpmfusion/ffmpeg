@@ -126,6 +126,7 @@ Source2:        https://ffmpeg.org/ffmpeg-devel.asc
 %endif
 # We don't endorse adding this patch but fedora insists on breaking the ffmpeg ABI
 Patch0:         ffmpeg-chromium.patch
+Patch1:         https://src.fedoraproject.org/rpms/ffmpeg/raw/774d42a0072430fdef97ce11b40bdec97bf925ad/f/ffmpeg-gcc14.patch
 Conflicts:      %{name}-free
 Provides:       %{name}-bin = %{version}-%{release}
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
