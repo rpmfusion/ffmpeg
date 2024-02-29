@@ -33,7 +33,6 @@
 %global _with_placebo     1
 %endif
 %global _with_rav1e       1
-%global _with_rubberband  1
 %global _with_smb         1
 %global _with_snappy      1
 %global _with_svtav1      1
@@ -43,6 +42,7 @@
 %global _with_webp        1
 %global _with_zmq         1
 %else
+%global _without_rubberband  1
 %global _without_vulkan   1
 %endif
 %ifarch x86_64
@@ -113,8 +113,8 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        6.0.1
-Release:        3%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Version:        6.1.1
+Release:        5%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -124,21 +124,10 @@ Source0:        https://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 Source1:        https://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz.asc
 Source2:        https://ffmpeg.org/ffmpeg-devel.asc
 %endif
-Patch0:         0001-avfilter-vf_libplacebo-wrap-deprecated-opts-in-FF_AP.patch
-Patch1:         0001-avfilter-vf_libplacebo-remove-deprecated-field.patch
-# Backport fix for segfault when passing non-existent filter option
-# See: https://bugzilla.rpmfusion.org/show_bug.cgi?id=6773
-Patch2:         0001-fftools-ffmpeg_filter-initialize-the-o-to-silence-th.patch
 # We don't endorse adding this patch but fedora insists on breaking the ffmpeg ABI
-Patch3:         ffmpeg-chromium.patch
-# Backport AV1 VA-API encode support
-# Adapted from: https://patchwork.ffmpeg.org/project/ffmpeg/list/?series=9594
-Patch4:         ffmpeg-ge-av1-vaapi-encode-support.patch
-# Backport patches for enhanced rtmp support
-# Cf. https://patchwork.ffmpeg.org/project/ffmpeg/list/?series=8926
-# From: https://patchwork.ffmpeg.org/series/8926/mbox/
-Patch5:         FFmpeg-devel-v10-Support-enhanced-flv-in-FFmpeg.patch
-
+Patch0:         ffmpeg-chromium.patch
+Patch1:         https://src.fedoraproject.org/rpms/ffmpeg/raw/774d42a0072430fdef97ce11b40bdec97bf925ad/f/ffmpeg-gcc14.patch
+Patch2:         https://git.ffmpeg.org/gitweb/ffmpeg.git/commitdiff_plain/42982b5a5d461530a792e69b3e8abdd9d6d67052#/rf-gcc14.patch
 Conflicts:      %{name}-free
 Provides:       %{name}-bin = %{version}-%{release}
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
@@ -185,7 +174,11 @@ BuildRequires:  libgcrypt-devel
 BuildRequires:  libGL-devel
 BuildRequires:  libmodplug-devel
 BuildRequires:  libmysofa-devel
+%if 0%{?fedora} && 0%{?fedora} > 39
+%{?_with_openh264:BuildRequires: noopenh264-devel}
+%else
 %{?_with_openh264:BuildRequires: openh264-devel}
+%endif
 BuildRequires:  libopenmpt-devel
 %{?_with_placebo:BuildRequires: libplacebo-devel >= 4.192.0}
 BuildRequires:  librsvg2-devel
@@ -224,7 +217,7 @@ BuildRequires:  openjpeg2-devel
 %{!?_without_pulse:BuildRequires: pulseaudio-libs-devel}
 BuildRequires:  perl(Pod::Man)
 %{?_with_rav1e:BuildRequires: pkgconfig(rav1e)}
-%{?_with_rubberband:BuildRequires: rubberband-devel}
+%{!?_without_rubberband:BuildRequires: rubberband-devel}
 %{!?_without_tools:BuildRequires: SDL2-devel}
 %{?_with_snappy:BuildRequires: snappy-devel}
 BuildRequires:  soxr-devel
@@ -239,7 +232,7 @@ BuildRequires:  texinfo
 %{?_with_vpl:BuildRequires: pkgconfig(vpl) >= 2.6}
 %{?_with_wavpack:BuildRequires: wavpack-devel}
 %{!?_without_vidstab:BuildRequires:  vid.stab-devel}
-%{!?_without_vulkan:BuildRequires:  vulkan-loader-devel pkgconfig(shaderc)}
+%{!?_without_vulkan:BuildRequires: pkgconfig(shaderc) pkgconfig(vulkan) >= 1.3.255}
 %{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.31}
 %{!?_without_x265:BuildRequires: x265-devel}
 %{!?_without_xvid:BuildRequires: xvidcore-devel}
@@ -551,6 +544,21 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 
 
 %changelog
+* Thu Feb 01 2024 Leigh Scott <leigh123linux@gmail.com> - 6.1.1-5
+- rebuilt
+
+* Thu Feb 01 2024 Leigh Scott <leigh123linux@gmail.com> - 6.1.1-4
+- Switch to noopenh264-devel for f39+
+
+* Tue Jan 16 2024 Nicolas Chauvet <kwizart@gmail.com> - 6.1.1-3
+- Rebuilt for libavcodec-freeworld
+
+* Sun Jan 14 2024 Leigh Scott <leigh123linux@gmail.com> - 6.1.1-2
+- rebuilt
+
+* Mon Jan 01 2024 Leigh Scott <leigh123linux@gmail.com> - 6.1.1-1
+- Update to 6.1.1 release
+
 * Tue Nov 21 2023 Nicolas Chauvet <kwizart@gmail.com> - 6.0.1-3
 - Backport AV1 VA-API encode support - Thomas Crider
 
