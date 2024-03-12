@@ -149,6 +149,7 @@ BuildRequires:  fribidi-devel
 BuildRequires:  gnupg2
 BuildRequires:  gnutls-devel
 BuildRequires:  gsm-devel
+BuildRequires:  harfbuzz-devel
 %{?_with_ilbc:BuildRequires: ilbc-devel}
 BuildRequires:  lame-devel >= 3.98.3
 %{!?_without_jack:BuildRequires: jack-audio-connection-kit-devel}
@@ -350,6 +351,7 @@ Freeworld libavcodec to complement the distro counterparts
     %{!?_without_fribidi:--enable-libfribidi} \\\
     %{?_with_gme:--enable-libgme} \\\
     --enable-libgsm \\\
+    --enable-libharfbuzz \\\
     %{?_with_ilbc:--enable-libilbc} \\\
     %{!?_without_lensfun:--enable-liblensfun} \\\
     %{?_with_libnpp:--enable-libnpp --enable-nonfree} \\\
@@ -544,6 +546,9 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 
 
 %changelog
+* Tue Mar 12 2024 Dominik Mierzejewski <dominik@greysector.net> - 6.1.1-6
+- Enable drawtext filter (requires libharfbuzz, rfbz#6889)
+
 * Thu Feb 01 2024 Leigh Scott <leigh123linux@gmail.com> - 6.1.1-5
 - rebuilt
 
