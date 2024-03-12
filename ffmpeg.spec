@@ -114,7 +114,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        6.1.1
-Release:        5%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        6%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
