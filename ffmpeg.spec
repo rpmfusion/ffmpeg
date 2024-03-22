@@ -788,7 +788,7 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 - Revert last commit
 
 * Sat Oct 10 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-10
-- Add VP9 10/12 Bit support for VDPAU 
+- Add VP9 10/12 Bit support for VDPAU
 
 * Tue Aug 18 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-9
 - Disable vulkan on i686
@@ -902,7 +902,7 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 - Enable vulkan support
 
 * Sat Feb 22 2020 Leigh Scott <leigh123linux@googlemail.com> - 4.3-0.1.20200222git
-- Update to 20200222git 
+- Update to 20200222git
 
 * Tue Feb 04 2020 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 4.2.2-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
