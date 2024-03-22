@@ -53,24 +53,8 @@
 
 # flavor nonfree
 %if 0%{?_with_cuda:1}
-%global debug_package %{nil}
-%global flavor           -cuda
-%global progs_suffix     -cuda
-#global build_suffix     -lgpl
-%ifarch %{cuda_arches}
 %global _with_cuvid      1
 %global _with_libnpp     1
-%endif
-%global _with_fdk_aac    1
-%global _without_cdio    1
-%global _without_frei0r  1
-%global _without_gpl     1
-%global _without_rubberband 1
-%global _without_vidstab 1
-%global _without_x264    1
-%global _without_x265    1
-%global _without_xvid    1
-%undefine _with_smb
 %endif
 
 # Disable nvenc when not relevant
@@ -80,7 +64,7 @@
 
 # extras flags
 %if 0%{!?_cuda_version:1}
-%global _cuda_version 11.2
+%global _cuda_version 12.4
 %endif
 %global _cuda_version_rpm %(echo %{_cuda_version} | sed -e 's/\\./-/')
 %global _cuda_bindir %{_cuda_prefix}/bin
