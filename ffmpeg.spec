@@ -98,7 +98,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        6.1.1
-Release:        7%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        8%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -530,6 +530,9 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 
 
 %changelog
+* Sat Apr 06 2024 Leigh Scott <leigh123linux@gmail.com> - 6.1.1-8
+- Rebuild for new x265 version
+
 * Fri Mar 22 2024 Sérgio Basto <sergio@serjux.com> - 6.1.1-7
 - Rebuild for jpegxl (libjxl) 0.10.2
 
