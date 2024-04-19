@@ -137,7 +137,7 @@ BuildRequires:  gsm-devel
 BuildRequires:  harfbuzz-devel
 %{?_with_ilbc:BuildRequires: ilbc-devel}
 BuildRequires:  lame-devel >= 3.98.3
-%{!?_without_jack:BuildRequires: jack-audio-connection-kit-devel}
+%{!?_without_jack:BuildRequires: pipewire-jack-audio-connection-kit-devel}
 %{!?_without_jxl:BuildRequires: libjxl-devel}
 %{!?_without_ladspa:BuildRequires: ladspa-devel}
 %{!?_without_aom:BuildRequires:  libaom-devel}
