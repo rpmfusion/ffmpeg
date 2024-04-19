@@ -97,8 +97,8 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        6.1.1
-Release:        8%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Version:        7.0
+Release:        1%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -110,9 +110,6 @@ Source2:        https://ffmpeg.org/ffmpeg-devel.asc
 %endif
 # We don't endorse adding this patch but fedora insists on breaking the ffmpeg ABI
 Patch0:         ffmpeg-chromium.patch
-Patch1:         https://src.fedoraproject.org/rpms/ffmpeg/raw/774d42a0072430fdef97ce11b40bdec97bf925ad/f/ffmpeg-gcc14.patch
-Patch2:         https://git.ffmpeg.org/gitweb/ffmpeg.git/commitdiff_plain/42982b5a5d461530a792e69b3e8abdd9d6d67052#/rf-gcc14.patch
-Patch3:         https://git.ffmpeg.org/gitweb/ffmpeg.git/commitdiff_plain/fef22c87ada4517441701e6e61e062c9f4399c8e#/vulkan_fix.patch
 Conflicts:      %{name}-free
 Provides:       %{name}-bin = %{version}-%{release}
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
@@ -142,13 +139,14 @@ BuildRequires:  lame-devel >= 3.98.3
 %{!?_without_ladspa:BuildRequires: ladspa-devel}
 %{!?_without_aom:BuildRequires:  libaom-devel}
 %{!?_without_dav1d:BuildRequires:  libdav1d-devel}
+BuildRequires:  libdvdnav-devel
+BuildRequires:  libdvdread-devel
 %{!?_without_ass:BuildRequires:  libass-devel}
 %{!?_without_bluray:BuildRequires:  libbluray-devel}
 %{?_with_bs2b:BuildRequires: libbs2b-devel}
 %{?_with_caca:BuildRequires: libcaca-devel}
 %{!?_without_cdio:BuildRequires: libcdio-paranoia-devel}
 %{?_with_chromaprint:BuildRequires: libchromaprint-devel}
-%{?_with_crystalhd:BuildRequires: libcrystalhd-devel}
 %{!?_without_lensfun:BuildRequires: lensfun-devel}
 %if 0%{?_with_ieee1394}
 BuildRequires:  libavc1394-devel
@@ -202,6 +200,7 @@ BuildRequires:  openjpeg2-devel
 %{!?_without_opus:BuildRequires: opus-devel >= 1.1.3}
 %{!?_without_pulse:BuildRequires: pulseaudio-libs-devel}
 BuildRequires:  perl(Pod::Man)
+BuildRequires:  qrencode-devel
 %{?_with_rav1e:BuildRequires: pkgconfig(rav1e)}
 %{!?_without_rubberband:BuildRequires: rubberband-devel}
 %{!?_without_tools:BuildRequires: SDL2-devel}
@@ -218,7 +217,7 @@ BuildRequires:  texinfo
 %{?_with_vpl:BuildRequires: pkgconfig(vpl) >= 2.6}
 %{?_with_wavpack:BuildRequires: wavpack-devel}
 %{!?_without_vidstab:BuildRequires:  vid.stab-devel}
-%{!?_without_vulkan:BuildRequires: pkgconfig(shaderc) pkgconfig(vulkan) >= 1.3.255}
+%{!?_without_vulkan:BuildRequires: pkgconfig(shaderc) pkgconfig(vulkan) >= 1.3.277}
 %{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.31}
 %{!?_without_x265:BuildRequires: x265-devel}
 %{!?_without_xvid:BuildRequires: xvidcore-devel}
@@ -308,7 +307,6 @@ Freeworld libavcodec to complement the distro counterparts
     %{!?_without_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3} \\\
     --enable-bzlib \\\
     %{?_with_chromaprint:--enable-chromaprint} \\\
-    %{!?_with_crystalhd:--disable-crystalhd} \\\
     --enable-fontconfig \\\
     %{!?_without_frei0r:--enable-frei0r} \\\
     --enable-gcrypt \\\
@@ -327,6 +325,8 @@ Freeworld libavcodec to complement the distro counterparts
     %{!?_without_cdio:--enable-libcdio} \\\
     %{?_with_ieee1394:--enable-libdc1394 --enable-libiec61883} \\\
     --enable-libdrm \\\
+    --enable-libdvdnav \\\
+    --enable-libdvdread \\\
     %{?_with_faac:--enable-libfaac --enable-nonfree} \\\
     %{?_with_fdk_aac:--enable-libfdk-aac --enable-nonfree} \\\
     %{?_with_flite:--enable-libflite} \\\
@@ -361,6 +361,7 @@ Freeworld libavcodec to complement the distro counterparts
     %{?_with_rav1e:--enable-librav1e} \\\
     %{?_with_rtmp:--enable-librtmp} \\\
     %{!?_without_rubberband:--enable-librubberband} \\\
+    --enable-libqrencode \\\
     %{?_with_smb:--enable-libsmbclient --enable-version3} \\\
     %{?_with_snappy:--enable-libsnappy} \\\
     --enable-libsoxr \\\
@@ -531,6 +532,9 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 
 
 %changelog
+* Fri Apr 19 2024 Leigh Scott <leigh123linux@gmail.com> - 7.0-1
+- Update to 7.0
+
 * Sat Apr 06 2024 Leigh Scott <leigh123linux@gmail.com> - 6.1.1-8
 - Rebuild for new x265 version
 
