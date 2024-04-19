@@ -1,0 +1,62 @@
+From 68ef9a29478fad450ec29ec14120afad3938e75b Mon Sep 17 00:00:00 2001
+From: Sandro Mani <manisandro@gmail.com>
+Date: Tue, 30 Jan 2024 09:16:13 +0100
+Subject: [PATCH] Fix -Wint-conversion and -Wincompatible-pointer-types errors
+
+---
+ libavcodec/pcm-bluray.c           | 4 ++--
+ libavcodec/pcm-dvd.c              | 2 +-
+ libavutil/hwcontext_vaapi.c       | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/libavcodec/pcm-bluray.c b/libavcodec/pcm-bluray.c
+index f656095..56fa373 100644
+--- a/libavcodec/pcm-bluray.c
++++ b/libavcodec/pcm-bluray.c
+@@ -167,7 +167,7 @@ static int pcm_bluray_decode_frame(AVCod
+             samples *= num_source_channels;
+             if (AV_SAMPLE_FMT_S16 == avctx->sample_fmt) {
+ #if HAVE_BIGENDIAN
+-                bytestream2_get_buffer(&gb, dst16, buf_size);
++                bytestream2_get_buffer(&gb, (uint8_t*)dst16, buf_size);
+ #else
+                 do {
+                     *dst16++ = bytestream2_get_be16u(&gb);
+@@ -187,7 +187,7 @@ static int pcm_bluray_decode_frame(AVCod
+             if (AV_SAMPLE_FMT_S16 == avctx->sample_fmt) {
+                 do {
+ #if HAVE_BIGENDIAN
+-                    bytestream2_get_buffer(&gb, dst16, avctx->ch_layout.nb_channels * 2);
++                    bytestream2_get_buffer(&gb, (uint8_t*)dst16, avctx->ch_layout.nb_channels * 2);
+                     dst16 += avctx->ch_layout.nb_channels;
+ #else
+                     channel = avctx->ch_layout.nb_channels;
+diff --git a/libavcodec/pcm-dvd.c b/libavcodec/pcm-dvd.c
+index 419b2a1..319746c 100644
+--- a/libavcodec/pcm-dvd.c
++++ b/libavcodec/pcm-dvd.c
+@@ -157,7 +157,7 @@ static void *pcm_dvd_decode_samples(AVCo
+     switch (avctx->bits_per_coded_sample) {
+     case 16: {
+ #if HAVE_BIGENDIAN
+-        bytestream2_get_buffer(&gb, dst16, blocks * s->block_size);
++        bytestream2_get_buffer(&gb, (uint8_t*)dst16, blocks * s->block_size);
+         dst16 += blocks * s->block_size / 2;
+ #else
+         int samples = blocks * avctx->ch_layout.nb_channels;
+diff --git a/libavutil/hwcontext_vaapi.c b/libavutil/hwcontext_vaapi.c
+index 12bc951..d326ad6 100644
+--- a/libavutil/hwcontext_vaapi.c
++++ b/libavutil/hwcontext_vaapi.c
+@@ -1213,7 +1213,7 @@ static int vaapi_map_from_drm(AVHWFrames
+
+     if (!use_prime2 || vas != VA_STATUS_SUCCESS) {
+         int k;
+-        unsigned long buffer_handle;
++        size_t buffer_handle;
+         VASurfaceAttribExternalBuffers buffer_desc;
+         VASurfaceAttrib buffer_attrs[2] = {
+             {
+-- 
+2.43.0
+
