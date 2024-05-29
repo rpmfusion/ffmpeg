@@ -140,6 +140,7 @@ BuildRequires:  lame-devel >= 3.98.3
 %{!?_without_jack:BuildRequires: jack-audio-connection-kit-devel}
 %{!?_without_jxl:BuildRequires: libjxl-devel}
 %{!?_without_ladspa:BuildRequires: ladspa-devel}
+BuildRequires:  lcms2-devel
 %{!?_without_aom:BuildRequires:  libaom-devel}
 %{!?_without_dav1d:BuildRequires:  libdav1d-devel}
 %{!?_without_ass:BuildRequires:  libass-devel}
@@ -315,6 +316,7 @@ Freeworld libavcodec to complement the distro counterparts
     %{?_with_gmp:--enable-gmp --enable-version3} \\\
     --enable-gnutls \\\
     %{!?_without_ladspa:--enable-ladspa} \\\
+    --enable-lcms2 \\\
     %{!?_without_aom:--enable-libaom} \\\
     %{!?_without_dav1d:--enable-libdav1d} \\\
     %{!?_without_ass:--enable-libass} \\\
@@ -481,8 +483,6 @@ mkdir -p %{buildroot}%{_libdir}/%{name}
 echo -e "%{_libdir}/%{name}\n" > %{buildroot}%{_sysconfdir}/ld.so.conf.d/%{name}-%{_lib}.conf
 cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
  %{buildroot}%{_libdir}/%{name}
-# Strip to prevent debuginfo duplication
-strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 %endif
 
 %ldconfig_scriptlets  libs
