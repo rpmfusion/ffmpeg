@@ -98,7 +98,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        6.1.1
-Release:        10%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        11%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -531,6 +531,9 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Fri May 31 2024 Robert-André Mauchin <zebob.m@gmail.com> - 6.1.1-11
+- Rebuild for svt-av1 2.1.0
+
 * Wed May 29 2024 Leigh Scott <leigh123linux@gmail.com> - 6.1.1-10
 - Add buildrequires lcms2-devel and fix rfbz#6947
 
