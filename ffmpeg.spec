@@ -31,7 +31,6 @@
 %global _with_ilbc        1
 %global _with_openh264    1
 %global _with_rav1e       1
-%global _with_rubberband  1
 %global _with_smb         1
 %global _with_snappy      1
 %global _with_tesseract   1
@@ -208,7 +207,7 @@ BuildRequires:  openjpeg2-devel
 %{!?_without_pulse:BuildRequires: pulseaudio-libs-devel}
 BuildRequires:  perl(Pod::Man)
 %{?_with_rav1e:BuildRequires: pkgconfig(rav1e)}
-%{?_with_rubberband:BuildRequires: rubberband-devel}
+%{!?_without_rubberband:BuildRequires: rubberband-devel}
 %{!?_without_tools:BuildRequires: SDL2-devel}
 %{?_with_snappy:BuildRequires: snappy-devel}
 BuildRequires:  soxr-devel
