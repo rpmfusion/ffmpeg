@@ -39,6 +39,7 @@
 %global _with_webp        1
 %global _with_zmq         1
 %else
+%global _without_rubberband  1
 %global _without_vulkan   1
 %endif
 %endif
