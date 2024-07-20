@@ -98,7 +98,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        6.1.1
-Release:        13%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        14%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -113,6 +113,9 @@ Patch0:         ffmpeg-chromium.patch
 Patch1:         https://src.fedoraproject.org/rpms/ffmpeg/raw/774d42a0072430fdef97ce11b40bdec97bf925ad/f/ffmpeg-gcc14.patch
 Patch2:         https://git.ffmpeg.org/gitweb/ffmpeg.git/commitdiff_plain/42982b5a5d461530a792e69b3e8abdd9d6d67052#/rf-gcc14.patch
 Patch3:         https://git.ffmpeg.org/gitweb/ffmpeg.git/commitdiff_plain/fef22c87ada4517441701e6e61e062c9f4399c8e#/vulkan_fix.patch
+# Fixes for Mesa 24.0.6+ / 24.1.4+ VA-API
+Patch4:         0001-lavc-vaapi_decode-Make-it-possible-to-send-multiple-.patch
+Patch5:         0002-lavc-vaapi_av1-Avoid-sending-the-same-slice-buffer-m.patch
 Conflicts:      %{name}-free
 Provides:       %{name}-bin = %{version}-%{release}
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
@@ -531,6 +534,9 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Sat Jul 20 2024 Neal Gompa <ngompa@fedoraproject.org> - 6.1.1-14
+- Backport fixes for Mesa 24.0.6+ / 21.1.4+ changes for VA-API
+
 * Sat Jul 20 2024 Leigh Scott <leigh123linux@gmail.com> - 6.1.1-13
 - rebuilt
 
