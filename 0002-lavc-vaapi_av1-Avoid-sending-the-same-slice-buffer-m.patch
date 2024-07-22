@@ -1,7 +1,7 @@
-From d2d911eb9a2fc6eb8d86b3ae025a56c1a2692fba Mon Sep 17 00:00:00 2001
+From 1740980b070897fd147b2d1a5259c9d7957d58a8 Mon Sep 17 00:00:00 2001
 From: David Rosca <nowrep@gmail.com>
 Date: Wed, 8 May 2024 09:11:13 +0200
-Subject: [PATCH 1/1] lavc/vaapi_av1: Avoid sending the same slice buffer
+Subject: [PATCH 2/2] lavc/vaapi_av1: Avoid sending the same slice buffer
  multiple times
 
 When there are multiple tiles in one slice buffer, use multiple slice
@@ -11,12 +11,13 @@ increasing the bitstream size the driver will need to upload to hw.
 Reviewed-by: Neal Gompa <ngompa13@gmail.com>
 Signed-off-by: David Rosca <nowrep@gmail.com>
 Signed-off-by: Haihao Xiang <haihao.xiang@intel.com>
+(cherry picked from commit d2d911eb9a2fc6eb8d86b3ae025a56c1a2692fba)
 ---
  libavcodec/vaapi_av1.c | 47 +++++++++++++++++++++++++++++-------------
  1 file changed, 33 insertions(+), 14 deletions(-)
 
 diff --git a/libavcodec/vaapi_av1.c b/libavcodec/vaapi_av1.c
-index e184d01a43..fe0852318d 100644
+index 03771dd3e0..ea8dd4d93d 100644
 --- a/libavcodec/vaapi_av1.c
 +++ b/libavcodec/vaapi_av1.c
 @@ -19,6 +19,7 @@
@@ -107,5 +108,5 @@ index e184d01a43..fe0852318d 100644
  
  const FFHWAccel ff_av1_vaapi_hwaccel = {
 -- 
-2.25.1
+2.45.1
 
