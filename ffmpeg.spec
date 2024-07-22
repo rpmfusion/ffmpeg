@@ -98,7 +98,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        6.1.1
-Release:        13%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Release:        15%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -531,6 +531,12 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Mon Jul 22 2024 Leigh Scott <leigh123linux@gmail.com> - 6.1.1-15
+- Revert the mesa changes
+
+* Sat Jul 20 2024 Neal Gompa <ngompa@fedoraproject.org> - 6.1.1-14
+- Backport fixes for Mesa 24.0.6+ / 21.1.4+ changes for VA-API
+
 * Sat Jul 20 2024 Leigh Scott <leigh123linux@gmail.com> - 6.1.1-13
 - rebuilt
 
