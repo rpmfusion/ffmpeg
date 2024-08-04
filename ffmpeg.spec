@@ -53,24 +53,8 @@
 
 # flavor nonfree
 %if 0%{?_with_cuda:1}
-%global debug_package %{nil}
-%global flavor           -cuda
-%global progs_suffix     -cuda
-#global build_suffix     -lgpl
-%ifarch %{cuda_arches}
 %global _with_cuvid      1
 %global _with_libnpp     1
-%endif
-%global _with_fdk_aac    1
-%global _without_cdio    1
-%global _without_frei0r  1
-%global _without_gpl     1
-%global _without_rubberband 1
-%global _without_vidstab 1
-%global _without_x264    1
-%global _without_x265    1
-%global _without_xvid    1
-%undefine _with_smb
 %endif
 
 # Disable nvenc when not relevant
@@ -80,7 +64,7 @@
 
 # extras flags
 %if 0%{!?_cuda_version:1}
-%global _cuda_version 11.2
+%global _cuda_version 12.4
 %endif
 %global _cuda_version_rpm %(echo %{_cuda_version} | sed -e 's/\\./-/')
 %global _cuda_bindir %{_cuda_prefix}/bin
@@ -113,8 +97,8 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        6.1.1
-Release:        5%{?date:.%{?date}%{?date:git}%{?rel}}%{?dist}
+Version:        6.1.2
+Release:        1%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -149,11 +133,13 @@ BuildRequires:  fribidi-devel
 BuildRequires:  gnupg2
 BuildRequires:  gnutls-devel
 BuildRequires:  gsm-devel
+BuildRequires:  harfbuzz-devel
 %{?_with_ilbc:BuildRequires: ilbc-devel}
 BuildRequires:  lame-devel >= 3.98.3
 %{!?_without_jack:BuildRequires: jack-audio-connection-kit-devel}
 %{!?_without_jxl:BuildRequires: libjxl-devel}
 %{!?_without_ladspa:BuildRequires: ladspa-devel}
+BuildRequires:  lcms2-devel
 %{!?_without_aom:BuildRequires:  libaom-devel}
 %{!?_without_dav1d:BuildRequires:  libdav1d-devel}
 %{!?_without_ass:BuildRequires:  libass-devel}
@@ -329,6 +315,7 @@ Freeworld libavcodec to complement the distro counterparts
     %{?_with_gmp:--enable-gmp --enable-version3} \\\
     --enable-gnutls \\\
     %{!?_without_ladspa:--enable-ladspa} \\\
+    --enable-lcms2 \\\
     %{!?_without_aom:--enable-libaom} \\\
     %{!?_without_dav1d:--enable-libdav1d} \\\
     %{!?_without_ass:--enable-libass} \\\
@@ -350,6 +337,7 @@ Freeworld libavcodec to complement the distro counterparts
     %{!?_without_fribidi:--enable-libfribidi} \\\
     %{?_with_gme:--enable-libgme} \\\
     --enable-libgsm \\\
+    --enable-libharfbuzz \\\
     %{?_with_ilbc:--enable-libilbc} \\\
     %{!?_without_lensfun:--enable-liblensfun} \\\
     %{?_with_libnpp:--enable-libnpp --enable-nonfree} \\\
@@ -494,8 +482,6 @@ mkdir -p %{buildroot}%{_libdir}/%{name}
 echo -e "%{_libdir}/%{name}\n" > %{buildroot}%{_sysconfdir}/ld.so.conf.d/%{name}-%{_lib}.conf
 cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
  %{buildroot}%{_libdir}/%{name}
-# Strip to prevent debuginfo duplication
-strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 %endif
 
 %ldconfig_scriptlets  libs
@@ -544,6 +530,39 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 
 
 %changelog
+* Sat Aug 03 2024 Leigh Scott <leigh123linux@gmail.com> - 6.1.2-1
+- Update to 6.1.2
+
+* Mon Jul 22 2024 Leigh Scott <leigh123linux@gmail.com> - 6.1.1-15
+- Revert the mesa changes
+
+* Sat Jul 20 2024 Neal Gompa <ngompa@fedoraproject.org> - 6.1.1-14
+- Backport fixes for Mesa 24.0.6+ / 21.1.4+ changes for VA-API
+
+* Sat Jul 20 2024 Leigh Scott <leigh123linux@gmail.com> - 6.1.1-13
+- rebuilt
+
+* Sun Jun 16 2024 Leigh Scott <leigh123linux@gmail.com> - 6.1.1-12
+- rebuilt
+
+* Fri May 31 2024 Robert-André Mauchin <zebob.m@gmail.com> - 6.1.1-11
+- Rebuild for svt-av1 2.1.0
+
+* Wed May 29 2024 Leigh Scott <leigh123linux@gmail.com> - 6.1.1-10
+- Add buildrequires lcms2-devel and fix rfbz#6947
+
+* Thu May 23 2024 Leigh Scott <leigh123linux@gmail.com> - 6.1.1-9
+- Rebuild
+
+* Sat Apr 06 2024 Leigh Scott <leigh123linux@gmail.com> - 6.1.1-8
+- Rebuild for new x265 version
+
+* Fri Mar 22 2024 Sérgio Basto <sergio@serjux.com> - 6.1.1-7
+- Rebuild for jpegxl (libjxl) 0.10.2
+
+* Tue Mar 12 2024 Dominik Mierzejewski <dominik@greysector.net> - 6.1.1-6
+- Enable drawtext filter (requires libharfbuzz, rfbz#6889)
+
 * Thu Feb 01 2024 Leigh Scott <leigh123linux@gmail.com> - 6.1.1-5
 - rebuilt
 
