@@ -98,7 +98,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        6.1.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -112,6 +112,7 @@ Source2:        https://ffmpeg.org/ffmpeg-devel.asc
 Patch0:         ffmpeg-chromium.patch
 Patch1:         https://src.fedoraproject.org/rpms/ffmpeg/raw/774d42a0072430fdef97ce11b40bdec97bf925ad/f/ffmpeg-gcc14.patch
 Patch2:         https://git.ffmpeg.org/gitweb/ffmpeg.git/commitdiff_plain/42982b5a5d461530a792e69b3e8abdd9d6d67052#/rf-gcc14.patch
+Patch3:         https://git.ffmpeg.org/gitweb/ffmpeg.git/commitdiff_plain/d9f1b321cf58a85518d29c5a3d220d67b1a68b92#/backport_hevecdec_fix.patch
 Conflicts:      %{name}-free
 Provides:       %{name}-bin = %{version}-%{release}
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
@@ -530,6 +531,9 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Fri Aug 16 2024 Leigh Scott <leigh123linux@gmail.com> - 6.1.2-2
+- Backport hevecdec fix
+
 * Sat Aug 03 2024 Leigh Scott <leigh123linux@gmail.com> - 6.1.2-1
 - Update to 6.1.2
 
