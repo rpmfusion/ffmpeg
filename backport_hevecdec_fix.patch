@@ -1,0 +1,24 @@
+From: Anton Khirnov <anton@khirnov.net>
+Date: Fri, 23 Feb 2024 08:06:46 +0000 (+0100)
+Subject: lavc/hevcdec: pass an actual codec context to ff_h2645_sei_to_frame()
+X-Git-Tag: n7.0~451
+X-Git-Url: http://git.ffmpeg.org/gitweb/ffmpeg.git/commitdiff_plain/d9f1b321cf58a85518d29c5a3d220d67b1a68b92
+
+lavc/hevcdec: pass an actual codec context to ff_h2645_sei_to_frame()
+
+Needed by following commit.
+---
+
+diff --git a/libavcodec/hevcdec.c b/libavcodec/hevcdec.c
+index b5311ae510..17c6a9212f 100644
+--- a/libavcodec/hevcdec.c
++++ b/libavcodec/hevcdec.c
+@@ -2778,7 +2778,7 @@ static int set_side_data(HEVCContext *s)
+             s->sei.common.content_light.present--;
+     }
+ 
+-    ret = ff_h2645_sei_to_frame(out, &s->sei.common, AV_CODEC_ID_HEVC, NULL,
++    ret = ff_h2645_sei_to_frame(out, &s->sei.common, AV_CODEC_ID_HEVC, s->avctx,
+                                 &s->ps.sps->vui.common,
+                                 s->ps.sps->bit_depth, s->ps.sps->bit_depth_chroma,
+                                 s->ref->poc /* no poc_offset in HEVC */);
