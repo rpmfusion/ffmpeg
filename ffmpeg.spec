@@ -13,7 +13,7 @@
 
 %undefine _package_note_file
 
-%ifarch %{ix86}
+%ifarch %{ix86} %{arm}
 # Fails due to asm issue
 %global _lto_cflags %{nil}
 %endif
