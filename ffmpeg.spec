@@ -64,7 +64,7 @@
 
 # extras flags
 %if 0%{!?_cuda_version:1}
-%global _cuda_version 12.4
+%global _cuda_version 12.6
 %endif
 %global _cuda_version_rpm %(echo %{_cuda_version} | sed -e 's/\\./-/')
 %global _cuda_bindir %{_cuda_prefix}/bin
