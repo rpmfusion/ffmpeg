@@ -101,7 +101,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        7.0.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -540,6 +540,10 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Mon Oct 07 2024 Nicolas Chauvet <kwizart@gmail.com> - 7.0.2-3
+- Sync with fedora deps:
+  Enable Kernel Labs VANC processing and ARIB text/caption decoding
+
 * Fri Sep 20 2024 Leigh Scott <leigh123linux@gmail.com> - 7.0.2-2
 - Rebuild
 
