@@ -42,6 +42,9 @@
 %global _with_webp        1
 %global _with_zmq         1
 %else
+%global _without_libklvanc 1
+%global _without_libaribb24 1
+%global _without_libaribcaption 1
 %global _without_rubberband  1
 %global _without_vulkan   1
 %endif
@@ -139,6 +142,7 @@ BuildRequires:  lame-devel >= 3.98.3
 %{!?_without_ladspa:BuildRequires: ladspa-devel}
 BuildRequires:  lcms2-devel
 %{!?_without_aom:BuildRequires:  libaom-devel}
+%{!?_without_aribb24:BuildRequires: pkgconfig(aribb24) >= 1.0.3}
 %{!?_without_dav1d:BuildRequires:  libdav1d-devel}
 BuildRequires:  libdvdnav-devel
 BuildRequires:  libdvdread-devel
@@ -154,8 +158,10 @@ BuildRequires:  libavc1394-devel
 BuildRequires:  libdc1394-devel
 BuildRequires:  libiec61883-devel
 %endif
+%{!?_without_libaribcaption:BuildRequires: pkgconfig(libaribcaption) >= 1.1.1}
 BuildRequires:  libdrm-devel
 BuildRequires:  libgcrypt-devel
+%{!?_without_libklvanc:BuildRequires: libklvanc-devel}
 BuildRequires:  libGL-devel
 BuildRequires:  libmodplug-devel
 BuildRequires:  libmysofa-devel
@@ -316,6 +322,8 @@ Freeworld libavcodec to complement the distro counterparts
     %{!?_without_ladspa:--enable-ladspa} \\\
     --enable-lcms2 \\\
     %{!?_without_aom:--enable-libaom} \\\
+    %{!?_without_libaribb24:--enable-libaribb24} \\\
+    %{!?_without_libaribcaption:--enable-libaribcaption} \\\
     %{!?_without_dav1d:--enable-libdav1d} \\\
     %{!?_without_ass:--enable-libass} \\\
     %{!?_without_bluray:--enable-libbluray} \\\
