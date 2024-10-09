@@ -23,6 +23,8 @@
 
 # Disable because of gcc issue
 %global _without_lensfun  1
+# Disable due to undefined symbols in libavformat
+#global _with_dvddemuxer 1
 %ifnarch i686
 %global _with_bs2b        1
 %global _with_codec2      1
@@ -101,7 +103,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        7.0.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -144,8 +146,7 @@ BuildRequires:  lcms2-devel
 %{!?_without_aom:BuildRequires:  libaom-devel}
 %{!?_without_aribb24:BuildRequires: pkgconfig(aribb24) >= 1.0.3}
 %{!?_without_dav1d:BuildRequires:  libdav1d-devel}
-BuildRequires:  libdvdnav-devel
-BuildRequires:  libdvdread-devel
+%{?_with_dvddemuxer:BuildRequires:  libdvdnav-devel libdvdread-devel}
 %{!?_without_ass:BuildRequires:  libass-devel}
 %{!?_without_bluray:BuildRequires:  libbluray-devel}
 %{?_with_bs2b:BuildRequires: libbs2b-devel}
@@ -335,8 +336,7 @@ Freeworld libavcodec to complement the distro counterparts
     %{!?_without_cdio:--enable-libcdio} \\\
     %{?_with_ieee1394:--enable-libdc1394 --enable-libiec61883} \\\
     --enable-libdrm \\\
-    --enable-libdvdnav \\\
-    --enable-libdvdread \\\
+    %{?_with_dvddemuxer:--enable-libdvdnav --enable-libdvdread} \\\
     %{?_with_faac:--enable-libfaac --enable-nonfree} \\\
     %{?_with_fdk_aac:--enable-libfdk-aac --enable-nonfree} \\\
     %{?_with_flite:--enable-libflite} \\\
@@ -540,6 +540,9 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Wed Oct 09 2024 Leigh Scott <leigh123linux@gmail.com> - 7.0.2-4
+- Disable DVD demuxer due to undefined symbols in libavformat
+
 * Mon Oct 07 2024 Nicolas Chauvet <kwizart@gmail.com> - 7.0.2-3
 - Sync with fedora deps:
   Enable Kernel Labs VANC processing and ARIB text/caption decoding
