@@ -1,0 +1,72 @@
+--- a/doc/t2h.pm	2024-08-01 01:10:54.000000000 +0100
++++ b/doc/t2h.pm	2025-01-29 00:53:39.292399850 +0000
+@@ -140,7 +140,7 @@ sub ffmpeg_heading_command($$$$$)
+             }
+         }
+ 
+-        if ($self->in_preformatted()) {
++        if ($self->{'context'}->[-1] eq 'preformatted') {
+             $result .= $heading."\n";
+         } else {
+             # if the level was changed, set the command name right
+@@ -252,15 +252,54 @@ sub ffmpeg_program_string($)
+   if (defined($self->get_conf('PROGRAM'))
+       and $self->get_conf('PROGRAM') ne ''
+       and defined($self->get_conf('PACKAGE_URL'))) {
+-    return $self->convert_tree(
+-      $self->gdt('This document was generated using @uref{{program_homepage}, @emph{{program}}}.',
+-         { 'program_homepage' => $self->get_conf('PACKAGE_URL'),
+-           'program' => $self->get_conf('PROGRAM') }));
++    my $program_homepage = $self->get_conf('PACKAGE_URL');
++    my $program = $self->get_conf('PROGRAM');
++
++    # Create a tree structure for the message
++    my $tree = {
++      'type' => 'paragraph',
++      'contents' => [
++        {
++          'type' => 'text',
++          'text' => 'This document was generated using ',
++        },
++        {
++          'type' => 'uref',
++          'url' => $program_homepage,
++          'contents' => [
++            {
++              'type' => 'emph',
++              'contents' => [
++                {
++                  'type' => 'text',
++                  'text' => $program,
++                },
++              ],
++            },
++          ],
++        },
++        {
++          'type' => 'text',
++          'text' => '.',
++        },
++      ],
++    };
++    return $self->convert_tree($tree);
+   } else {
+-    return $self->convert_tree(
+-      $self->gdt('This document was generated automatically.'));
++    # Create a tree structure for the default message
++    my $tree = {
++      'type' => 'paragraph',
++      'contents' => [
++        {
++          'type' => 'text',
++          'text' => 'This document was generated automatically.',
++        },
++      ],
++    };
++    return $self->convert_tree($tree);
+   }
+ }
++
+ if ($program_version_6_8) {
+     texinfo_register_formatting_function('format_program_string', \&ffmpeg_program_string);
+ } else {
