@@ -103,7 +103,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        7.0.2
-Release:        10%{?dist}
+Release:        11%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -541,6 +541,9 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Thu Feb 06 2025 Leigh Scott <leigh123linux@gmail.com> - 7.0.2-11
+- rebuilt
+
 * Thu Feb 06 2025 Mamoru TASAKA <mtasaka@fedoraproject.org> - 7.0.2-10
 - Rebuild for jpegxl (libjxl) 0.11.1
 
