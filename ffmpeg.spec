@@ -103,7 +103,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        7.0.2
-Release:        11%{?dist}
+Release:        12%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -541,6 +541,9 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Mon Feb 10 2025 Leigh Scott <leigh123linux@gmail.com> - 7.0.2-12
+- rebuilt
+
 * Thu Feb 06 2025 Leigh Scott <leigh123linux@gmail.com> - 7.0.2-11
 - rebuilt
 
