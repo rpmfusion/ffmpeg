@@ -115,6 +115,7 @@ Source2:        https://ffmpeg.org/ffmpeg-devel.asc
 %endif
 # We don't endorse adding this patch but fedora insists on breaking the ffmpeg ABI
 Patch0:         ffmpeg-chromium.patch
+# https://github.com/FFmpeg/FFmpeg/commit/4d9cdf82ee36a7da4f065821c86165fe565aeac2
 Patch1:         texi.patch
 # https://github.com/FFmpeg/FFmpeg/commit/099f88b8641dfc299f3896d17d9addc5b9ae7799
 Patch2:         fix_x265_build.patch
