@@ -103,7 +103,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        7.1.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -164,6 +164,7 @@ BuildRequires:  libdrm-devel
 BuildRequires:  libgcrypt-devel
 %{!?_without_libklvanc:BuildRequires: libklvanc-devel}
 BuildRequires:  libGL-devel
+BuildRequires:  pkgconfig(lc3)
 BuildRequires:  libmodplug-devel
 BuildRequires:  libmysofa-devel
 %if 0%{?fedora} && 0%{?fedora} > 39
@@ -348,6 +349,7 @@ Freeworld libavcodec to complement the distro counterparts
     --enable-libgsm \\\
     --enable-libharfbuzz \\\
     %{?_with_ilbc:--enable-libilbc} \\\
+    --enable-liblc3 \\\
     %{!?_without_lensfun:--enable-liblensfun} \\\
     %{?_with_libnpp:--enable-libnpp --enable-nonfree} \\\
     --enable-libmp3lame \\\
@@ -540,6 +542,9 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Thu Mar 06 2025 Dominik Mierzejewski <dominik@greysector.net> - 7.1.1-2
+- Enable LC3 codec via liblc3
+
 * Mon Mar 03 2025 Leigh Scott <leigh123linux@gmail.com> - 7.1.1-1
 - Update to 7.1.1
 
