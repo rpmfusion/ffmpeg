@@ -98,7 +98,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        6.1.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -115,6 +115,13 @@ Patch2:         https://git.ffmpeg.org/gitweb/ffmpeg.git/commitdiff_plain/42982b
 Patch3:         https://git.ffmpeg.org/gitweb/ffmpeg.git/commitdiff_plain/d9f1b321cf58a85518d29c5a3d220d67b1a68b92#/backport_hevecdec_fix.patch
 # https://github.com/FFmpeg/FFmpeg/commit/1f801dfdb5066aadf0ade9cb5e94d620f33eacdc
 Patch4:         buildfix_x265.patch
+# Backport fix for CVE-2023-49528
+Patch8:         https://git.ffmpeg.org/gitweb/ffmpeg.git/patch/2d9ed64859c9887d0504cd71dbd5b2c15e14251a#/ffmpeg-CVE-2023-49528.patch
+# Fixes for Mesa 24.0.6+ / 24.1.4+ VA-API
+Patch9:         0001-lavc-vaapi_decode-Make-it-possible-to-send-multiple-.patch
+Patch10:        0002-lavc-vaapi_av1-Avoid-sending-the-same-slice-buffer-m.patch
+# Backport fix for CVE-2024-12361
+Patch11:        https://git.ffmpeg.org/gitweb/ffmpeg.git/patch/4065ff69a2ed49872f8694a03d0642b18c9d977c#/ffmpeg-CVE-2024-12361.patch
 Conflicts:      %{name}-free
 Provides:       %{name}-bin = %{version}-%{release}
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
@@ -533,6 +540,10 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Fri Mar 07 2025 Dominik Mierzejewski <dominik@greysector.net> - 6.1.2-4
+- sync patches from Fedora for Mesa VA-API and security fixes for
+  CVE-2023-49528 and CVE-2024-12361
+
 * Mon Sep 30 2024 Leigh Scott <leigh123linux@gmail.com> - 6.1.2-3
 - Add build fix for new x265
 
