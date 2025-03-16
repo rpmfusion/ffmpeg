@@ -103,7 +103,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        7.1.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -543,6 +543,9 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Sun Mar 16 2025 Leigh Scott <leigh123linux@gmail.com> - 7.1.1-4
+- Rebuild for new noopenh264 version
+
 * Fri Mar 07 2025 Leigh Scott <leigh123linux@gmail.com> - 7.1.1-3
 - Add fix for CVE-2025-22921
 
