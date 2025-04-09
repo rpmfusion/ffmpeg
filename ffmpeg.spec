@@ -29,6 +29,7 @@
 %global _with_bs2b        1
 %global _with_codec2      1
 %global _with_chromaprint 1
+%global _with_gme         1
 %global _with_ilbc        1
 %global _with_openh264    1
 %if 0%{?fedora}
@@ -103,7 +104,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        7.1.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -543,6 +544,9 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Wed Apr 09 2025 Leigh Scott <leigh123linux@gmail.com> - 7.1.1-5
+- Enable Game Music Emu support (rfbz#7209)
+
 * Sun Mar 16 2025 Leigh Scott <leigh123linux@gmail.com> - 7.1.1-4
 - Rebuild for new noopenh264 version
 
