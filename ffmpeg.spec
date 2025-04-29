@@ -39,6 +39,7 @@
 %global _with_svtav1      1
 %global _with_tesseract   1
 %global _with_twolame     1
+%global _with_vvenc       1
 %global _with_wavpack     1
 %global _with_webp        1
 %global _with_zmq         1
@@ -102,7 +103,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        7.1.1
-Release:        5%{?dist}
+Release:        6%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -224,6 +225,7 @@ BuildRequires:  texinfo
 %{?_with_twolame:BuildRequires: twolame-devel}
 %{?_with_vmaf:BuildRequires: libvmaf-devel >= 1.5.2}
 %{?_with_vpl:BuildRequires: pkgconfig(vpl) >= 2.6}
+%{?_with_vvenc:BuildRequires: pkgconfig(libvvenc)}
 %{?_with_wavpack:BuildRequires: wavpack-devel}
 %{!?_without_vidstab:BuildRequires:  vid.stab-devel}
 %{!?_without_vulkan:BuildRequires: pkgconfig(shaderc) pkgconfig(vulkan) >= 1.3.277}
@@ -390,6 +392,7 @@ Freeworld libavcodec to complement the distro counterparts
     %{?_with_vmaf:--enable-libvmaf --enable-version3} \\\
     %{?_with_vapoursynth:--enable-vapoursynth} \\\
     %{!?_without_vpx:--enable-libvpx} \\\
+    %{?_with_vvenc:--enable-libvvenc} \\\
     %{!?_without_vulkan:--enable-vulkan --enable-libshaderc} \\\
     %{?_with_webp:--enable-libwebp} \\\
     %{!?_without_x264:--enable-libx264} \\\
@@ -542,6 +545,9 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Tue Apr 29 2025 Leigh Scott <leigh123linux@gmail.com> - 7.1.1-6
+- Enable vvenc support
+
 * Wed Apr 09 2025 Leigh Scott <leigh123linux@gmail.com> - 7.1.1-5
 - Enable Game Music Emu support (rfbz#7209)
 
