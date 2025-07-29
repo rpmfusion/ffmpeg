@@ -120,6 +120,9 @@ Patch2:         0001-configure-rename-POSIX-ioctl-check.patch
 Conflicts:      %{name}-free
 Provides:       %{name}-bin = %{version}-%{release}
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
+
+BuildRequires:  gcc
+BuildRequires:  make
 %{?_with_cuda:BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel}
 %{?_with_cuda:%{?!_with_cuda_nvcc:BuildRequires: clang}}
 %{?_with_libnpp:BuildRequires: pkgconfig(nppc-%{_cuda_version})}
