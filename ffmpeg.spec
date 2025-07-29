@@ -103,7 +103,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        7.1.1
-Release:        8%{?dist}
+Release:        9%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -549,6 +549,11 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Tue Jul 29 2025 Nicolas Chauvet <kwizart@gmail.com> - 7.1.1-9
+- Switch to OpenCL-ICD-Loader-devel
+- Backport configure-rename-POSIX-ioctl-check
+- Add missing default BR
+
 * Tue Jul 29 2025 Nicolas Chauvet <kwizart@gmail.com> - 7.1.1-8
 - Rebuilt
 
