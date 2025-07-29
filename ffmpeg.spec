@@ -202,7 +202,7 @@ BuildRequires:  libxml2-devel
 %{!?_without_lv2:BuildRequires:  lilv-devel lv2-devel}
 %{!?_without_openal:BuildRequires: openal-soft-devel}
 %if 0%{!?_without_opencl:1}
-BuildRequires:  opencl-headers ocl-icd-devel
+BuildRequires:  opencl-headers OpenCL-ICD-Loader-devel
 %{?fedora:Recommends: opencl-icd}
 %endif
 %{?_with_opencv:BuildRequires: opencv-devel}
