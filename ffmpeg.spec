@@ -1,10 +1,5 @@
 # TODO: add make test to %%check section
 
-#global branch  oldabi-
-#global date    20230221
-#global commit  691d01989936d4b0681aa226aea8a19f06c04cea
-#global rel %(c=%{commit}; echo ${c:0:7})
-
 %if 0%{?fedora} >= 37 || 0%{?rhel} >= 9
 %bcond_without libavcodec_freeworld
 %else
