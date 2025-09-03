@@ -21,7 +21,7 @@
 %ifnarch i686
 %global _with_bs2b        1
 %global _with_codec2      1
-%global _with_chromaprint 1
+%global _with_chromaprint 0
 %global _with_gme         1
 %global _with_ilbc        1
 %global _with_openh264    1
@@ -546,6 +546,7 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 %changelog
 * Wed Sep 03 2025 Sérgio Basto <sergio@serjux.com> - 7.1.1-10
 - Rebuild for x264
+- Disable chromaprint to allow building with new x264
 
 * Tue Jul 29 2025 Nicolas Chauvet <kwizart@gmail.com> - 7.1.1-9
 - Switch to OpenCL-ICD-Loader-devel
