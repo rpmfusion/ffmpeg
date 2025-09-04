@@ -21,7 +21,7 @@
 %ifnarch i686
 %global _with_bs2b        1
 %global _with_codec2      1
-#%%global _with_chromaprint 1
+%global _with_chromaprint 1
 %global _with_gme         1
 %global _with_ilbc        1
 %global _with_openh264    1
@@ -98,7 +98,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        7.1.1
-Release:        10%{?dist}
+Release:        11%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -544,6 +544,9 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Thu Sep 04 2025 Sérgio Basto <sergio@serjux.com> - 7.1.1-11
+- Enable chromaprint
+
 * Wed Sep 03 2025 Sérgio Basto <sergio@serjux.com> - 7.1.1-10
 - Rebuild for x264
 - Disable chromaprint to allow building with new x264
