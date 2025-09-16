@@ -97,8 +97,8 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        7.1.1
-Release:        11%{?dist}
+Version:        7.1.2
+Release:        1%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -544,6 +544,9 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Tue Sep 16 2025 Leigh Scott <leigh123linux@gmail.com> - 7.1.2-1
+- Update to 7.1.2
+
 * Thu Sep 04 2025 Sérgio Basto <sergio@serjux.com> - 7.1.1-11
 - Enable chromaprint
 
