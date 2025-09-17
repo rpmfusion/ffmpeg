@@ -27,6 +27,7 @@
 %global _with_openh264    1
 %if 0%{?fedora}
 %global _with_placebo     1
+%global _with_lc3              1
 %endif
 %global _with_rav1e       1
 %global _with_smb         1
@@ -164,7 +165,7 @@ BuildRequires:  libdrm-devel
 BuildRequires:  libgcrypt-devel
 %{!?_without_libklvanc:BuildRequires: libklvanc-devel}
 BuildRequires:  libGL-devel
-BuildRequires:  pkgconfig(lc3)
+%{?_with_lc3:BuildRequires:  pkgconfig(lc3)}
 BuildRequires:  libmodplug-devel
 BuildRequires:  libmysofa-devel
 %if 0%{?fedora} && 0%{?fedora} > 39
@@ -353,7 +354,7 @@ Freeworld libavcodec to complement the distro counterparts
     --enable-libgsm \\\
     --enable-libharfbuzz \\\
     %{?_with_ilbc:--enable-libilbc} \\\
-    --enable-liblc3 \\\
+    %{?_with_lc3:--enable-liblc3} \\\
     %{!?_without_lensfun:--enable-liblensfun} \\\
     %{?_with_libnpp:--enable-libnpp --enable-nonfree} \\\
     --enable-libmp3lame \\\
