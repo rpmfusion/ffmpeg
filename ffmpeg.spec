@@ -99,7 +99,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        7.1.2
-Release:        2%{?dist}
+Release:        5%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -548,6 +548,15 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Fri Oct 03 2025 Robert-André Mauchin <zebob.m@gmail.com> - 7.1.2-5
+- Rebuild for svt-av1 soname bump
+
+* Fri Oct 03 2025 Robert-André Mauchin <zebob.m@gmail.com> - 7.1.2-4
+- Rebuild for svt-av1 soname bump
+
+* Mon Sep 29 2025 Robert-André Mauchin <zebob.m@gmail.com> - 7.1.2-3
+- Rebuild for svt-av1 soname bump
+
 * Wed Sep 17 2025 Nicolas Chauvet <kwizart@gmail.com> - 7.1.2-2
 - rebuilt
 
