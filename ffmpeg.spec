@@ -98,8 +98,8 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        7.1.2
-Release:        7%{?dist}
+Version:        8.0
+Release:        1%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -111,8 +111,6 @@ Source2:        https://ffmpeg.org/ffmpeg-devel.asc
 %endif
 # We don't endorse adding this patch but fedora insists on breaking the ffmpeg ABI
 Patch0:         ffmpeg-chromium.patch
-Patch1:         https://git.ffmpeg.org/gitweb/ffmpeg.git/patch/7f9c7f9849a2155224711f0ff57ecdac6e4bfb57#/ffmpeg-CVE-2025-22921.patch
-Patch2:         0001-configure-rename-POSIX-ioctl-check.patch
 Conflicts:      %{name}-free
 Provides:       %{name}-bin = %{version}-%{release}
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
@@ -201,6 +199,7 @@ BuildRequires:  libxcb-devel
 BuildRequires:  libxml2-devel
 %{!?_without_lv2:BuildRequires:  lilv-devel lv2-devel}
 %{!?_without_openal:BuildRequires: openal-soft-devel}
+BuildRequires:  openapv-devel
 %if 0%{!?_without_opencl:1}
 %if 0%{?fedora}
 BuildRequires:  opencl-headers OpenCL-ICD-Loader-devel
@@ -252,7 +251,6 @@ Conflicts:      libavcodec-free
 Conflicts:      libavfilter-free
 Conflicts:      libavformat-free
 Conflicts:      libavutil-free
-Conflicts:      libpostproc-free
 Conflicts:      libswresample-free
 Conflicts:      libswscale-free
 %{?_with_vmaf:Recommends:     vmaf-models}
@@ -365,6 +363,7 @@ Freeworld libavcodec to complement the distro counterparts
     %{?_with_omx:--enable-omx} \\\
     %{?_with_omx_rpi:--enable-omx-rpi} \\\
     %{!?_without_openal:--enable-openal} \\\
+    --enable-liboapv \\\
     %{!?_without_opencl:--enable-opencl} \\\
     %{?_with_opencv:--enable-libopencv} \\\
     %{!?_without_opengl:--enable-opengl} \\\
@@ -408,7 +407,6 @@ Freeworld libavcodec to complement the distro counterparts
     %{!?_without_lv2:--enable-lv2} \\\
     --enable-avfilter \\\
     --enable-libmodplug \\\
-    --enable-postproc \\\
     --enable-pthreads \\\
     --disable-static \\\
     --enable-shared \\\
@@ -548,6 +546,9 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Wed Nov 05 2025 Leigh Scott <leigh123linux@gmail.com> - 8.0-1
+- Update to 8.0 release
+
 * Sat Oct 04 2025 Robert-André Mauchin <zebob.m@gmail.com> - 7.1.2-7
 - Rebuild for svt-av1 soname bump
 
