@@ -98,8 +98,8 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        8.0
-Release:        2%{?dist}
+Version:        8.0.1
+Release:        1%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -546,6 +546,9 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Thu Nov 20 2025 Leigh Scott <leigh123linux@gmail.com> - 8.0.1-1
+- Update to 8.0.1
+
 * Thu Nov 13 2025 Leigh Scott <leigh123linux@gmail.com> - 8.0-2
 - Rebuild for libbluray
 
