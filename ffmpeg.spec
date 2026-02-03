@@ -429,6 +429,9 @@ mkdir -p _doc/examples
 cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
 
 %build
+%ifarch %{ix86}
+export LDFLAGS+=' -Wl,-z,notext'
+%endif
 %{?_with_cuda:export PATH=${PATH}:%{_cuda_bindir}}
 %{ff_configure}\
     --shlibdir=%{_libdir} \
