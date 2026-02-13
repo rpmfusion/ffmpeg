@@ -112,8 +112,8 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        5.1.7
-Release:        2%{?dist}
+Version:        5.1.8
+Release:        1%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -535,6 +535,9 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 
 
 %changelog
+* Fri Feb 13 2026 Nicolas Chauvet <kwizart@gmail.com> - 5.1.8-1
+- Update to 5.1.8
+
 * Wed Sep 17 2025 Nicolas Chauvet <kwizart@gmail.com> - 5.1.7-2
 - rebuilt
 
