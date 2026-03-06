@@ -254,7 +254,8 @@ Conflicts:      libavutil-free
 Conflicts:      libswresample-free
 Conflicts:      libswscale-free
 %{?_with_vmaf:Recommends:     vmaf-models}
-Provides: libavcodec-freeworld = %{version}-%{release}
+Provides: libavcodec-freeworld = %{version}-1
+Provides: libavcodec-freeworld%{?_isa} = %{version}-1
 
 %description    libs
 FFmpeg is a complete and free Internet live audio and video
