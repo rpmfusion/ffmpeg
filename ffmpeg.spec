@@ -99,7 +99,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        8.0.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -550,6 +550,9 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Thu Mar 19 2026 Nicolas Chauvet <kwizart@gmail.com> - 8.0.1-5
+- Rebuilt for libvpx-1.6.0
+
 * Fri Mar 06 2026 Nicolas Chauvet <kwizart@gmail.com> - 8.0.1-4
 - Rework libavcodec-freeworld virtual provides
 
