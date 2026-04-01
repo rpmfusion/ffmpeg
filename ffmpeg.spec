@@ -99,7 +99,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        8.0.1
-Release:        5%{?dist}
+Release:        6%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -111,6 +111,8 @@ Source2:        https://ffmpeg.org/ffmpeg-devel.asc
 %endif
 # We don't endorse adding this patch but fedora insists on breaking the ffmpeg ABI
 Patch0:         ffmpeg-chromium.patch
+# https://github.com/FFmpeg/FFmpeg/commit/dcddb2bf08f5fa6af655938a3a0d3cd2200fd8c9
+Patch1:         add_hxvs_demuxer.patch
 Conflicts:      %{name}-free
 Provides:       %{name}-bin = %{version}-%{release}
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
@@ -550,6 +552,9 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Wed Apr 01 2026 Leigh Scott <leigh123linux@gmail.com> - 8.0.1-6
+- Add hxvs demuxer for HXVS/HXVT IP camera format
+
 * Thu Mar 19 2026 Nicolas Chauvet <kwizart@gmail.com> - 8.0.1-5
 - Rebuilt for libvpx-1.6.0
 
