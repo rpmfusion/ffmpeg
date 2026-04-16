@@ -99,7 +99,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        8.0.1
-Release:        6%{?dist}
+Release:        7%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -552,6 +552,9 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Thu Apr 16 2026 Nicolas Chauvet <kwizart@gmail.com> - 8.0.1-7
+- Rebuilt for vmaf
+
 * Wed Apr 01 2026 Leigh Scott <leigh123linux@gmail.com> - 8.0.1-6
 - Add hxvs demuxer for HXVS/HXVT IP camera format
 
