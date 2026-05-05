@@ -9,20 +9,6 @@ diff -uNrp a/configure b/configure
  iamf_demuxer_select="iamfdec"
  iamf_muxer_select="iamfenc"
  image2_alias_pix_demuxer_select="image2_demuxer"
-diff -uNrp a/libavcodec/hevc/ps.c b/libavcodec/hevc/ps.c
---- a/libavcodec/hevc/ps.c	2025-11-20 02:31:18.000000000 +0000
-+++ b/libavcodec/hevc/ps.c	2026-04-01 19:16:19.357124030 +0100
-@@ -1825,6 +1825,10 @@ static int colour_mapping_table(GetBitCo
-     pps->luma_bit_depth_cm_output   = get_ue_golomb(gb) + 8;
-     pps->chroma_bit_depth_cm_output = get_ue_golomb(gb) + 8;
- 
-+    if (   pps->  luma_bit_depth_cm_output < pps->  luma_bit_depth_cm_input
-+        || pps->chroma_bit_depth_cm_output < pps->chroma_bit_depth_cm_input)
-+            return AVERROR_INVALIDDATA;
-+
-     pps->cm_res_quant_bits = get_bits(gb, 2);
-     pps->cm_delta_flc_bits = get_bits(gb, 2) + 1;
- 
 diff -uNrp a/libavformat/allformats.c b/libavformat/allformats.c
 --- a/libavformat/allformats.c	2025-11-20 02:31:18.000000000 +0000
 +++ b/libavformat/allformats.c	2026-04-01 19:15:55.378336038 +0100
