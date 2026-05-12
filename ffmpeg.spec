@@ -98,7 +98,7 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        8.0.2
+Version:        8.1.1
 Release:        1%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
@@ -111,8 +111,6 @@ Source2:        https://ffmpeg.org/ffmpeg-devel.asc
 %endif
 # We don't endorse adding this patch but fedora insists on breaking the ffmpeg ABI
 Patch0:         ffmpeg-chromium.patch
-# https://github.com/FFmpeg/FFmpeg/commit/dcddb2bf08f5fa6af655938a3a0d3cd2200fd8c9
-Patch1:         add_hxvs_demuxer.patch
 Conflicts:      %{name}-free
 Provides:       %{name}-bin = %{version}-%{release}
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
@@ -552,6 +550,10 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Tue May 12 2026 Dominik Mierzejewski <dominik@greysector.net> - 8.1.1-1
+- Update to 8.1.1 release (ABI compatible)
+- Drop merged patch
+
 * Tue May 05 2026 Leigh Scott <leigh123linux@gmail.com> - 8.0.2-1
 - Update to 8.0.2 release
 
