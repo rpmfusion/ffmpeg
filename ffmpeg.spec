@@ -111,6 +111,9 @@ Source2:        https://ffmpeg.org/ffmpeg-devel.asc
 %endif
 # We don't endorse adding this patch but fedora insists on breaking the ffmpeg ABI
 Patch0:         ffmpeg-chromium.patch
+# Allow to build with fdk-aac-free
+# See https://bugzilla.redhat.com/show_bug.cgi?id=1501522#c112
+Patch2:         ffmpeg-allow-fdk-aac-free.patch
 Conflicts:      %{name}-free
 Provides:       %{name}-bin = %{version}-%{release}
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
@@ -125,7 +128,7 @@ BuildRequires:  AMF-devel
 BuildRequires:  bzip2-devel
 %{?_with_codec2:BuildRequires: codec2-devel}
 %{?_with_faac:BuildRequires: faac-devel}
-%{?_with_fdk_aac:BuildRequires: fdk-aac-devel}
+BuildRequires: fdk-aac-free-devel
 %{?_with_flite:BuildRequires: flite-devel}
 BuildRequires:  fontconfig-devel
 BuildRequires:  freetype-devel
@@ -343,7 +346,7 @@ Freeworld libavcodec to complement the distro counterparts
     --enable-libdrm \\\
     %{?_with_dvddemuxer:--enable-libdvdnav --enable-libdvdread} \\\
     %{?_with_faac:--enable-libfaac --enable-nonfree} \\\
-    %{?_with_fdk_aac:--enable-libfdk-aac --enable-nonfree} \\\
+    --enable-libfdk-aac \\\
     %{?_with_flite:--enable-libflite} \\\
     %{!?_without_jack:--enable-libjack} \\\
     %{!?_without_jxl:--enable-libjxl} \\\
@@ -553,6 +556,7 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 * Tue May 12 2026 Dominik Mierzejewski <dominik@greysector.net> - 8.1.1-1
 - Update to 8.1.1 release (ABI compatible)
 - Drop merged patch
+- Enable FDK AAC using Fedora limited build
 
 * Tue May 05 2026 Leigh Scott <leigh123linux@gmail.com> - 8.0.2-1
 - Update to 8.0.2 release
