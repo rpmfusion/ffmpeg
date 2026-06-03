@@ -350,6 +350,7 @@ Freeworld libavcodec to complement the distro counterparts
     %{?_with_flite:--enable-libflite} \\\
     %{!?_without_jack:--enable-libjack} \\\
     %{!?_without_jxl:--enable-libjxl} \\\
+    %{!?_without_libklvanc:--enable-libklvanc} \\\
     --enable-libfreetype \\\
     %{!?_without_fribidi:--enable-libfribidi} \\\
     %{?_with_gme:--enable-libgme} \\\
