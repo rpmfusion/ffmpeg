@@ -98,7 +98,7 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        8.1.1
+Version:        8.1.2
 Release:        1%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
@@ -554,6 +554,9 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Wed Jun 17 2026 Leigh Scott <leigh123linux@gmail.com> - 8.1.2-1
+- Update to 8.1.2
+
 * Tue May 12 2026 Dominik Mierzejewski <dominik@greysector.net> - 8.1.1-1
 - Update to 8.1.1 release (ABI compatible)
 - Drop merged patch
