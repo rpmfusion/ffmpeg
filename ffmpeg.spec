@@ -112,8 +112,8 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        5.1.9
-Release:        2%{?dist}
+Version:        5.1.10
+Release:        1%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -536,6 +536,9 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 
 
 %changelog
+* Mon Jun 22 2026 Nicolas Chauvet <kwizart@gmail.com> - 5.1.10-1
+- Update to 5.1.10
+
 * Tue May 19 2026 Nicolas Chauvet <kwizart@gmail.com> - 5.1.9-2
 - Backport ffmpeg-bin virtual provides
 
