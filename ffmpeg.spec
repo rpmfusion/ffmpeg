@@ -1,107 +1,47 @@
 # TODO: add make test to %%check section
 
-#global branch  oldabi-
-#global date    20180419
-#global rel     rc1
-
-# Cuda and others are only available on some arches
-%global cuda_arches x86_64
-
-%if 0%{?el7}
-%global _without_aom      1
-%global _without_dav1d    1
-%global _without_frei0r   1
-%global _without_opus     1
-%global _without_srt      1
-%global _without_vpx      1
-%endif
-
-%if 0%{?fedora} || 0%{?rhel} > 7
-%if 0%{?rhel} > 7
-%ifarch x86_64 i686
-%global _with_vapoursynth 1
-%endif
-%endif
 %ifarch x86_64
 %global _with_mfx         1
+%global _with_svtav1      1
+%global _with_vapoursynth 1
 %global _with_vmaf        1
 %endif
-%endif
 
-# flavor nonfree
-%if 0%{?_with_cuda:1}
-%global debug_package %{nil}
-%global flavor           -cuda
-%global progs_suffix     -cuda
-#global build_suffix     -lgpl
-%ifarch %{cuda_arches}
-%global _with_cuvid      1
-%global _with_libnpp     1
-%endif
-%global _with_fdk_aac    1
-%global _without_cdio    1
-%global _without_frei0r  1
-%global _without_gpl     1
-%global _without_vidstab 1
-%global _without_x264    1
-%global _without_x265    1
-%global _without_xvid    1
+%if 0%{?rhel}
+# Disable because of gcc issue
+%global _without_lensfun  1
+%global _without_lv2      1
+%global _without_vulkan   1
 %endif
 
 # Disable nvenc when not relevant
-%ifnarch %{cuda_arches}
+%ifnarch x86_64 aarch64
 %global _without_nvenc    1
-%endif
-
-# extras flags
-%if 0%{!?_cuda_version:1}
-%global _cuda_version 10.2
-%endif
-%global _cuda_version_rpm %(echo %{_cuda_version} | sed -e 's/\\./-/')
-%global _cuda_bindir %{_cuda_prefix}/bin
-%if 0%{?_with_cuda:1}
-%global cuda_cflags $(pkg-config --cflags cuda-%{_cuda_version})
-%global cuda_ldflags $(pkg-config --libs cuda-%{_cuda_version})
-%endif
-
-%if 0%{?_with_libnpp:1}
-%global libnpp_cflags $(pkg-config --cflags nppi-%{_cuda_version} nppc-%{_cuda_version})
-%global libnpp_ldlags $(pkg-config --libs-only-L nppi-%{_cuda_version} nppc-%{_cuda_version})
-%endif
-
-%if 0%{?_with_rpi:1}
-%global _with_omx        1
-%global _with_omx_rpi    1
-%global _with_mmal       1
-ExclusiveArch: armv7hnl
 %endif
 
 %if 0%{?_without_gpl}
 %global lesser L
 %endif
 
-%if 0%{!?_without_amr} || 0%{?_with_gmp} || 0%{?_with_smb}
+%if 0%{!?_without_amr} || 0%{?_with_gmp} || 0%{?_with_smb} || 0%{?_with_vmaf}
 %global ffmpeg_license %{?lesser}GPLv3+
 %else
 %global ffmpeg_license %{?lesser}GPLv2+
 %endif
 
 Summary:        Digital VCR and streaming server
-Name:           ffmpeg%{?flavor}
-Version:        4.2.11
+Name:           ffmpeg
+Version:        4.4.8
 Release:        1%{?dist}
 License:        %{ffmpeg_license}
-URL:            http://ffmpeg.org/
-%if 0%{?date}
-Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
-%else
-Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
-%endif
-Patch0:         fix_ppc_build.patch
-Patch1:         fix-vmaf-model-path.patch
+URL:            https://ffmpeg.org/
+Source0:        %{url}/releases/ffmpeg-%{version}.tar.xz
+Source1:        %{url}/releases/ffmpeg-%{version}.tar.xz.asc
+Source2:        %{url}/ffmpeg-devel.asc
+Patch0:         fix-vmaf-model-path.patch
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
-%{?_with_cuda:BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel}
-%{?_with_libnpp:BuildRequires: pkgconfig(nppc-%{_cuda_version})}
+
+BuildRequires:  gcc
 BuildRequires:  alsa-lib-devel
 BuildRequires:  bzip2-devel
 %{?_with_faac:BuildRequires: faac-devel}
@@ -112,6 +52,7 @@ BuildRequires:  freetype-devel
 BuildRequires:  fribidi-devel
 %{!?_without_frei0r:BuildRequires: frei0r-devel}
 %{?_with_gme:BuildRequires: game-music-emu-devel}
+BuildRequires:  gnupg2
 BuildRequires:  gnutls-devel
 BuildRequires:  gsm-devel
 %{?_with_ilbc:BuildRequires: ilbc-devel}
@@ -127,6 +68,7 @@ BuildRequires:  lame-devel >= 3.98.3
 %{!?_without_cdio:BuildRequires: libcdio-paranoia-devel}
 %{?_with_chromaprint:BuildRequires: libchromaprint-devel}
 %{?_with_crystalhd:BuildRequires: libcrystalhd-devel}
+%{!?_without_lensfun:BuildRequires: lensfun-devel}
 %if 0%{?_with_ieee1394}
 BuildRequires:  libavc1394-devel
 BuildRequires:  libdc1394-devel
@@ -136,6 +78,8 @@ BuildRequires:  libdrm-devel
 BuildRequires:  libgcrypt-devel
 BuildRequires:  libGL-devel
 BuildRequires:  libmodplug-devel
+BuildRequires:  libmysofa-devel
+BuildRequires:  libopenmpt-devel
 BuildRequires:  librsvg2-devel
 %{?_with_rtmp:BuildRequires: librtmp-devel}
 %{?_with_smb:BuildRequires: libsmbclient-devel}
@@ -159,9 +103,11 @@ BuildRequires:  nasm
 %{!?_without_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
 %{?_with_omx:BuildRequires: libomxil-bellagio-devel}
 BuildRequires:  libxcb-devel
+BuildRequires:  libxml2-devel
+%{!?_without_lv2:BuildRequires:  lilv-devel}
 %{!?_without_openal:BuildRequires: openal-soft-devel}
 %if 0%{!?_without_opencl:1}
-BuildRequires:  opencl-headers ocl-icd-devel
+BuildRequires:  opencl-headers pkgconfig(OpenCL)
 %{?fedora:Recommends: opencl-icd}
 %endif
 %{?_with_opencv:BuildRequires: opencv-devel}
@@ -169,22 +115,26 @@ BuildRequires:  openjpeg2-devel
 %{!?_without_opus:BuildRequires: opus-devel >= 1.1.3}
 %{!?_without_pulse:BuildRequires: pulseaudio-libs-devel}
 BuildRequires:  perl(Pod::Man)
+%{?_with_rav1e:BuildRequires: rav1e-devel}
 %{?_with_rubberband:BuildRequires: rubberband-devel}
 %{!?_without_tools:BuildRequires: SDL2-devel}
 %{?_with_snappy:BuildRequires: snappy-devel}
 BuildRequires:  soxr-devel
 BuildRequires:  speex-devel
+BuildRequires:  pkgconfig(srt)
+%{?_with_svtav1:BuildRequires: svt-av1-devel}
 %{?_with_tesseract:BuildRequires: tesseract-devel}
 #BuildRequires:  texi2html
 BuildRequires:  texinfo
 %{?_with_twolame:BuildRequires: twolame-devel}
-%{?_with_vmaf:BuildRequires: libvmaf-devel}
+%{?_with_vmaf:BuildRequires: libvmaf-devel >= 1.3.9}
 %{?_with_wavpack:BuildRequires: wavpack-devel}
 %{!?_without_vidstab:BuildRequires:  vid.stab-devel}
+%{!?_without_vulkan:BuildRequires:  vulkan-loader-devel glslang-devel >= 11.0}
 %{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.31}
 %{!?_without_x265:BuildRequires: x265-devel}
 %{!?_without_xvid:BuildRequires: xvidcore-devel}
-BuildRequires:  zimg-devel >= 2.7.0
+%{!?_without_zimg:BuildRequires:  zimg-devel >= 2.7.0}
 BuildRequires:  zlib-devel
 %{?_with_zmq:BuildRequires: zeromq-devel}
 %{!?_without_zvbi:BuildRequires: zvbi-devel}
@@ -205,11 +155,11 @@ VCR. It can encode in real time in many formats including MPEG1 audio
 and video, MPEG4, h263, ac3, asf, avi, real, mjpeg, and flash.
 This package contains the libraries for %{name}
 
-%package     -n libavdevice%{?flavor}
+%package     -n libavdevice
 Summary:        Special devices muxing/demuxing library
 Requires:       %{name}-libs%{_isa} = %{version}-%{release}
 
-%description -n libavdevice%{?flavor}
+%description -n libavdevice
 Libavdevice is a complementary library to libavf "libavformat". It provides
 various "special" platform-specific muxers and demuxers, e.g. for grabbing
 devices, audio capture and playback etc.
@@ -217,7 +167,7 @@ devices, audio capture and playback etc.
 %package        devel
 Summary:        Development package for %{name}
 Requires:       %{name}-libs%{_isa} = %{version}-%{release}
-Requires:       libavdevice%{?flavor}%{_isa} = %{version}-%{release}
+Requires:       libavdevice%{_isa} = %{version}-%{release}
 Requires:       pkgconfig
 
 %description    devel
@@ -238,12 +188,8 @@ This package contains development files for %{name}
     --libdir=%{_libdir} \\\
     --mandir=%{_mandir} \\\
     --arch=%{_target_cpu} \\\
-    --optflags="%{optflags}" \\\
-    --extra-ldflags="%{?__global_ldflags} %{?cuda_ldflags} %{?libnpp_ldlags}" \\\
-    --extra-cflags="%{?cuda_cflags} %{?libnpp_cflags}" \\\
-    %{?flavor:--disable-manpages} \\\
-    %{?progs_suffix:--progs-suffix=%{progs_suffix}} \\\
-    %{?build_suffix:--build-suffix=%{build_suffix}} \\\
+    --optflags="%{optflags} -Wno-int-conversion" \\\
+    --extra-ldflags="%{?__global_ldflags}" \\\
     %{!?_without_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3} \\\
     --enable-bzlib \\\
     %{?_with_chromaprint:--enable-chromaprint} \\\
@@ -260,8 +206,6 @@ This package contains development files for %{name}
     %{!?_without_bluray:--enable-libbluray} \\\
     %{?_with_bs2b:--enable-libbs2b} \\\
     %{?_with_caca:--enable-libcaca} \\\
-    %{?_with_cuda:--enable-cuda-sdk --enable-nonfree} \\\
-    %{?_with_cuvid:--enable-cuvid --enable-nonfree} \\\
     %{!?_without_cdio:--enable-libcdio} \\\
     %{?_with_ieee1394:--enable-libdc1394 --enable-libiec61883} \\\
     --enable-libdrm \\\
@@ -274,8 +218,10 @@ This package contains development files for %{name}
     %{?_with_gme:--enable-libgme} \\\
     --enable-libgsm \\\
     %{?_with_ilbc:--enable-libilbc} \\\
+    %{!?_without_lensfun:--enable-liblensfun} \\\
     %{?_with_libnpp:--enable-libnpp --enable-nonfree} \\\
     --enable-libmp3lame \\\
+    --enable-libmysofa \\\
     %{?_with_netcdf:--enable-netcdf} \\\
     %{?_with_mmal:--enable-mmal} \\\
     %{!?_without_nvenc:--enable-nvenc} \\\
@@ -286,17 +232,21 @@ This package contains development files for %{name}
     %{?_with_opencv:--enable-libopencv} \\\
     %{!?_without_opengl:--enable-opengl} \\\
     --enable-libopenjpeg \\\
+    --enable-libopenmpt \\\
     %{!?_without_opus:--enable-libopus} \\\
     %{!?_without_pulse:--enable-libpulse} \\\
     --enable-librsvg \\\
+    %{?_with_rav1e:--enable-librav1e} \\\
     %{?_with_rtmp:--enable-librtmp} \\\
     %{?_with_rubberband:--enable-librubberband} \\\
-    %{?_with_smb:--enable-libsmbclient} \\\
+    %{?_with_smb:--enable-libsmbclient --enable-version3} \\\
     %{?_with_snappy:--enable-libsnappy} \\\
     %{!?_without_srt:--enable-libsrt} \\\
     --enable-libsoxr \\\
     --enable-libspeex \\\
+    --enable-libsrt \\\
     --enable-libssh \\\
+    %{?_with_svtav1:--enable-libsvtav1} \\\
     %{?_with_tesseract:--enable-libtesseract} \\\
     --enable-libtheora \\\
     %{?_with_twolame:--enable-libtwolame} \\\
@@ -306,13 +256,16 @@ This package contains development files for %{name}
     %{?_with_vmaf:--enable-libvmaf --enable-version3} \\\
     %{?_with_vapoursynth:--enable-vapoursynth} \\\
     %{!?_without_vpx:--enable-libvpx} \\\
+    %{!?_without_vulkan:--enable-vulkan --enable-libglslang} \\\
     %{?_with_webp:--enable-libwebp} \\\
     %{!?_without_x264:--enable-libx264} \\\
     %{!?_without_x265:--enable-libx265} \\\
     %{!?_without_xvid:--enable-libxvid} \\\
-    --enable-libzimg \\\
+    --enable-libxml2 \\\
+    %{!?_without_zimg--enable-libzimg} \\\
     %{?_with_zmq:--enable-libzmq} \\\
     %{!?_without_zvbi:--enable-libzvbi} \\\
+    %{!?_without_lv2:--enable-lv2} \\\
     --enable-avfilter \\\
     --enable-avresample \\\
     --enable-libmodplug \\\
@@ -326,24 +279,23 @@ This package contains development files for %{name}
 
 
 %prep
-%if 0%{?date}
-%autosetup -p1 -n ffmpeg-%{?branch}%{date}
-echo "git-snapshot-%{?branch}%{date}-rpmfusion" > VERSION
-%else
+%{gpgverify} --keyring='%{SOURCE2}' --signature='%{SOURCE1}' --data='%{SOURCE0}'
 %autosetup -p1 -n ffmpeg-%{version}
-%endif
+
 # fix -O3 -g in host_cflags
 sed -i "s|check_host_cflags -O3|check_host_cflags %{optflags}|" configure
 mkdir -p _doc/examples
 cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
+# lower vmaf deps, no API change (see upstream commit 4979afdb)
+%ifarch x86_64
+sed -i -e 's/libvmaf >= 1.5.2/libvmaf >= 1.3.9/' configure
+%endif
 
 %build
-%{?_with_cuda:export PATH=${PATH}:%{_cuda_bindir}}
 %{ff_configure}\
     --shlibdir=%{_libdir} \
-%if 0%{?_without_tools:1}
-    --disable-doc \
-    --disable-ffmpeg --disable-ffplay --disable-ffprobe \
+%ifnarch %{ix86}
+    --enable-lto \
 %endif
 %ifarch %{ix86}
     --cpu=%{_target_cpu} \
@@ -389,42 +341,29 @@ make alltools V=1
 
 %install
 %make_install V=1
-%if 0%{!?flavor:1}
-rm -r %{buildroot}%{_datadir}/%{name}/examples
-%endif
-%if 0%{!?progs_suffix:1}
 install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
-%endif
 
-%ldconfig_scriptlets  libs
-%ldconfig_scriptlets -n libavdevice%{?flavor}
-
-%if 0%{!?_without_tools:1}
 %files
-%{_bindir}/ffmpeg%{?progs_suffix}
-%{_bindir}/ffplay%{?progs_suffix}
-%{_bindir}/ffprobe%{?progs_suffix}
-%{!?progs_suffix:%{_bindir}/qt-faststart}
-%{!?flavor:
+%{_bindir}/ffmpeg
+%{_bindir}/ffplay
+%{_bindir}/ffprobe
+%{_bindir}/qt-faststart
 %{_mandir}/man1/ffmpeg*.1*
 %{_mandir}/man1/ffplay*.1*
 %{_mandir}/man1/ffprobe*.1*
-}
 %{_datadir}/%{name}
-%endif
 
 %files libs
 %doc  CREDITS README.md
 %license COPYING.*
 %{_libdir}/lib*.so.*
-%exclude %{_libdir}/libavdevice%{?build_suffix}.so.*
-%{!?flavor:%{_mandir}/man3/lib*.3.*
+%{_mandir}/man3/lib*.3.*
+%exclude %{_libdir}/libavdevice.so.*
 %exclude %{_mandir}/man3/libavdevice.3*
-}
 
-%files -n libavdevice%{?flavor}
-%{_libdir}/libavdevice%{?build_suffix}.so.*
-%{!?flavor:%{_mandir}/man3/libavdevice.3*}
+%files -n libavdevice
+%{_libdir}/libavdevice.so.*
+%{_mandir}/man3/libavdevice.3*
 
 %files devel
 %doc MAINTAINERS doc/APIchanges doc/*.txt
@@ -436,63 +375,205 @@ install -pm755 tools/qt-faststart %{buildroot}%{_bindir}
 
 
 %changelog
-* Wed May 21 2025 Leigh Scott <leigh123linux@gmail.com> - 4.2.11-1
-- Update to 4.2.11
+* Mon Jun 22 2026 Nicolas Chauvet <kwizart@gmail.com> - 4.4.8-1
+- Update to 4.4.8
 
-* Sun Aug 04 2024 Leigh Scott <leigh123linux@gmail.com> - 4.2.10-1
-- Update to 4.2.10
+* Wed Jun 10 2026 Nicolas Chauvet <kwizart@gmail.com> - 4.4.7-1
+- Update to 4.4.7
 
-* Sat Apr 22 2023 Leigh Scott <leigh123linux@gmail.com> - 4.2.9-1
-- Update to 4.2.9 release
-
-* Mon Oct 17 2022 Leigh Scott <leigh123linux@gmail.com> - 4.2.8-1
-- Update to 4.2.8 release
-
-* Thu May 26 2022 Leigh Scott <leigh123linux@gmail.com> - 4.2.7-1
-- Update to 4.2.7 release
-
-* Sat Apr 16 2022 Leigh Scott <leigh123linux@gmail.com> - 4.2.6-1
-- Update to 4.2.6 release
-
-* Wed Dec 01 2021 Leigh Scott <leigh123linux@gmail.com> - 4.2.5-2
+* Thu Dec 16 2021 Nicolas Chauvet <kwizart@gmail.com> - 4.4.1-5
 - rebuilt
 
-* Fri Oct 15 2021 Leigh Scott <leigh123linux@gmail.com> - 4.2.5-1
-- Update to 4.2.5 release
+* Fri Dec 10 2021 Leigh Scott <leigh123linux@gmail.com> - 4.4.1-4
+- rebuilt
 
-* Sun Jun 13 2021 Leigh Scott <leigh123linux@gmail.com> - 4.2.4-2
+* Fri Dec 10 2021 Leigh Scott <leigh123linux@gmail.com> - 4.4.1-3
+- rebuilt
+
+* Thu Nov 25 2021 Nicolas Chauvet <kwizart@gmail.com> - 4.4.1-2
+- rebuilt
+
+* Mon Oct 25 2021 Leigh Scott <leigh123linux@gmail.com> - 4.4.1-1
+- Update to 4.4.1 release
+
+* Mon Aug 02 2021 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 4.4-7
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
+* Wed Jul 28 2021 Leigh Scott <leigh123linux@gmail.com> - 4.4-6
+- Enable libwebp support
+
+* Sat Jul 10 2021 Sérgio Basto <sergio@serjux.com> - 4.4-5
+- Mass rebuild for x264-0.163
+
+* Sun Jun 13 2021 Leigh Scott <leigh123linux@gmail.com> - 4.4-4
 - Rebuild for aom bump
 
-* Thu Jul 09 2020 Leigh Scott <leigh123linux@gmail.com> - 4.2.4-1
-- Update to 4.2.4 release
-- Enable vapoursynth for el8
+* Mon May 10 2021 Leigh Scott <leigh123linux@gmail.com> - 4.4-3
+- rebuilt
 
-* Sat Jul 04 2020 Leigh Scott <leigh123linux@gmail.com> - 4.2.3-6
-- Disable vapoursynth
+* Wed Apr 14 2021 Leigh Scott <leigh123linux@gmail.com> - 4.4-2
+- Rebuild for new x265
 
-* Thu Jul 02 2020 Leigh Scott <leigh123linux@gmail.com> - 4.2.3-5
+* Fri Apr 09 2021 Leigh Scott <leigh123linux@gmail.com> - 4.4-1
+- Update to 4.4 release
+
+* Thu Apr 08 2021 Leigh Scott <leigh123linux@gmail.com> - 4.4-0.8.20210408git25e794a
+- Update to 4.4-0.8.20210408git25e794a
+
+* Wed Mar 24 2021 Leigh Scott <leigh123linux@gmail.com> - 4.4-0.7.20210323git0be265e
+- rebuilt
+
+* Tue Mar 23 2021 Leigh Scott <leigh123linux@gmail.com> - 4.4-0.6.20210323git0be265e
+- Update to 4.4-0.6.20210323git0be265e
+- Switch to release/4.4 branch
+
+* Fri Mar 12 2021 Leigh Scott <leigh123linux@gmail.com> - 4.4-0.5.20210312git5136726
+- Update to 20210312git5136726
+
+* Thu Feb 18 2021 Leigh Scott <leigh123linux@gmail.com> - 4.4-0.4.20210218gitc2bf1dc
+- Update to 20210218gitc2bf1dc
+
+* Wed Feb 03 2021 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 4.4-0.3.20210125gitc7016e3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
+
+* Mon Jan 25 2021 Leigh Scott <leigh123linux@gmail.com> - 4.4-0.2.20210125gitc7016e3
+- Update to 20210125gitc7016e3
+
+* Thu Dec 31 2020 Leigh Scott <leigh123linux@gmail.com> - 4.4-0.1.20201231git477dd2d
+- Update to 20201231git477dd2d
+
+* Thu Dec 24 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-15
+- Enable dash demuxer (rfbz#5876)
+- Enable lv2 support (rfbz#5863)
+
+* Mon Dec 14 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-14
+- Actually do the dav1d rebuild
+
+* Mon Dec 14 2020 Robert-André Mauchin <zebob.m@gmail.com> - 4.3.1-13
+- Rebuild for dav1d SONAME bump
+
+* Fri Nov 27 2020 Sérgio Basto <sergio@serjux.com> - 4.3.1-12
+- Mass rebuild for x264-0.161
+
+* Sat Oct 10 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-11
+- Revert last commit
+
+* Sat Oct 10 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-10
+- Add VP9 10/12 Bit support for VDPAU 
+
+* Tue Aug 18 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-9
+- Disable vulkan on i686
+
+* Mon Aug 17 2020 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 4.3.1-8
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
+* Sun Aug 16 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-7
+- Disable rav1e support as rust packaging is rawhide only
+
+* Sun Aug 09 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-6
+- Enable LTO for x86
+- Add glslang patches and bump version for build requires
+- Add upstream patches to suppress asm warnings
+
+* Mon Aug 03 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-5
+- Disable LTO for x86
+
+* Mon Aug 03 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-4
+- Add patch to fix x86_64 LTO build issue
+
+* Wed Jul 15 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-3
+- Enabled libopenmpt
+
+* Tue Jul 14 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-2
+- Enable libmysofa
+
+* Sat Jul 11 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-1
+- Update to 4.3.1 release
+
+* Wed Jul 08 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-5
 - Rebuilt
 
-* Wed Jun 24 2020 Leigh Scott <leigh123linux@gmail.com> - 4.2.3-4
+* Tue Jul 07 2020 Sérgio Basto <sergio@serjux.com> - 4.3-4
+- Mass rebuild for x264
+
+* Wed Jul 01 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-3
+- Rebuilt
+
+* Wed Jun 24 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-2
 - Enable vapoursynth
 
-* Sat Jun 06 2020 Leigh Scott <leigh123linux@gmail.com> - 4.2.3-3
-- Enable libmodplug (rfbz#5670)
+* Mon Jun 15 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-1
+- Update to 4.3 release
 
-* Sat May 23 2020 Leigh Scott <leigh123linux@gmail.com> - 4.2.3-2
-- Fix vmaf model path
+* Sat Jun 06 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-0.23.20200606git
+- Update to 20200606git
 
-* Thu May 21 2020 Leigh Scott <leigh123linux@gmail.com> - 4.2.3-1
-- Update to 4.2.3 release
+* Sun May 31 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-0.22.20200531git
+- Update to 20200531git
 
-* Fri Apr 10 2020 Nicolas Chauvet <kwizart@gmail.com> - 4.2.2-5
-- Enable libsrt by default
+* Mon May 25 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-0.21.20200524git
+- Enable lensfun
 
-* Thu Mar 12 2020 leigh123linux <leigh123linux@googlemail.com> - 4.2.2-4
+* Sun May 24 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-0.20.20200524git
+- Rebuild for dav1d SONAME bump
+
+* Sat May 23 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-0.19.20200523git
+- Update to 20200523git
+
+* Sat May 16 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-0.18.20200516git
+- Update to 20200516git
+
+* Fri May 08 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-0.17.20200508git
+- Update to 20200508git
+
+* Fri May 01 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-0.16.20200501git
+- Update to 20200501git
+
+* Thu Apr 23 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-0.15.20200423git
+- Update to 20200423git
+- Enable nvdec for aarch64
+
+* Sun Apr 19 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-0.14.20200419git
+- Update to 20200419git
+
+* Sun Apr 12 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-0.13.20200412git
+- Update to 20200412git
+
+* Wed Apr 08 2020 Nicolas Chauvet <kwizart@gmail.com> - 4.3-0.12.20200401git
+- Enable srt
+
+* Wed Apr 01 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-0.11.20200401git
+- Update snapshot, fixes rfbz#5537
+
+* Wed Apr 01 2020 leigh123linux <leigh123linux@googlemail.com> - 4.3-0.10.20200401git
+- Update to 20200401git
+
+* Sat Mar 21 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-0.9.20200321git
+- Update to 20200321git
+
+* Fri Mar 13 2020 leigh123linux <leigh123linux@googlemail.com> - 4.3-0.8.20200313git
+- Update to 20200313git
+
+* Wed Mar 11 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-0.7.20200305git
 - Rebuilt for i686
 
-* Sun Feb 23 2020 Leigh Scott <leigh123linux@gmail.com> - 4.2.2-3
+* Mon Mar 09 2020 leigh123linux <leigh123linux@googlemail.com> - 4.3-0.6.20200305git
+- Enable rav1e support
+
+* Thu Mar 05 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-0.5.20200305git
+- Update to 20200305git
+
+* Tue Feb 25 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-0.4.20200225git
+- Update to 20200225git
+
+* Sun Feb 23 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-0.3.20200222git
 - Rebuild for x265
+
+* Sun Feb 23 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3-0.2.20200222git
+- Enable vulkan support
+
+* Sat Feb 22 2020 Leigh Scott <leigh123linux@googlemail.com> - 4.3-0.1.20200222git
+- Update to 20200222git 
 
 * Tue Feb 04 2020 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 4.2.2-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
