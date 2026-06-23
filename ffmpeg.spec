@@ -98,7 +98,7 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        7.1.4
+Version:        7.1.5
 Release:        1%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
@@ -111,7 +111,6 @@ Source2:        https://ffmpeg.org/ffmpeg-devel.asc
 %endif
 # We don't endorse adding this patch but fedora insists on breaking the ffmpeg ABI
 Patch0:         ffmpeg-chromium.patch
-Patch1:         https://git.ffmpeg.org/gitweb/ffmpeg.git/patch/7f9c7f9849a2155224711f0ff57ecdac6e4bfb57#/ffmpeg-CVE-2025-22921.patch
 Patch2:         0001-configure-rename-POSIX-ioctl-check.patch
 Conflicts:      %{name}-free
 Provides:       %{name}-bin = %{version}-%{release}
@@ -548,6 +547,9 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Tue Jun 23 2026 Nicolas Chauvet <kwizart@gmail.com> - 7.1.5-1
+- Update to 7.1.5
+
 * Tue May 05 2026 Leigh Scott <leigh123linux@gmail.com> - 7.1.4-1
 - Update to 7.1.4 release
 
