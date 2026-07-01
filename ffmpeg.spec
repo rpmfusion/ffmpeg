@@ -90,7 +90,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        8.1.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -543,6 +543,12 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Wed Jul 01 2026 Nicolas Chauvet <kwizart@gmail.com> - 8.1.2-2
+- Rework cuda support using clang
+- Explicitely enable nvdec with nvenc
+- Drop deprecated libnpp
+- Switch to pkgconfig(fdk-aac)
+
 * Wed Jun 17 2026 Leigh Scott <leigh123linux@gmail.com> - 8.1.2-1
 - Update to 8.1.2
 
