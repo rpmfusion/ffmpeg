@@ -11,9 +11,6 @@
 %global _lto_cflags %{nil}
 %endif
 
-# Cuda and others are only available on some arches
-%global cuda_arches x86_64
-
 # Disable because of gcc issue
 %global _without_lensfun  1
 # Disable due to undefined symbols in libavformat
@@ -52,23 +49,23 @@
 %global _with_vmaf        1
 %endif
 
-# flavor nonfree
-%if 0%{?_with_cuda:1}
-%global _with_cuvid      1
-%endif
+# Cuda and others are only available on some arches
+%global cuda_arches x86_64 aarch64
 
 # Disable nvenc when not relevant
-%ifnarch %{cuda_arches} aarch64
-%global _without_nvenc    1
+%ifarch %{cuda_arches}
+%global _with_cuda      1
+%global _with_nvenc    1
+%global _with_cuvid     1
 %endif
 
 # extras flags
+%if 0%{?_with_cuda_nvcc:1}
 %if 0%{!?_cuda_version:1}
 %global _cuda_version 13.2
-%endif
 %global _cuda_version_rpm %(echo %{_cuda_version} | sed -e 's/\\./-/')
 %global _cuda_bindir %{_cuda_prefix}/bin
-%if 0%{?_with_cuda:1}
+%endif
 %global cuda_cflags $(pkg-config --cflags cuda-%{_cuda_version})
 %global cuda_ldflags $(pkg-config --libs cuda-%{_cuda_version})
 %endif
@@ -114,8 +111,8 @@ Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 
 BuildRequires:  gcc
 BuildRequires:  make
-%{?_with_cuda:BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel}
-%{?_with_cuda:%{?!_with_cuda_nvcc:BuildRequires: clang}}
+%{?_with_cuda_nvcc:BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel}
+%{?!_with_cuda_nvcc:BuildRequires: clang}
 BuildRequires:  alsa-lib-devel
 BuildRequires:  AMF-devel
 BuildRequires:  bzip2-devel
@@ -188,7 +185,7 @@ BuildRequires:  nasm
 %{?_with_webp:BuildRequires: libwebp-devel}
 %{?_with_netcdf:BuildRequires: netcdf-devel}
 %{?_with_rpi:BuildRequires: raspberrypi-vc-devel}
-%{!?_without_nvenc:BuildRequires: nv-codec-headers}
+%{?_with_nvenc:BuildRequires: nv-codec-headers}
 %{!?_without_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
 %{?_with_omx:BuildRequires: libomxil-bellagio-devel}
 BuildRequires:  libxcb-devel
@@ -333,7 +330,7 @@ Freeworld libavcodec to complement the distro counterparts
     %{?_with_caca:--enable-libcaca} \\\
     %{?_with_codec2:--enable-libcodec2} \\\
     %{?_with_cuda_nvcc:--enable-cuda-nvcc --enable-nonfree} \\\
-    %{?_with_cuvid:--enable-cuvid --enable-nonfree} \\\
+    %{?_with_cuda:  --enable-cuda  --enable-cuda-llvm --enable-cuvid} \\\
     %{!?_without_cdio:--enable-libcdio} \\\
     %{?_with_ieee1394:--enable-libdc1394 --enable-libiec61883} \\\
     --enable-libdrm \\\
@@ -356,7 +353,7 @@ Freeworld libavcodec to complement the distro counterparts
     --enable-libmysofa \\\
     %{?_with_netcdf:--enable-netcdf} \\\
     %{?_with_mmal:--enable-mmal} \\\
-    %{!?_without_nvenc:--enable-nvenc --enable-nvdec} \\\
+    %{?_with_nvenc:--enable-nvenc --enable-nvdec} \\\
     %{?_with_omx:--enable-omx} \\\
     %{?_with_omx_rpi:--enable-omx-rpi} \\\
     %{!?_without_openal:--enable-openal} \\\
@@ -429,7 +426,7 @@ cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
 %ifarch %{ix86}
 export LDFLAGS+=' -Wl,-z,notext'
 %endif
-%{?_with_cuda:export PATH=${PATH}:%{_cuda_bindir}}
+%{?_with_cuda_nvcc:export PATH=${PATH}:%{_cuda_bindir}}
 %{ff_configure}\
     --shlibdir=%{_libdir} \
 %if 0%{?_without_tools:1}
