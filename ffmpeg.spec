@@ -55,7 +55,6 @@
 # flavor nonfree
 %if 0%{?_with_cuda:1}
 %global _with_cuvid      1
-%global _with_libnpp     1
 %endif
 
 # Disable nvenc when not relevant
@@ -72,11 +71,6 @@
 %if 0%{?_with_cuda:1}
 %global cuda_cflags $(pkg-config --cflags cuda-%{_cuda_version})
 %global cuda_ldflags $(pkg-config --libs cuda-%{_cuda_version})
-%endif
-
-%if 0%{?_with_libnpp:1}
-%global libnpp_cflags $(pkg-config --cflags nppi-%{_cuda_version} nppc-%{_cuda_version})
-%global libnpp_ldlags $(pkg-config --libs-only-L nppi-%{_cuda_version} nppc-%{_cuda_version})
 %endif
 
 %if 0%{?_with_rpi:1}
@@ -122,7 +116,6 @@ BuildRequires:  gcc
 BuildRequires:  make
 %{?_with_cuda:BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel}
 %{?_with_cuda:%{?!_with_cuda_nvcc:BuildRequires: clang}}
-%{?_with_libnpp:BuildRequires: pkgconfig(nppc-%{_cuda_version})}
 BuildRequires:  alsa-lib-devel
 BuildRequires:  AMF-devel
 BuildRequires:  bzip2-devel
@@ -315,8 +308,8 @@ Freeworld libavcodec to complement the distro counterparts
     --mandir=%{_mandir} \\\
     --arch=%{_target_cpu} \\\
     --optflags="%{optflags}" \\\
-    --extra-ldflags="%{?__global_ldflags} %{?cuda_ldflags} %{?libnpp_ldlags}" \\\
-    --extra-cflags="%{?cuda_cflags} %{?libnpp_cflags} -I%{_includedir}/rav1e" \\\
+    --extra-ldflags="%{?__global_ldflags} %{?cuda_ldflags}" \\\
+    --extra-cflags="%{?cuda_cflags} -I%{_includedir}/rav1e" \\\
     %{?flavor:--disable-manpages} \\\
     %{?progs_suffix:--progs-suffix=%{progs_suffix}} \\\
     %{?build_suffix:--build-suffix=%{build_suffix}} \\\
@@ -359,7 +352,6 @@ Freeworld libavcodec to complement the distro counterparts
     %{?_with_ilbc:--enable-libilbc} \\\
     %{?_with_lc3:--enable-liblc3} \\\
     %{!?_without_lensfun:--enable-liblensfun} \\\
-    %{?_with_libnpp:--enable-libnpp --enable-nonfree} \\\
     --enable-libmp3lame \\\
     --enable-libmysofa \\\
     %{?_with_netcdf:--enable-netcdf} \\\
