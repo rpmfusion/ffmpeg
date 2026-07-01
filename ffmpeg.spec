@@ -356,7 +356,7 @@ Freeworld libavcodec to complement the distro counterparts
     --enable-libmysofa \\\
     %{?_with_netcdf:--enable-netcdf} \\\
     %{?_with_mmal:--enable-mmal} \\\
-    %{!?_without_nvenc:--enable-nvenc} \\\
+    %{!?_without_nvenc:--enable-nvenc --enable-nvdec} \\\
     %{?_with_omx:--enable-omx} \\\
     %{?_with_omx_rpi:--enable-omx-rpi} \\\
     %{!?_without_openal:--enable-openal} \\\
