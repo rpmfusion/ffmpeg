@@ -128,7 +128,7 @@ BuildRequires:  AMF-devel
 BuildRequires:  bzip2-devel
 %{?_with_codec2:BuildRequires: codec2-devel}
 %{?_with_faac:BuildRequires: faac-devel}
-BuildRequires: fdk-aac-free-devel
+BuildRequires: pkgconfig(fdk-aac)
 %{?_with_flite:BuildRequires: flite-devel}
 BuildRequires:  fontconfig-devel
 BuildRequires:  freetype-devel
