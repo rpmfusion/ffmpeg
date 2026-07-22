@@ -430,6 +430,10 @@ echo "git-snapshot-%{?branch}%{date}-rpmfusion" > VERSION
 sed -i "s|check_host_cflags -O3|check_host_cflags %{optflags}|" configure
 mkdir -p _doc/examples
 cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
+%if 0%{?el9}
+# lower lcms version requirement for EL9
+sed -i -e 's/lcms2 >= 2.13/lcms2 >= 2.12/g' configure
+%endif
 
 %build
 %{?_with_cuda:export PATH=${PATH}:%{_cuda_bindir}}
