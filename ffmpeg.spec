@@ -24,10 +24,10 @@
 %global _with_chromaprint 1
 %global _with_gme         1
 %global _with_ilbc        1
+%global _with_lc3              1
 %global _with_openh264    1
 %if 0%{?fedora}
 %global _with_placebo     1
-%global _with_lc3              1
 %endif
 %global _with_rav1e       1
 %global _with_smb         1
@@ -35,7 +35,9 @@
 %global _with_svtav1      1
 %global _with_tesseract   1
 %global _with_twolame     1
+%if 0%{?fedora}
 %global _with_vvenc       1
+%endif
 %global _with_wavpack     1
 %global _with_webp        1
 %global _with_zmq         1
