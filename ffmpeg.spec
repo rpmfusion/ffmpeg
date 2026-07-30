@@ -104,7 +104,9 @@ Source2:        https://ffmpeg.org/ffmpeg-devel.asc
 Patch0:         ffmpeg-chromium.patch
 # Allow to build with fdk-aac-free
 # See https://bugzilla.redhat.com/show_bug.cgi?id=1501522#c112
-Patch2:         ffmpeg-allow-fdk-aac-free.patch
+Patch1:         ffmpeg-allow-fdk-aac-free.patch
+# Allow decklink
+Patch2:         ffmpeg-allow-decklink.patch
 # Add upstream commit to address firefox vulkan rendering issue with nvidia
 Patch3:         https://github.com/FFmpeg/FFmpeg/commit/25e187f8494966377a4b9d077260ce7b501a911c.patch
 Conflicts:      %{name}-free
