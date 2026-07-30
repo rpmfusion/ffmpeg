@@ -90,7 +90,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        8.1.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -121,6 +121,7 @@ BuildRequires:  alsa-lib-devel
 BuildRequires:  AMF-devel
 BuildRequires:  bzip2-devel
 %{?_with_codec2:BuildRequires: codec2-devel}
+BuildRequires:  decklink-static
 %{?_with_faac:BuildRequires: faac-devel}
 BuildRequires: pkgconfig(fdk-aac)
 %{?_with_flite:BuildRequires: flite-devel}
@@ -310,7 +311,8 @@ Freeworld libavcodec to complement the distro counterparts
     --arch=%{_target_cpu} \\\
     --optflags="%{optflags}" \\\
     --extra-ldflags="%{?__global_ldflags} %{?cuda_ldflags}" \\\
-    --extra-cflags="%{?cuda_cflags} -I%{_includedir}/rav1e" \\\
+    --extra-cflags="%{?cuda_cflags} -I%{_includedir}/rav1e -I%{_includedir}/decklink" \\\
+    --extra-cxxflags="-I%{_includedir}/decklink" \\\
     %{?flavor:--disable-manpages} \\\
     %{?progs_suffix:--progs-suffix=%{progs_suffix}} \\\
     %{?build_suffix:--build-suffix=%{build_suffix}} \\\
@@ -547,6 +549,9 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Thu Jul 30 2026 Nicolas Chauvet <kwizart@gmail.com> - 8.1.2-4
+- Add decklink support
+
 * Wed Jul 29 2026 Leigh Scott <leigh123linux@gmail.com> - 8.1.2-3
 - Add upstream commit to address firefox vulkan rendering issue with nvidia
 
