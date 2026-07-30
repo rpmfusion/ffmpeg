@@ -1,0 +1,33 @@
+From b058690df43aba377c7790ccae5fdc2b42872b58 Mon Sep 17 00:00:00 2001
+From: rpm-build <rpm-build>
+Date: Sun, 14 Jun 2026 14:53:24 +0200
+Subject: [PATCH] allow building against DeckLink SDK headers
+
+They're Boost-licensed.
+---
+ configure | 6 +++---
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/configure b/configure
+index 6cf4f08..5342e86 100755
+--- a/configure
++++ b/configure
+@@ -2002,7 +2002,6 @@ EXTERNAL_LIBRARY_GPL_LIST="
+ "
+ 
+ EXTERNAL_LIBRARY_NONFREE_LIST="
+-    decklink
+     libmpeghdec
+ "
+ 
+@@ -2028,6 +2027,7 @@ EXTERNAL_LIBRARY_LIST="
+     $EXTERNAL_LIBRARY_GPLV3_LIST
+     cairo
+     chromaprint
++    decklink
+     gcrypt
+     gnutls
+     jni
+-- 
+2.54.0
+
