@@ -90,7 +90,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        8.1.2
-Release:        4%{?dist}
+Release:        5%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -549,6 +549,9 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Fri Jul 31 2026 Leigh Scott <leigh123linux@gmail.com> - 8.1.2-5
+- Rebuild for new x265
+
 * Thu Jul 30 2026 Nicolas Chauvet <kwizart@gmail.com> - 8.1.2-4
 - Add decklink support
 
