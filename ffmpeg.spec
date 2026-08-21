@@ -89,8 +89,8 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        8.1.2
-Release:        6%{?dist}
+Version:        9.0.1
+Release:        1%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -107,8 +107,6 @@ Patch0:         ffmpeg-chromium.patch
 Patch1:         ffmpeg-allow-fdk-aac-free.patch
 # Allow decklink
 Patch2:         ffmpeg-allow-decklink.patch
-# Add upstream commit to address firefox vulkan rendering issue with nvidia
-Patch3:         https://github.com/FFmpeg/FFmpeg/commit/25e187f8494966377a4b9d077260ce7b501a911c.patch
 Conflicts:      %{name}-free
 Provides:       %{name}-bin = %{version}-%{release}
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
@@ -228,7 +226,7 @@ BuildRequires:  texinfo
 %{?_with_vvenc:BuildRequires: pkgconfig(libvvenc)}
 %{?_with_wavpack:BuildRequires: wavpack-devel}
 %{!?_without_vidstab:BuildRequires:  vid.stab-devel}
-%{!?_without_vulkan:BuildRequires: pkgconfig(shaderc) pkgconfig(vulkan) >= 1.3.277}
+%{!?_without_vulkan:BuildRequires: glslc pkgconfig(vulkan) >= 1.3.277}
 %{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.31}
 %{!?_without_x265:BuildRequires: x265-devel}
 %{!?_without_xvid:BuildRequires: xvidcore-devel}
@@ -395,7 +393,7 @@ Freeworld libavcodec to complement the distro counterparts
     %{?_with_vapoursynth:--enable-vapoursynth} \\\
     %{!?_without_vpx:--enable-libvpx} \\\
     %{?_with_vvenc:--enable-libvvenc} \\\
-    %{!?_without_vulkan:--enable-vulkan --enable-libshaderc} \\\
+    %{!?_without_vulkan:--enable-vulkan} \\\
     %{?_with_webp:--enable-libwebp} \\\
     %{!?_without_x264:--enable-libx264} \\\
     %{!?_without_x265:--enable-libx265} \\\
@@ -549,6 +547,9 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Fri Aug 21 2026 Leigh Scott <leigh123linux@gmail.com> - 9.0.1-1
+- Update to 9.0.1
+
 * Sun Aug 16 2026 Leigh Scott <leigh123linux@gmail.com> - 8.1.2-6
 - Rebuild for new openapv version
 
