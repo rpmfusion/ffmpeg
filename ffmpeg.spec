@@ -188,7 +188,7 @@ BuildRequires:  nasm
 %{?_with_webp:BuildRequires: libwebp-devel}
 %{?_with_netcdf:BuildRequires: netcdf-devel}
 %{?_with_rpi:BuildRequires: raspberrypi-vc-devel}
-%{?_with_nvenc:BuildRequires: nv-codec-headers}
+%{?_with_nvenc:BuildRequires: nv-codec-headers13.0}
 %{!?_without_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
 %{?_with_omx:BuildRequires: libomxil-bellagio-devel}
 BuildRequires:  libxcb-devel
