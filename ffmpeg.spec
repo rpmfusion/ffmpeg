@@ -89,7 +89,7 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        9.0.1
+Version:        9.0.2
 Release:        1%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
@@ -547,6 +547,9 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Sun Sep 20 2026 Leigh Scott <leigh123linux@gmail.com> - 9.0.2-1
+- Update to 9.0.2
+
 * Fri Aug 21 2026 Leigh Scott <leigh123linux@gmail.com> - 9.0.1-1
 - Update to 9.0.1
 
