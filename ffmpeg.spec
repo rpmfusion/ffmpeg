@@ -1,19 +1,12 @@
 # TODO: add make test to %%check section
 
-#global branch  oldabi-
-#global date    20220104
-#global commit  311ea9c529117fb8e38abd6ca7e81782b6b21257
-#global rel %(c=%{commit}; echo ${c:0:7})
-
-%if (0%{?fedora} >= 37 || 0%{?rhel} >= 9) && 0%{!?_with_cuda:0}
+%if 0%{?fedora} >= 37 || 0%{?rhel} >= 9
 %bcond_without libavcodec_freeworld
 %else
 %bcond_with libavcodec_freeworld
 %endif
 
-%undefine _package_note_file
-
-%ifarch %{ix86}
+%ifarch %{ix86} %{arm}
 # Fails due to asm issue
 %global _lto_cflags %{nil}
 %endif
@@ -23,53 +16,48 @@
 
 # Disable because of gcc issue
 %global _without_lensfun  1
-%if 0%{?fedora}
-%global _with_placebo     1
+# Disable due to undefined symbols in libavformat
+#global _with_dvddemuxer 1
 %ifnarch i686
 %global _with_bs2b        1
+%global _with_codec2      1
 %global _with_chromaprint 1
+%global _with_gme         1
 %global _with_ilbc        1
 %global _with_openh264    1
+%if 0%{?fedora}
+%global _with_placebo     1
+%global _with_lc3              1
+%endif
 %global _with_rav1e       1
 %global _with_smb         1
 %global _with_snappy      1
+%global _with_svtav1      1
 %global _with_tesseract   1
 %global _with_twolame     1
+%if 0%{?fedora}
+%global _with_vvenc       1
+%endif
 %global _with_wavpack     1
 %global _with_webp        1
 %global _with_zmq         1
 %else
+%global _without_libklvanc 1
+%global _without_libaribb24 1
+%global _without_libaribcaption 1
 %global _without_rubberband  1
 %global _without_vulkan   1
 %endif
-%endif
 %ifarch x86_64
-%global _with_mfx         1
-%global _with_svtav1      1
+%global _with_vpl         1
 %global _with_vapoursynth 1
 %global _with_vmaf        1
 %endif
 
 # flavor nonfree
 %if 0%{?_with_cuda:1}
-%global debug_package %{nil}
-%global flavor           -cuda
-%global progs_suffix     -cuda
-#global build_suffix     -lgpl
-%ifarch %{cuda_arches}
 %global _with_cuvid      1
 %global _with_libnpp     1
-%endif
-%global _with_fdk_aac    1
-%global _without_cdio    1
-%global _without_frei0r  1
-%global _without_gpl     1
-%global _without_rubberband 1
-%global _without_vidstab 1
-%global _without_x264    1
-%global _without_x265    1
-%global _without_xvid    1
-%undefine _with_smb
 %endif
 
 # Disable nvenc when not relevant
@@ -79,7 +67,7 @@
 
 # extras flags
 %if 0%{!?_cuda_version:1}
-%global _cuda_version 11.2
+%global _cuda_version 12.6
 %endif
 %global _cuda_version_rpm %(echo %{_cuda_version} | sed -e 's/\\./-/')
 %global _cuda_bindir %{_cuda_prefix}/bin
@@ -112,7 +100,7 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        5.1.10
+Version:        7.1.5
 Release:        1%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
@@ -125,15 +113,20 @@ Source2:        https://ffmpeg.org/ffmpeg-devel.asc
 %endif
 # We don't endorse adding this patch but fedora insists on breaking the ffmpeg ABI
 Patch0:         ffmpeg-chromium.patch
+Patch2:         0001-configure-rename-POSIX-ioctl-check.patch
 Conflicts:      %{name}-free
 Provides:       %{name}-bin = %{version}-%{release}
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
+
+BuildRequires:  gcc
+BuildRequires:  make
 %{?_with_cuda:BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel}
 %{?_with_cuda:%{?!_with_cuda_nvcc:BuildRequires: clang}}
 %{?_with_libnpp:BuildRequires: pkgconfig(nppc-%{_cuda_version})}
 BuildRequires:  alsa-lib-devel
 BuildRequires:  AMF-devel
 BuildRequires:  bzip2-devel
+%{?_with_codec2:BuildRequires: codec2-devel}
 %{?_with_faac:BuildRequires: faac-devel}
 %{?_with_fdk_aac:BuildRequires: fdk-aac-devel}
 %{?_with_flite:BuildRequires: flite-devel}
@@ -145,34 +138,44 @@ BuildRequires:  fribidi-devel
 BuildRequires:  gnupg2
 BuildRequires:  gnutls-devel
 BuildRequires:  gsm-devel
+BuildRequires:  harfbuzz-devel
 %{?_with_ilbc:BuildRequires: ilbc-devel}
 BuildRequires:  lame-devel >= 3.98.3
-%{!?_without_jack:BuildRequires: jack-audio-connection-kit-devel}
+%{!?_without_jack:BuildRequires: pipewire-jack-audio-connection-kit-devel}
 %{!?_without_jxl:BuildRequires: libjxl-devel}
 %{!?_without_ladspa:BuildRequires: ladspa-devel}
+BuildRequires:  lcms2-devel
 %{!?_without_aom:BuildRequires:  libaom-devel}
+%{!?_without_aribb24:BuildRequires: pkgconfig(aribb24) >= 1.0.3}
 %{!?_without_dav1d:BuildRequires:  libdav1d-devel}
+%{?_with_dvddemuxer:BuildRequires:  libdvdnav-devel libdvdread-devel}
 %{!?_without_ass:BuildRequires:  libass-devel}
 %{!?_without_bluray:BuildRequires:  libbluray-devel}
 %{?_with_bs2b:BuildRequires: libbs2b-devel}
 %{?_with_caca:BuildRequires: libcaca-devel}
 %{!?_without_cdio:BuildRequires: libcdio-paranoia-devel}
 %{?_with_chromaprint:BuildRequires: libchromaprint-devel}
-%{?_with_crystalhd:BuildRequires: libcrystalhd-devel}
 %{!?_without_lensfun:BuildRequires: lensfun-devel}
 %if 0%{?_with_ieee1394}
 BuildRequires:  libavc1394-devel
 BuildRequires:  libdc1394-devel
 BuildRequires:  libiec61883-devel
 %endif
+%{!?_without_libaribcaption:BuildRequires: pkgconfig(libaribcaption) >= 1.1.1}
 BuildRequires:  libdrm-devel
 BuildRequires:  libgcrypt-devel
+%{!?_without_libklvanc:BuildRequires: libklvanc-devel}
 BuildRequires:  libGL-devel
+%{?_with_lc3:BuildRequires:  pkgconfig(lc3)}
 BuildRequires:  libmodplug-devel
 BuildRequires:  libmysofa-devel
+%if 0%{?fedora} && 0%{?fedora} > 39
+%{?_with_openh264:BuildRequires: noopenh264-devel}
+%else
 %{?_with_openh264:BuildRequires: openh264-devel}
+%endif
 BuildRequires:  libopenmpt-devel
-%{?_with_placebo:BuildRequires: libplacebo-devel}
+%{?_with_placebo:BuildRequires: libplacebo-devel >= 4.192.0}
 BuildRequires:  librsvg2-devel
 # Disable rtmp because of rfbz: 6441 & 2399
 %{?_with_rtmp:BuildRequires: librtmp-devel}
@@ -211,6 +214,7 @@ BuildRequires:  openjpeg2-devel
 %{!?_without_opus:BuildRequires: opus-devel >= 1.1.3}
 %{!?_without_pulse:BuildRequires: pulseaudio-libs-devel}
 BuildRequires:  perl(Pod::Man)
+BuildRequires:  qrencode-devel
 %{?_with_rav1e:BuildRequires: pkgconfig(rav1e)}
 %{!?_without_rubberband:BuildRequires: rubberband-devel}
 %{!?_without_tools:BuildRequires: SDL2-devel}
@@ -224,9 +228,11 @@ BuildRequires:  pkgconfig(srt)
 BuildRequires:  texinfo
 %{?_with_twolame:BuildRequires: twolame-devel}
 %{?_with_vmaf:BuildRequires: libvmaf-devel >= 1.5.2}
+%{?_with_vpl:BuildRequires: pkgconfig(vpl) >= 2.6}
+%{?_with_vvenc:BuildRequires: pkgconfig(libvvenc)}
 %{?_with_wavpack:BuildRequires: wavpack-devel}
 %{!?_without_vidstab:BuildRequires:  vid.stab-devel}
-%{!?_without_vulkan:BuildRequires:  vulkan-loader-devel pkgconfig(shaderc)}
+%{!?_without_vulkan:BuildRequires: pkgconfig(shaderc) pkgconfig(vulkan) >= 1.3.277}
 %{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.31}
 %{!?_without_x265:BuildRequires: x265-devel}
 %{!?_without_xvid:BuildRequires: xvidcore-devel}
@@ -316,24 +322,28 @@ Freeworld libavcodec to complement the distro counterparts
     %{!?_without_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3} \\\
     --enable-bzlib \\\
     %{?_with_chromaprint:--enable-chromaprint} \\\
-    %{!?_with_crystalhd:--disable-crystalhd} \\\
     --enable-fontconfig \\\
     %{!?_without_frei0r:--enable-frei0r} \\\
     --enable-gcrypt \\\
     %{?_with_gmp:--enable-gmp --enable-version3} \\\
     --enable-gnutls \\\
     %{!?_without_ladspa:--enable-ladspa} \\\
+    --enable-lcms2 \\\
     %{!?_without_aom:--enable-libaom} \\\
+    %{!?_without_libaribb24:--enable-libaribb24} \\\
+    %{!?_without_libaribcaption:--enable-libaribcaption} \\\
     %{!?_without_dav1d:--enable-libdav1d} \\\
     %{!?_without_ass:--enable-libass} \\\
     %{!?_without_bluray:--enable-libbluray} \\\
     %{?_with_bs2b:--enable-libbs2b} \\\
     %{?_with_caca:--enable-libcaca} \\\
+    %{?_with_codec2:--enable-libcodec2} \\\
     %{?_with_cuda_nvcc:--enable-cuda-nvcc --enable-nonfree} \\\
     %{?_with_cuvid:--enable-cuvid --enable-nonfree} \\\
     %{!?_without_cdio:--enable-libcdio} \\\
     %{?_with_ieee1394:--enable-libdc1394 --enable-libiec61883} \\\
     --enable-libdrm \\\
+    %{?_with_dvddemuxer:--enable-libdvdnav --enable-libdvdread} \\\
     %{?_with_faac:--enable-libfaac --enable-nonfree} \\\
     %{?_with_fdk_aac:--enable-libfdk-aac --enable-nonfree} \\\
     %{?_with_flite:--enable-libflite} \\\
@@ -343,7 +353,9 @@ Freeworld libavcodec to complement the distro counterparts
     %{!?_without_fribidi:--enable-libfribidi} \\\
     %{?_with_gme:--enable-libgme} \\\
     --enable-libgsm \\\
+    --enable-libharfbuzz \\\
     %{?_with_ilbc:--enable-libilbc} \\\
+    %{?_with_lc3:--enable-liblc3} \\\
     %{!?_without_lensfun:--enable-liblensfun} \\\
     %{?_with_libnpp:--enable-libnpp --enable-nonfree} \\\
     --enable-libmp3lame \\\
@@ -367,6 +379,7 @@ Freeworld libavcodec to complement the distro counterparts
     %{?_with_rav1e:--enable-librav1e} \\\
     %{?_with_rtmp:--enable-librtmp} \\\
     %{!?_without_rubberband:--enable-librubberband} \\\
+    --enable-libqrencode \\\
     %{?_with_smb:--enable-libsmbclient --enable-version3} \\\
     %{?_with_snappy:--enable-libsnappy} \\\
     --enable-libsoxr \\\
@@ -383,6 +396,7 @@ Freeworld libavcodec to complement the distro counterparts
     %{?_with_vmaf:--enable-libvmaf --enable-version3} \\\
     %{?_with_vapoursynth:--enable-vapoursynth} \\\
     %{!?_without_vpx:--enable-libvpx} \\\
+    %{?_with_vvenc:--enable-libvvenc} \\\
     %{!?_without_vulkan:--enable-vulkan --enable-libshaderc} \\\
     %{?_with_webp:--enable-libwebp} \\\
     %{!?_without_x264:--enable-libx264} \\\
@@ -416,6 +430,10 @@ echo "git-snapshot-%{?branch}%{date}-rpmfusion" > VERSION
 sed -i "s|check_host_cflags -O3|check_host_cflags %{optflags}|" configure
 mkdir -p _doc/examples
 cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
+%if 0%{?el9}
+# lower lcms version requirement for EL9
+sed -i -e 's/lcms2 >= 2.13/lcms2 >= 2.12/g' configure
+%endif
 
 %build
 %{?_with_cuda:export PATH=${PATH}:%{_cuda_bindir}}
@@ -432,6 +450,7 @@ cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
     --cpu=%{_target_cpu} \
 %endif
     %{?_with_mfx:--enable-libmfx} \
+    %{?_with_vpl:--enable-libvpl} \
 %ifarch %{ix86} x86_64 %{power64}
     --enable-runtime-cpudetect \
 %endif
@@ -486,8 +505,6 @@ mkdir -p %{buildroot}%{_libdir}/%{name}
 echo -e "%{_libdir}/%{name}\n" > %{buildroot}%{_sysconfdir}/ld.so.conf.d/%{name}-%{_lib}.conf
 cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
  %{buildroot}%{_libdir}/%{name}
-# Strip to prevent debuginfo duplication
-strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 %endif
 
 %ldconfig_scriptlets  libs
@@ -536,45 +553,213 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 
 
 %changelog
-* Mon Jun 22 2026 Nicolas Chauvet <kwizart@gmail.com> - 5.1.10-1
-- Update to 5.1.10
+* Wed Jul 01 2026 Nicolas Chauvet <kwizart@gmail.com> - 7.1.5-1
+- Update to 7.1.5
 
-* Tue May 19 2026 Nicolas Chauvet <kwizart@gmail.com> - 5.1.9-2
-- Backport ffmpeg-bin virtual provides
+* Tue May 05 2026 Leigh Scott <leigh123linux@gmail.com> - 7.1.4-1
+- Update to 7.1.4 release
 
-* Tue May 05 2026 Leigh Scott <leigh123linux@gmail.com> - 5.1.9-1
-- Update to 5.1.9 release
+* Sat Oct 04 2025 Robert-André Mauchin <zebob.m@gmail.com> - 7.1.2-7
+- Rebuild for svt-av1 soname bump
 
-* Fri Feb 13 2026 Nicolas Chauvet <kwizart@gmail.com> - 5.1.8-1
-- Update to 5.1.8
+* Fri Oct 03 2025 Robert-André Mauchin <zebob.m@gmail.com> - 7.1.2-6
+- Rebuild for svt-av1 soname bump
 
-* Wed Sep 17 2025 Nicolas Chauvet <kwizart@gmail.com> - 5.1.7-2
+* Fri Oct 03 2025 Robert-André Mauchin <zebob.m@gmail.com> - 7.1.2-5
+- Rebuild for svt-av1 soname bump
+
+* Fri Oct 03 2025 Robert-André Mauchin <zebob.m@gmail.com> - 7.1.2-4
+- Rebuild for svt-av1 soname bump
+
+* Mon Sep 29 2025 Robert-André Mauchin <zebob.m@gmail.com> - 7.1.2-3
+- Rebuild for svt-av1 soname bump
+
+* Wed Sep 17 2025 Nicolas Chauvet <kwizart@gmail.com> - 7.1.2-2
 - rebuilt
 
-* Tue Sep 16 2025 Nicolas Chauvet <kwizart@gmail.com> - 5.1.7-1
-- Update to 5.1.7
+* Tue Sep 16 2025 Leigh Scott <leigh123linux@gmail.com> - 7.1.2-1
+- Update to 7.1.2
 
-* Wed Nov 13 2024 Leigh Scott <leigh123linux@gmail.com> - 5.1.6-2
-- Rebuild for new dav1d version
+* Thu Sep 04 2025 Sérgio Basto <sergio@serjux.com> - 7.1.1-11
+- Enable chromaprint
 
-* Mon Aug 05 2024 Leigh Scott <leigh123linux@gmail.com> - 5.1.6-1
-- Update to 5.1.6
+* Wed Sep 03 2025 Sérgio Basto <sergio@serjux.com> - 7.1.1-10
+- Rebuild for x264
+- Disable chromaprint to allow building with new x264
 
-* Sun Jun 16 2024 Leigh Scott <leigh123linux@gmail.com> - 5.1.5-1
-- Update to 5.1.5
+* Tue Jul 29 2025 Nicolas Chauvet <kwizart@gmail.com> - 7.1.1-9
+- Switch to OpenCL-ICD-Loader-devel
+- Backport configure-rename-POSIX-ioctl-check
+- Add missing default BR
 
-* Wed Nov 15 2023 Nicolas Chauvet <kwizart@gmail.com> - 5.1.4-1
-- Update to 5.1.4
+* Tue Jul 29 2025 Nicolas Chauvet <kwizart@gmail.com> - 7.1.1-8
+- Rebuilt
 
-* Sun May 14 2023 Leigh Scott <leigh123linux@gmail.com> - 5.1.3-3
+* Sun Jul 27 2025 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 7.1.1-7
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_43_Mass_Rebuild
+
+* Tue Apr 29 2025 Leigh Scott <leigh123linux@gmail.com> - 7.1.1-6
+- Enable vvenc support
+
+* Wed Apr 09 2025 Leigh Scott <leigh123linux@gmail.com> - 7.1.1-5
+- Enable Game Music Emu support (rfbz#7209)
+
+* Sun Mar 16 2025 Leigh Scott <leigh123linux@gmail.com> - 7.1.1-4
+- Rebuild for new noopenh264 version
+
+* Fri Mar 07 2025 Leigh Scott <leigh123linux@gmail.com> - 7.1.1-3
+- Add fix for CVE-2025-22921
+
+* Thu Mar 06 2025 Dominik Mierzejewski <dominik@greysector.net> - 7.1.1-2
+- Enable LC3 codec via liblc3
+
+* Mon Mar 03 2025 Leigh Scott <leigh123linux@gmail.com> - 7.1.1-1
+- Update to 7.1.1
+
+* Mon Feb 10 2025 Leigh Scott <leigh123linux@gmail.com> - 7.1-1
+- Update to 7.1
+
+* Mon Feb 10 2025 Leigh Scott <leigh123linux@gmail.com> - 7.0.2-12
+- rebuilt
+
+* Thu Feb 06 2025 Leigh Scott <leigh123linux@gmail.com> - 7.0.2-11
+- rebuilt
+
+* Thu Feb 06 2025 Mamoru TASAKA <mtasaka@fedoraproject.org> - 7.0.2-10
+- Rebuild for jpegxl (libjxl) 0.11.1
+
+* Tue Jan 28 2025 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 7.0.2-9
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_42_Mass_Rebuild
+
+* Fri Jan 10 2025 Leigh Scott <leigh123linux@gmail.com> - 7.0.2-8
+- rebuilt
+
+* Fri Jan 10 2025 Leigh Scott <leigh123linux@gmail.com> - 7.0.2-7
+- Rebuild
+
+* Sat Nov 23 2024 Leigh Scott <leigh123linux@gmail.com> - 7.0.2-6
+- Rebuild for new x265
+
+* Sun Nov 17 2024 Dominik Mierzejewski <dominik@greysector.net> - 7.0.2-5
+- Rebuild for tesseract-5.5
+
+* Wed Oct 09 2024 Leigh Scott <leigh123linux@gmail.com> - 7.0.2-4
+- Disable DVD demuxer due to undefined symbols in libavformat
+
+* Mon Oct 07 2024 Nicolas Chauvet <kwizart@gmail.com> - 7.0.2-3
+- Sync with fedora deps:
+  Enable Kernel Labs VANC processing and ARIB text/caption decoding
+
+* Fri Sep 20 2024 Leigh Scott <leigh123linux@gmail.com> - 7.0.2-2
+- Rebuild
+
+* Sun Aug 04 2024 Leigh Scott <leigh123linux@gmail.com> - 7.0.2-1
+- Update to 7.0.2
+
+* Thu Aug 01 2024 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 7.0.1-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_41_Mass_Rebuild
+
+* Fri May 31 2024 Robert-André Mauchin <zebob.m@gmail.com> - 7.0.1-2
+- Rebuild for svt-av1 2.1.0
+
+* Sun May 26 2024 Leigh Scott <leigh123linux@gmail.com> - 7.0.1-1
+- Update to 7.0.1
+
+* Fri Apr 19 2024 Leigh Scott <leigh123linux@gmail.com> - 7.0-1
+- Update to 7.0
+
+* Sat Apr 06 2024 Leigh Scott <leigh123linux@gmail.com> - 6.1.1-8
+- Rebuild for new x265 version
+
+* Fri Mar 22 2024 Sérgio Basto <sergio@serjux.com> - 6.1.1-7
+- Rebuild for jpegxl (libjxl) 0.10.2
+
+* Tue Mar 12 2024 Dominik Mierzejewski <dominik@greysector.net> - 6.1.1-6
+- Enable drawtext filter (requires libharfbuzz, rfbz#6889)
+
+* Thu Feb 01 2024 Leigh Scott <leigh123linux@gmail.com> - 6.1.1-5
+- rebuilt
+
+* Thu Feb 01 2024 Leigh Scott <leigh123linux@gmail.com> - 6.1.1-4
+- Switch to noopenh264-devel for f39+
+
+* Tue Jan 16 2024 Nicolas Chauvet <kwizart@gmail.com> - 6.1.1-3
+- Rebuilt for libavcodec-freeworld
+
+* Sun Jan 14 2024 Leigh Scott <leigh123linux@gmail.com> - 6.1.1-2
+- rebuilt
+
+* Mon Jan 01 2024 Leigh Scott <leigh123linux@gmail.com> - 6.1.1-1
+- Update to 6.1.1 release
+
+* Wed Nov 15 2023 Nicolas Chauvet <kwizart@gmail.com> - 6.1-3
+- Bump
+
+* Wed Nov 15 2023 Leigh Scott <leigh123linux@gmail.com> - 6.1-2
+- Add patch to fix fedora ffmpeg brokenABI change
+
+* Sat Nov 11 2023 Leigh Scott <leigh123linux@gmail.com> - 6.1-1
+- Update to 6.1 release
+
+* Fri Nov 10 2023 Leigh Scott <leigh123linux@gmail.com> - 6.0.1-1
+- Update to 6.0.1 release
+
+* Sun Oct 08 2023 Dominik Mierzejewski <dominik@greysector.net> - 6.0-18
+- Backport upstream patch to fix segfault when passing non-existent filter
+  option (rfbz#6773)
+
+* Fri Sep 29 2023 Nicolas Chauvet <nchauvet@linagora.com> - 6.0-17
+- Rebuild for libplacebo
+- Backport upstream patch to fix assembly with binutils 2.41 - rathann
+
+* Fri Jul 28 2023 Nicolas Chauvet <kwizart@gmail.com> - 6.0-16
+- rebuilt
+
+* Sun Jul 16 2023 Leigh Scott <leigh123linux@gmail.com> - 6.0-15
+- rebuilt
+
+* Fri Jun 23 2023 Leigh Scott <leigh123linux@gmail.com> - 6.0-14
+- rebuilt
+
+* Fri Jun 23 2023 Leigh Scott <leigh123linux@gmail.com> - 6.0-13
+- rebuilt
+
+* Wed Jun 14 2023 Leigh Scott <leigh123linux@gmail.com> - 6.0-12
+- rebuilt
+
+* Sun May 14 2023 Leigh Scott <leigh123linux@gmail.com> - 6.0-11
 - fedora cisco repo isn't multiarch
 
-* Fri May 12 2023 Leigh Scott <leigh123linux@gmail.com> - 5.1.3-2
+* Fri May 12 2023 Leigh Scott <leigh123linux@gmail.com> - 6.0-10
 - Enable openh264 for fedora
 
-* Fri Mar 31 2023 Leigh Scott <leigh123linux@gmail.com> - 5.1.3-1
-- Update to 5.1.3 release
+* Mon Apr 24 2023 Nicolas Chauvet <kwizart@gmail.com> - 6.0-9
+- Add ffmpeg-bin for deps
+
+* Fri Apr 07 2023 Leigh Scott <leigh123linux@gmail.com> - 6.0-8
+- rebuilt
+
+* Fri Mar 24 2023 Leigh Scott <leigh123linux@gmail.com> - 6.0-7
+- rebuilt
+
+* Wed Mar 22 2023 Nicolas Chauvet <kwizart@gmail.com> - 6.0-6
+- Rebuilt
+
+* Sat Mar 18 2023 Todd Zullinger <tmz@pobox.com> - 6.0-5
 - verify upstream source signature
+
+* Sun Mar 12 2023 Leigh Scott <leigh123linux@gmail.com> - 6.0-4
+- Rebuild against new nvcodec-headers
+
+* Sun Mar 12 2023 Leigh Scott <leigh123linux@gmail.com> - 6.0-3
+- Enable chromaprint
+- Enable svt-av1 on all arches
+
+* Tue Feb 28 2023 Leigh Scott <leigh123linux@gmail.com> - 6.0-2
+- Disable chromaprint
+
+* Tue Feb 21 2023 Leigh Scott <leigh123linux@gmail.com> - 6.0-1
+- Update to 6.0 release
 
 * Sun Jan 08 2023 Leigh Scott <leigh123linux@gmail.com> - 5.1.2-9
 - Enable libplacebo (rfbz#6549)
@@ -744,7 +929,7 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 - Revert last commit
 
 * Sat Oct 10 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-10
-- Add VP9 10/12 Bit support for VDPAU 
+- Add VP9 10/12 Bit support for VDPAU
 
 * Tue Aug 18 2020 Leigh Scott <leigh123linux@gmail.com> - 4.3.1-9
 - Disable vulkan on i686
@@ -858,7 +1043,7 @@ strip %{buildroot}%{_libdir}/%{name}/libavcodec.so.*
 - Enable vulkan support
 
 * Sat Feb 22 2020 Leigh Scott <leigh123linux@googlemail.com> - 4.3-0.1.20200222git
-- Update to 20200222git 
+- Update to 20200222git
 
 * Tue Feb 04 2020 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 4.2.2-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
