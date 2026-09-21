@@ -89,8 +89,8 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        8.1.2
-Release:        3%{?dist}
+Version:        8.1.3
+Release:        1%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -545,6 +545,9 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Mon Sep 21 2026 Leigh Scott <leigh123linux@gmail.com> - 8.1.3-1
+- Update to 8.1.3
+
 * Wed Jul 29 2026 Leigh Scott <leigh123linux@gmail.com> - 8.1.2-3
 - Add upstream commit to address firefox vulkan rendering issue with nvidia
 
