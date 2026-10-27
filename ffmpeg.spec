@@ -93,7 +93,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        9.0.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -557,6 +557,9 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Tue Oct 27 2026 Leigh Scott <leigh123linux@gmail.com> - 9.0.2-2
+- Add missing deps and enable decklink suppot
+
 * Sun Sep 20 2026 Leigh Scott <leigh123linux@gmail.com> - 9.0.2-1
 - Update to 9.0.2
 
