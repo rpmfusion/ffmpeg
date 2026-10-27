@@ -17,10 +17,14 @@
 #global _with_dvddemuxer 1
 %ifnarch i686
 %global _with_bs2b        1
+%global _with_caca        1
 %global _with_codec2      1
 %global _with_chromaprint 1
 %global _with_gme         1
+%global _with_flite       1
 %global _with_ilbc        1
+%global _with_ieee1394    1
+%global _with_libklvanc   1
 %global _with_openh264    1
 %if 0%{?fedora}
 %global _with_placebo     1
@@ -35,9 +39,9 @@
 %global _with_vvenc       1
 %global _with_wavpack     1
 %global _with_webp        1
+%global _with_xeve        1
 %global _with_zmq         1
 %else
-%global _without_libklvanc 1
 %global _without_libaribb24 1
 %global _without_libaribcaption 1
 %global _without_rubberband  1
@@ -157,7 +161,7 @@ BuildRequires:  libiec61883-devel
 %{!?_without_libaribcaption:BuildRequires: pkgconfig(libaribcaption) >= 1.1.1}
 BuildRequires:  libdrm-devel
 BuildRequires:  libgcrypt-devel
-%{!?_without_libklvanc:BuildRequires: libklvanc-devel}
+%{?_with_libklvanc:BuildRequires: libklvanc-devel}
 BuildRequires:  libGL-devel
 %{?_with_lc3:BuildRequires:  pkgconfig(lc3)}
 BuildRequires:  libmodplug-devel
@@ -169,6 +173,8 @@ BuildRequires:  libmysofa-devel
 %endif
 BuildRequires:  libopenmpt-devel
 %{?_with_placebo:BuildRequires: libplacebo-devel >= 4.192.0}
+BuildRequires:  pkgconfig(librabbitmq)
+BuildRequires:  pkgconfig(librist)
 BuildRequires:  librsvg2-devel
 # Disable rtmp because of rfbz: 6441 & 2399
 %{?_with_rtmp:BuildRequires: librtmp-devel}
@@ -229,8 +235,9 @@ BuildRequires:  texinfo
 %{!?_without_vulkan:BuildRequires: glslc pkgconfig(vulkan) >= 1.3.277}
 %{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.31}
 %{!?_without_x265:BuildRequires: x265-devel}
+%{?_with_xeve:BuildRequires: pkgconfig(xevdb) pkgconfig(xeveb)}
 %{!?_without_xvid:BuildRequires: xvidcore-devel}
-%{!?_without_zimg:BuildRequires:  zimg-devel >= 2.7.0}
+%{!?_without_zimg:BuildRequires: zimg-devel >= 2.7.0}
 BuildRequires:  zlib-devel
 %{?_with_zmq:BuildRequires: zeromq-devel}
 %{!?_without_zvbi:BuildRequires: zvbi-devel}
@@ -339,12 +346,13 @@ Freeworld libavcodec to complement the distro counterparts
     %{?_with_ieee1394:--enable-libdc1394 --enable-libiec61883} \\\
     --enable-libdrm \\\
     %{?_with_dvddemuxer:--enable-libdvdnav --enable-libdvdread} \\\
+    %{?_with_xeve:--enable-libxeveb --enable-libxevdb} \\\
     %{?_with_faac:--enable-libfaac --enable-nonfree} \\\
     --enable-libfdk-aac \\\
     %{?_with_flite:--enable-libflite} \\\
     %{!?_without_jack:--enable-libjack} \\\
     %{!?_without_jxl:--enable-libjxl} \\\
-    %{!?_without_libklvanc:--enable-libklvanc} \\\
+    %{?_with_libklvanc:--enable-libklvanc} \\\
     --enable-libfreetype \\\
     %{!?_without_fribidi:--enable-libfribidi} \\\
     %{?_with_gme:--enable-libgme} \\\
@@ -371,6 +379,8 @@ Freeworld libavcodec to complement the distro counterparts
     %{!?_without_opus:--enable-libopus} \\\
     %{!?_without_pulse:--enable-libpulse} \\\
     %{?_with_placebo:--enable-libplacebo} \\\
+    --enable-librabbitmq \\\
+    --enable-librist \\\
     --enable-librsvg \\\
     %{?_with_rav1e:--enable-librav1e} \\\
     %{?_with_rtmp:--enable-librtmp} \\\
