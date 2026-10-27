@@ -13,8 +13,7 @@
 
 # Disable because of gcc issue
 %global _without_lensfun  1
-# Disable due to undefined symbols in libavformat
-#global _with_dvddemuxer 1
+%global _with_dvddemuxer 1
 %ifnarch i686
 %global _with_bs2b        1
 %global _with_caca        1
@@ -324,6 +323,7 @@ Freeworld libavcodec to complement the distro counterparts
     %{!?_without_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3} \\\
     --enable-bzlib \\\
     %{?_with_chromaprint:--enable-chromaprint} \\\
+    --enable-decklink \\\
     --enable-fontconfig \\\
     %{!?_without_frei0r:--enable-frei0r} \\\
     --enable-gcrypt \\\
