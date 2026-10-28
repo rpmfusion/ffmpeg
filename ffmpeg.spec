@@ -1,9 +1,7 @@
 # TODO: add make test to %%check section
 
 %if 0%{?fedora} >= 37 || 0%{?rhel} >= 9
-%bcond_without libavcodec_freeworld
-%else
-%bcond_with libavcodec_freeworld
+%bcond libavcodec_freeworld 1
 %endif
 
 %ifarch %{ix86} %{arm}
@@ -11,45 +9,91 @@
 %global _lto_cflags %{nil}
 %endif
 
-# Disable because of gcc issue
-%global _without_lensfun  1
-%global _with_dvddemuxer 1
+# Disabled by default
+%bcond cuda_nvcc 0
+%bcond faac 0
+%bcond lensfun 0
+%bcond mfx 0
+%bcond netcdf 0
+%bcond opencv 0
+%bcond rpi 0
+%bcond rtmp 0
+
+# The Raspberry Pi build implies these
+%if %{with rpi}
+%bcond omx 1
+%bcond omx_rpi 1
+%bcond mmal 1
+%endif
+
+# Enabled by default
+%bcond amr 1
+%bcond aom 1
+%bcond ass 1
+%bcond bluray 1
+%bcond cdio 1
+%bcond dav1d 1
+%bcond frei0r 1
+%bcond fribidi 1
+%bcond gpl 1
+%bcond jack 1
+%bcond jxl 1
+%bcond ladspa 1
+%bcond lv2 1
+%bcond openal 1
+%bcond opencl 1
+%bcond opengl 1
+%bcond opus 1
+%bcond pulse 1
+%bcond tools 1
+%bcond vaapi 1
+%bcond vidstab 1
+%bcond vpx 1
+%bcond x264 1
+%bcond x265 1
+%bcond xvid 1
+%bcond zimg 1
+%bcond zvbi 1
+
+# Not available on i686
 %ifnarch i686
-%global _with_bs2b        1
-%global _with_caca        1
-%global _with_codec2      1
-%global _with_chromaprint 1
-%global _with_gme         1
-%global _with_flite       1
-%global _with_ilbc        1
-%global _with_ieee1394    1
-%global _with_libklvanc   1
-%global _with_openh264    1
+%bcond bs2b 1
+%bcond caca 1
+%bcond chromaprint 1
+%bcond codec2 1
+%bcond dvddemuxer 1
+%bcond flite 1
+%bcond gme 1
+%bcond gmp 1
+%bcond ieee1394 1
+%bcond ilbc 1
+%bcond libaribb24 1
+%bcond libaribcaption 1
+%bcond libklvanc 1
+%bcond openh264 1
+%bcond rav1e 1
+%bcond rubberband 1
+%bcond smb 1
+%bcond snappy 1
+%bcond svtav1 1
+%bcond tesseract 1
+%bcond twolame 1
+%bcond vulkan 1
+%bcond vvenc 1
+%bcond wavpack 1
+%bcond webp 1
+%bcond xeve 1
+%bcond zmq 1
 %if 0%{?fedora}
-%global _with_placebo     1
-%global _with_lc3              1
+%bcond lc3 1
+%bcond placebo 1
 %endif
-%global _with_rav1e       1
-%global _with_smb         1
-%global _with_snappy      1
-%global _with_svtav1      1
-%global _with_tesseract   1
-%global _with_twolame     1
-%global _with_vvenc       1
-%global _with_wavpack     1
-%global _with_webp        1
-%global _with_xeve        1
-%global _with_zmq         1
-%else
-%global _without_libaribb24 1
-%global _without_libaribcaption 1
-%global _without_rubberband  1
-%global _without_vulkan   1
 %endif
+
 %ifarch x86_64
-%global _with_vpl         1
-%global _with_vapoursynth 1
-%global _with_vmaf        1
+%bcond vapoursynth 1
+%bcond vmaf 1
+%bcond vpl 1
 %endif
 
 # Cuda and others are only available on some arches
@@ -57,13 +101,12 @@
 
 # Disable nvenc when not relevant
 %ifarch %{cuda_arches}
-%global _with_cuda      1
-%global _with_nvenc    1
-%global _with_cuvid     1
+%bcond cuda 1
+%bcond nvenc 1
 %endif
 
 # extras flags
-%if 0%{?_with_cuda_nvcc:1}
+%if %{with cuda_nvcc}
 %if 0%{!?_cuda_version:1}
 %global _cuda_version 13.2
 %global _cuda_version_rpm %(echo %{_cuda_version} | sed -e 's/\\./-/')
@@ -73,18 +116,15 @@
 %global cuda_ldflags $(pkg-config --libs cuda-%{_cuda_version})
 %endif
 
-%if 0%{?_with_rpi:1}
-%global _with_omx        1
-%global _with_omx_rpi    1
-%global _with_mmal       1
+%if %{with rpi}
 ExclusiveArch: armv7hnl
 %endif
 
-%if 0%{?_without_gpl}
+%if %{without gpl}
 %global lesser L
 %endif
 
-%if 0%{!?_without_amr} || 0%{?_with_gmp} || 0%{?_with_smb} || 0%{?_with_vmaf}
+%if %{with amr} || %{with gmp} || %{with smb} || %{with vmaf}
 %global ffmpeg_license %{?lesser}GPLv3+
 %else
 %global ffmpeg_license %{?lesser}GPLv2+
@@ -116,130 +156,257 @@ Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 
 BuildRequires:  gcc
 BuildRequires:  make
-%{?_with_cuda_nvcc:BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel}
-%{?!_with_cuda_nvcc:BuildRequires: clang}
+%if %{with cuda_nvcc}
+BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel
+%else
+BuildRequires: clang
+%endif
 BuildRequires:  alsa-lib-devel
 BuildRequires:  AMF-devel
 BuildRequires:  bzip2-devel
-%{?_with_codec2:BuildRequires: codec2-devel}
+%if %{with codec2}
+BuildRequires: codec2-devel
+%endif
 BuildRequires:  decklink-static
-%{?_with_faac:BuildRequires: faac-devel}
+%if %{with faac}
+BuildRequires: faac-devel
+%endif
 BuildRequires: pkgconfig(fdk-aac)
-%{?_with_flite:BuildRequires: flite-devel}
+%if %{with flite}
+BuildRequires: flite-devel
+%endif
 BuildRequires:  fontconfig-devel
 BuildRequires:  freetype-devel
 BuildRequires:  fribidi-devel
-%{!?_without_frei0r:BuildRequires: frei0r-devel}
-%{?_with_gme:BuildRequires: game-music-emu-devel}
+%if %{with frei0r}
+BuildRequires: frei0r-devel
+%endif
+%if %{with gme}
+BuildRequires: game-music-emu-devel
+%endif
 BuildRequires:  gnupg2
 BuildRequires:  gnutls-devel
 BuildRequires:  gsm-devel
 BuildRequires:  harfbuzz-devel
-%{?_with_ilbc:BuildRequires: ilbc-devel}
+%if %{with ilbc}
+BuildRequires: ilbc-devel
+%endif
 BuildRequires:  lame-devel >= 3.98.3
-%{!?_without_jack:BuildRequires: pipewire-jack-audio-connection-kit-devel}
-%{!?_without_jxl:BuildRequires: libjxl-devel}
-%{!?_without_ladspa:BuildRequires: ladspa-devel}
+%if %{with jack}
+BuildRequires: pipewire-jack-audio-connection-kit-devel
+%endif
+%if %{with jxl}
+BuildRequires: libjxl-devel
+%endif
+%if %{with ladspa}
+BuildRequires: ladspa-devel
+%endif
 BuildRequires:  lcms2-devel
-%{!?_without_aom:BuildRequires:  libaom-devel}
-%{!?_without_aribb24:BuildRequires: pkgconfig(aribb24) >= 1.0.3}
-%{!?_without_dav1d:BuildRequires:  libdav1d-devel}
-%{?_with_dvddemuxer:BuildRequires:  libdvdnav-devel libdvdread-devel}
-%{!?_without_ass:BuildRequires:  libass-devel}
-%{!?_without_bluray:BuildRequires:  libbluray-devel}
-%{?_with_bs2b:BuildRequires: libbs2b-devel}
-%{?_with_caca:BuildRequires: libcaca-devel}
-%{!?_without_cdio:BuildRequires: libcdio-paranoia-devel}
-%{?_with_chromaprint:BuildRequires: libchromaprint-devel}
-%{!?_without_lensfun:BuildRequires: lensfun-devel}
-%if 0%{?_with_ieee1394}
+%if %{with aom}
+BuildRequires:  libaom-devel
+%endif
+%if %{with libaribb24}
+BuildRequires: pkgconfig(aribb24) >= 1.0.3
+%endif
+%if %{with dav1d}
+BuildRequires:  libdav1d-devel
+%endif
+%if %{with dvddemuxer}
+BuildRequires:  libdvdnav-devel libdvdread-devel
+%endif
+%if %{with ass}
+BuildRequires:  libass-devel
+%endif
+%if %{with bluray}
+BuildRequires:  libbluray-devel
+%endif
+%if %{with bs2b}
+BuildRequires: libbs2b-devel
+%endif
+%if %{with caca}
+BuildRequires: libcaca-devel
+%endif
+%if %{with cdio}
+BuildRequires: libcdio-paranoia-devel
+%endif
+%if %{with chromaprint}
+BuildRequires: libchromaprint-devel
+%endif
+%if %{with lensfun}
+BuildRequires: lensfun-devel
+%endif
+%if %{with ieee1394}
 BuildRequires:  libavc1394-devel
 BuildRequires:  libdc1394-devel
 BuildRequires:  libiec61883-devel
 %endif
-%{!?_without_libaribcaption:BuildRequires: pkgconfig(libaribcaption) >= 1.1.1}
+%if %{with libaribcaption}
+BuildRequires: pkgconfig(libaribcaption) >= 1.1.1
+%endif
 BuildRequires:  libdrm-devel
 BuildRequires:  libgcrypt-devel
-%{?_with_libklvanc:BuildRequires: libklvanc-devel}
+%if %{with libklvanc}
+BuildRequires: libklvanc-devel
+%endif
 BuildRequires:  libGL-devel
-%{?_with_lc3:BuildRequires:  pkgconfig(lc3)}
+%if %{with lc3}
+BuildRequires:  pkgconfig(lc3)
+%endif
 BuildRequires:  libmodplug-devel
 BuildRequires:  libmysofa-devel
+%if %{with openh264}
 %if 0%{?fedora} && 0%{?fedora} > 39
-%{?_with_openh264:BuildRequires: noopenh264-devel}
+BuildRequires: noopenh264-devel
 %else
-%{?_with_openh264:BuildRequires: openh264-devel}
+BuildRequires: openh264-devel
+%endif
 %endif
 BuildRequires:  libopenmpt-devel
-%{?_with_placebo:BuildRequires: libplacebo-devel >= 4.192.0}
+%if %{with placebo}
+BuildRequires: libplacebo-devel >= 4.192.0
+%endif
 BuildRequires:  pkgconfig(librabbitmq)
 BuildRequires:  pkgconfig(librist)
 BuildRequires:  librsvg2-devel
 # Disable rtmp because of rfbz: 6441 & 2399
-%{?_with_rtmp:BuildRequires: librtmp-devel}
-%{?_with_smb:BuildRequires: libsmbclient-devel}
+%if %{with rtmp}
+BuildRequires: librtmp-devel
+%endif
+%if %{with smb}
+BuildRequires: libsmbclient-devel
+%endif
 BuildRequires:  libssh-devel
 BuildRequires:  libtheora-devel
 BuildRequires:  libv4l-devel
-%{?!_without_vaapi:BuildRequires: libva-devel >= 0.31.0}
+%if %{with vaapi}
+BuildRequires: libva-devel >= 0.31.0
+%endif
 BuildRequires:  libvdpau-devel
 BuildRequires:  libvorbis-devel
-%{?_with_vapoursynth:BuildRequires: vapoursynth-devel}
-%{?!_without_vpx:BuildRequires: libvpx-devel >= 1.4.0}
-%{?_with_mfx:BuildRequires: pkgconfig(libmfx) >= 1.23-1}
+%if %{with vapoursynth}
+BuildRequires: vapoursynth-devel
+%endif
+%if %{with vpx}
+BuildRequires: libvpx-devel >= 1.4.0
+%endif
+%if %{with mfx}
+BuildRequires: pkgconfig(libmfx) >= 1.23-1
+%endif
 %ifarch %{ix86} x86_64
 BuildRequires:  nasm
 %endif
-%{?_with_webp:BuildRequires: libwebp-devel}
-%{?_with_netcdf:BuildRequires: netcdf-devel}
-%{?_with_rpi:BuildRequires: raspberrypi-vc-devel}
-%{?_with_nvenc:BuildRequires: nv-codec-headers13.0}
-%{!?_without_amr:BuildRequires: opencore-amr-devel vo-amrwbenc-devel}
-%{?_with_omx:BuildRequires: libomxil-bellagio-devel}
+%if %{with webp}
+BuildRequires: libwebp-devel
+%endif
+%if %{with netcdf}
+BuildRequires: netcdf-devel
+%endif
+%if %{with rpi}
+BuildRequires: raspberrypi-vc-devel
+%endif
+%if %{with nvenc}
+BuildRequires: nv-codec-headers13.0
+%endif
+%if %{with amr}
+BuildRequires: opencore-amr-devel vo-amrwbenc-devel
+%endif
+%if %{with omx}
+BuildRequires: libomxil-bellagio-devel
+%endif
 BuildRequires:  libxcb-devel
 BuildRequires:  libxml2-devel
-%{!?_without_lv2:BuildRequires:  lilv-devel lv2-devel}
-%{!?_without_openal:BuildRequires: openal-soft-devel}
+%if %{with lv2}
+BuildRequires:  lilv-devel lv2-devel
+%endif
+%if %{with openal}
+BuildRequires: openal-soft-devel
+%endif
 BuildRequires:  openapv-devel
-%if 0%{!?_without_opencl:1}
+%if %{with opencl}
 %if 0%{?fedora}
 BuildRequires:  opencl-headers OpenCL-ICD-Loader-devel
 %else
 BuildRequires:  opencl-headers pkgconfig(OpenCL)
 %endif
 %endif
-%{?_with_opencv:BuildRequires: opencv-devel}
+%if %{with opencv}
+BuildRequires: opencv-devel
+%endif
 BuildRequires:  openjpeg2-devel
-%{!?_without_opus:BuildRequires: opus-devel >= 1.1.3}
-%{!?_without_pulse:BuildRequires: pulseaudio-libs-devel}
+%if %{with opus}
+BuildRequires: opus-devel >= 1.1.3
+%endif
+%if %{with pulse}
+BuildRequires: pulseaudio-libs-devel
+%endif
 BuildRequires:  perl(Pod::Man)
 BuildRequires:  qrencode-devel
-%{?_with_rav1e:BuildRequires: pkgconfig(rav1e)}
-%{!?_without_rubberband:BuildRequires: rubberband-devel}
-%{!?_without_tools:BuildRequires: SDL2-devel}
-%{?_with_snappy:BuildRequires: snappy-devel}
+%if %{with rav1e}
+BuildRequires: pkgconfig(rav1e)
+%endif
+%if %{with rubberband}
+BuildRequires: rubberband-devel
+%endif
+%if %{with tools}
+BuildRequires: SDL2-devel
+%endif
+%if %{with snappy}
+BuildRequires: snappy-devel
+%endif
 BuildRequires:  soxr-devel
 BuildRequires:  speex-devel
 BuildRequires:  pkgconfig(srt)
-%{?_with_svtav1:BuildRequires: svt-av1-devel >= 0.9.0}
-%{?_with_tesseract:BuildRequires: tesseract-devel}
+%if %{with svtav1}
+BuildRequires: svt-av1-devel >= 0.9.0
+%endif
+%if %{with tesseract}
+BuildRequires: tesseract-devel
+%endif
 #BuildRequires:  texi2html
 BuildRequires:  texinfo
-%{?_with_twolame:BuildRequires: twolame-devel}
-%{?_with_vmaf:BuildRequires: libvmaf-devel >= 1.5.2}
-%{?_with_vpl:BuildRequires: pkgconfig(vpl) >= 2.6}
-%{?_with_vvenc:BuildRequires: pkgconfig(libvvenc)}
-%{?_with_wavpack:BuildRequires: wavpack-devel}
-%{!?_without_vidstab:BuildRequires:  vid.stab-devel}
-%{!?_without_vulkan:BuildRequires: glslc pkgconfig(vulkan) >= 1.3.277}
-%{!?_without_x264:BuildRequires: x264-devel >= 0.0.0-0.31}
-%{!?_without_x265:BuildRequires: x265-devel}
-%{?_with_xeve:BuildRequires: pkgconfig(xevdb) pkgconfig(xeveb)}
-%{!?_without_xvid:BuildRequires: xvidcore-devel}
-%{!?_without_zimg:BuildRequires: zimg-devel >= 2.7.0}
+%if %{with twolame}
+BuildRequires: twolame-devel
+%endif
+%if %{with vmaf}
+BuildRequires: libvmaf-devel >= 1.5.2
+%endif
+%if %{with vpl}
+BuildRequires: pkgconfig(vpl) >= 2.6
+%endif
+%if %{with vvenc}
+BuildRequires: pkgconfig(libvvenc)
+%endif
+%if %{with wavpack}
+BuildRequires: wavpack-devel
+%endif
+%if %{with vidstab}
+BuildRequires:  vid.stab-devel
+%endif
+%if %{with vulkan}
+BuildRequires: glslc pkgconfig(vulkan) >= 1.3.277
+%endif
+%if %{with x264}
+BuildRequires: x264-devel >= 0.0.0-0.31
+%endif
+%if %{with x265}
+BuildRequires: x265-devel
+%endif
+%if %{with xeve}
+BuildRequires: pkgconfig(xevdb) pkgconfig(xeveb)
+%endif
+%if %{with xvid}
+BuildRequires: xvidcore-devel
+%endif
+%if %{with zimg}
+BuildRequires: zimg-devel >= 2.7.0
+%endif
 BuildRequires:  zlib-devel
-%{?_with_zmq:BuildRequires: zeromq-devel}
-%{!?_without_zvbi:BuildRequires: zvbi-devel}
+%if %{with zmq}
+BuildRequires: zeromq-devel
+%endif
+%if %{with zvbi}
+BuildRequires: zvbi-devel
+%endif
 
 %description
 FFmpeg is a complete and free Internet live audio and video
@@ -255,7 +422,9 @@ Conflicts:      libavformat-free
 Conflicts:      libavutil-free
 Conflicts:      libswresample-free
 Conflicts:      libswscale-free
-%{?_with_vmaf:Recommends:     vmaf-models}
+%if %{with vmaf}
+Recommends:     vmaf-models
+%endif
 Provides: libavcodec-freeworld = %{version}-1
 Provides: libavcodec-freeworld%{?_isa} = %{version}-1
 
@@ -301,128 +470,6 @@ Conflicts: libavcodec-free < %{version}
 Freeworld libavcodec to complement the distro counterparts
 %endif
 
-
-# Don't use the %%configure macro as this is not an autotool script
-%global ff_configure \
-./configure \\\
-    --prefix=%{_prefix} \\\
-    --bindir=%{_bindir} \\\
-    --datadir=%{_datadir}/%{name} \\\
-    --docdir=%{_docdir}/%{name} \\\
-    --incdir=%{_includedir}/%{name} \\\
-    --libdir=%{_libdir} \\\
-    --mandir=%{_mandir} \\\
-    --arch=%{_target_cpu} \\\
-    --optflags="%{optflags}" \\\
-    --extra-ldflags="%{?__global_ldflags} %{?cuda_ldflags}" \\\
-    --extra-cflags="%{?cuda_cflags} -I%{_includedir}/rav1e -I%{_includedir}/decklink" \\\
-    --extra-cxxflags="-I%{_includedir}/decklink" \\\
-    %{?flavor:--disable-manpages} \\\
-    %{?progs_suffix:--progs-suffix=%{progs_suffix}} \\\
-    %{?build_suffix:--build-suffix=%{build_suffix}} \\\
-    %{!?_without_amr:--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3} \\\
-    --enable-bzlib \\\
-    %{?_with_chromaprint:--enable-chromaprint} \\\
-    --enable-decklink \\\
-    --enable-fontconfig \\\
-    %{!?_without_frei0r:--enable-frei0r} \\\
-    --enable-gcrypt \\\
-    %{?_with_gmp:--enable-gmp --enable-version3} \\\
-    --enable-gnutls \\\
-    %{!?_without_ladspa:--enable-ladspa} \\\
-    --enable-lcms2 \\\
-    %{!?_without_aom:--enable-libaom} \\\
-    %{!?_without_libaribb24:--enable-libaribb24} \\\
-    %{!?_without_libaribcaption:--enable-libaribcaption} \\\
-    %{!?_without_dav1d:--enable-libdav1d} \\\
-    %{!?_without_ass:--enable-libass} \\\
-    %{!?_without_bluray:--enable-libbluray} \\\
-    %{?_with_bs2b:--enable-libbs2b} \\\
-    %{?_with_caca:--enable-libcaca} \\\
-    %{?_with_codec2:--enable-libcodec2} \\\
-    %{?_with_cuda_nvcc:--enable-cuda-nvcc --enable-nonfree} \\\
-    %{?_with_cuda:  --enable-cuda  --enable-cuda-llvm --enable-cuvid} \\\
-    %{!?_without_cdio:--enable-libcdio} \\\
-    %{?_with_ieee1394:--enable-libdc1394 --enable-libiec61883} \\\
-    --enable-libdrm \\\
-    %{?_with_dvddemuxer:--enable-libdvdnav --enable-libdvdread} \\\
-    %{?_with_xeve:--enable-libxeveb --enable-libxevdb} \\\
-    %{?_with_faac:--enable-libfaac --enable-nonfree} \\\
-    --enable-libfdk-aac \\\
-    %{?_with_flite:--enable-libflite} \\\
-    %{!?_without_jack:--enable-libjack} \\\
-    %{!?_without_jxl:--enable-libjxl} \\\
-    %{?_with_libklvanc:--enable-libklvanc} \\\
-    --enable-libfreetype \\\
-    %{!?_without_fribidi:--enable-libfribidi} \\\
-    %{?_with_gme:--enable-libgme} \\\
-    --enable-libgsm \\\
-    --enable-libharfbuzz \\\
-    %{?_with_ilbc:--enable-libilbc} \\\
-    %{?_with_lc3:--enable-liblc3} \\\
-    %{!?_without_lensfun:--enable-liblensfun} \\\
-    --enable-libmp3lame \\\
-    --enable-libmysofa \\\
-    %{?_with_netcdf:--enable-netcdf} \\\
-    %{?_with_mmal:--enable-mmal} \\\
-    %{?_with_nvenc:--enable-nvenc --enable-nvdec} \\\
-    %{?_with_omx:--enable-omx} \\\
-    %{?_with_omx_rpi:--enable-omx-rpi} \\\
-    %{!?_without_openal:--enable-openal} \\\
-    --enable-liboapv \\\
-    %{!?_without_opencl:--enable-opencl} \\\
-    %{?_with_opencv:--enable-libopencv} \\\
-    %{!?_without_opengl:--enable-opengl} \\\
-    %{?_with_openh264:--enable-libopenh264} \\\
-    --enable-libopenjpeg \\\
-    --enable-libopenmpt \\\
-    %{!?_without_opus:--enable-libopus} \\\
-    %{!?_without_pulse:--enable-libpulse} \\\
-    %{?_with_placebo:--enable-libplacebo} \\\
-    --enable-librabbitmq \\\
-    --enable-librist \\\
-    --enable-librsvg \\\
-    %{?_with_rav1e:--enable-librav1e} \\\
-    %{?_with_rtmp:--enable-librtmp} \\\
-    %{!?_without_rubberband:--enable-librubberband} \\\
-    --enable-libqrencode \\\
-    %{?_with_smb:--enable-libsmbclient --enable-version3} \\\
-    %{?_with_snappy:--enable-libsnappy} \\\
-    --enable-libsoxr \\\
-    --enable-libspeex \\\
-    --enable-libsrt \\\
-    --enable-libssh \\\
-    %{?_with_svtav1:--enable-libsvtav1} \\\
-    %{?_with_tesseract:--enable-libtesseract} \\\
-    --enable-libtheora \\\
-    %{?_with_twolame:--enable-libtwolame} \\\
-    --enable-libvorbis \\\
-    --enable-libv4l2 \\\
-    %{!?_without_vidstab:--enable-libvidstab} \\\
-    %{?_with_vmaf:--enable-libvmaf --enable-version3} \\\
-    %{?_with_vapoursynth:--enable-vapoursynth} \\\
-    %{!?_without_vpx:--enable-libvpx} \\\
-    %{?_with_vvenc:--enable-libvvenc} \\\
-    %{!?_without_vulkan:--enable-vulkan} \\\
-    %{?_with_webp:--enable-libwebp} \\\
-    %{!?_without_x264:--enable-libx264} \\\
-    %{!?_without_x265:--enable-libx265} \\\
-    %{!?_without_xvid:--enable-libxvid} \\\
-    --enable-libxml2 \\\
-    %{!?_without_zimg:--enable-libzimg} \\\
-    %{?_with_zmq:--enable-libzmq} \\\
-    %{!?_without_zvbi:--enable-libzvbi} \\\
-    %{!?_without_lv2:--enable-lv2} \\\
-    --enable-avfilter \\\
-    --enable-libmodplug \\\
-    --enable-pthreads \\\
-    --disable-static \\\
-    --enable-shared \\\
-    %{!?_without_gpl:--enable-gpl} \\\
-    --disable-debug \\\
-    --disable-stripping
-
-
 %prep
 %if 0%{?date}
 %autosetup -p1 -n ffmpeg-%{?branch}%{date}
@@ -440,10 +487,259 @@ cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
 %ifarch %{ix86}
 export LDFLAGS+=' -Wl,-z,notext'
 %endif
-%{?_with_cuda_nvcc:export PATH=${PATH}:%{_cuda_bindir}}
-%{ff_configure}\
+%{?with_cuda_nvcc:export PATH=${PATH}:%{_cuda_bindir}}
+# Don't use the %%configure macro as this is not an autotool script
+./configure \
+    --prefix=%{_prefix} \
+    --bindir=%{_bindir} \
+    --datadir=%{_datadir}/%{name} \
+    --docdir=%{_docdir}/%{name} \
+    --incdir=%{_includedir}/%{name} \
+    --libdir=%{_libdir} \
+    --mandir=%{_mandir} \
+    --arch=%{_target_cpu} \
+    --optflags="%{optflags}" \
+    --extra-ldflags="%{?__global_ldflags} %{?cuda_ldflags}" \
+    --extra-cflags="%{?cuda_cflags} -I%{_includedir}/rav1e -I%{_includedir}/decklink" \
+    --extra-cxxflags="-I%{_includedir}/decklink" \
+    %{?flavor:--disable-manpages} \
+    %{?progs_suffix:--progs-suffix=%{progs_suffix}} \
+    %{?build_suffix:--build-suffix=%{build_suffix}} \
+%if %{with amr}
+    --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3 \
+%endif
+    --enable-bzlib \
+%if %{with chromaprint}
+    --enable-chromaprint \
+%endif
+    --enable-decklink \
+    --enable-fontconfig \
+%if %{with frei0r}
+    --enable-frei0r \
+%endif
+    --enable-gcrypt \
+%if %{with gmp}
+    --enable-gmp --enable-version3 \
+%endif
+    --enable-gnutls \
+%if %{with ladspa}
+    --enable-ladspa \
+%endif
+    --enable-lcms2 \
+%if %{with aom}
+    --enable-libaom \
+%endif
+%if %{with libaribb24}
+    --enable-libaribb24 \
+%endif
+%if %{with libaribcaption}
+    --enable-libaribcaption \
+%endif
+%if %{with dav1d}
+    --enable-libdav1d \
+%endif
+%if %{with ass}
+    --enable-libass \
+%endif
+%if %{with bluray}
+    --enable-libbluray \
+%endif
+%if %{with bs2b}
+    --enable-libbs2b \
+%endif
+%if %{with caca}
+    --enable-libcaca \
+%endif
+%if %{with codec2}
+    --enable-libcodec2 \
+%endif
+%if %{with cuda_nvcc}
+    --enable-cuda-nvcc --enable-nonfree \
+%endif
+%if %{with cuda}
+    --enable-cuda --enable-cuda-llvm --enable-cuvid \
+%endif
+%if %{with cdio}
+    --enable-libcdio \
+%endif
+%if %{with ieee1394}
+    --enable-libdc1394 --enable-libiec61883 \
+%endif
+    --enable-libdrm \
+%if %{with dvddemuxer}
+    --enable-libdvdnav --enable-libdvdread \
+%endif
+%if %{with xeve}
+    --enable-libxeveb --enable-libxevdb \
+%endif
+%if %{with faac}
+    --enable-libfaac --enable-nonfree \
+%endif
+    --enable-libfdk-aac \
+%if %{with flite}
+    --enable-libflite \
+%endif
+%if %{with jack}
+    --enable-libjack \
+%endif
+%if %{with jxl}
+    --enable-libjxl \
+%endif
+%if %{with libklvanc}
+    --enable-libklvanc \
+%endif
+    --enable-libfreetype \
+%if %{with fribidi}
+    --enable-libfribidi \
+%endif
+%if %{with gme}
+    --enable-libgme \
+%endif
+    --enable-libgsm \
+    --enable-libharfbuzz \
+%if %{with ilbc}
+    --enable-libilbc \
+%endif
+%if %{with lc3}
+    --enable-liblc3 \
+%endif
+%if %{with lensfun}
+    --enable-liblensfun \
+%endif
+    --enable-libmp3lame \
+    --enable-libmysofa \
+%if %{with netcdf}
+    --enable-netcdf \
+%endif
+%if %{with mmal}
+    --enable-mmal \
+%endif
+%if %{with nvenc}
+    --enable-nvenc --enable-nvdec \
+%endif
+%if %{with omx}
+    --enable-omx \
+%endif
+%if %{with omx_rpi}
+    --enable-omx-rpi \
+%endif
+%if %{with openal}
+    --enable-openal \
+%endif
+    --enable-liboapv \
+%if %{with opencl}
+    --enable-opencl \
+%endif
+%if %{with opencv}
+    --enable-libopencv \
+%endif
+%if %{with opengl}
+    --enable-opengl \
+%endif
+%if %{with openh264}
+    --enable-libopenh264 \
+%endif
+    --enable-libopenjpeg \
+    --enable-libopenmpt \
+%if %{with opus}
+    --enable-libopus \
+%endif
+%if %{with pulse}
+    --enable-libpulse \
+%endif
+%if %{with placebo}
+    --enable-libplacebo \
+%endif
+    --enable-librabbitmq \
+    --enable-librist \
+    --enable-librsvg \
+%if %{with rav1e}
+    --enable-librav1e \
+%endif
+%if %{with rtmp}
+    --enable-librtmp \
+%endif
+%if %{with rubberband}
+    --enable-librubberband \
+%endif
+    --enable-libqrencode \
+%if %{with smb}
+    --enable-libsmbclient --enable-version3 \
+%endif
+%if %{with snappy}
+    --enable-libsnappy \
+%endif
+    --enable-libsoxr \
+    --enable-libspeex \
+    --enable-libsrt \
+    --enable-libssh \
+%if %{with svtav1}
+    --enable-libsvtav1 \
+%endif
+%if %{with tesseract}
+    --enable-libtesseract \
+%endif
+    --enable-libtheora \
+%if %{with twolame}
+    --enable-libtwolame \
+%endif
+    --enable-libvorbis \
+    --enable-libv4l2 \
+%if %{with vidstab}
+    --enable-libvidstab \
+%endif
+%if %{with vmaf}
+    --enable-libvmaf --enable-version3 \
+%endif
+%if %{with vapoursynth}
+    --enable-vapoursynth \
+%endif
+%if %{with vpx}
+    --enable-libvpx \
+%endif
+%if %{with vvenc}
+    --enable-libvvenc \
+%endif
+%if %{with vulkan}
+    --enable-vulkan \
+%endif
+%if %{with webp}
+    --enable-libwebp \
+%endif
+%if %{with x264}
+    --enable-libx264 \
+%endif
+%if %{with x265}
+    --enable-libx265 \
+%endif
+%if %{with xvid}
+    --enable-libxvid \
+%endif
+    --enable-libxml2 \
+%if %{with zimg}
+    --enable-libzimg \
+%endif
+%if %{with zmq}
+    --enable-libzmq \
+%endif
+%if %{with zvbi}
+    --enable-libzvbi \
+%endif
+%if %{with lv2}
+    --enable-lv2 \
+%endif
+    --enable-avfilter \
+    --enable-libmodplug \
+    --enable-pthreads \
+    --disable-static \
+    --enable-shared \
+%if %{with gpl}
+    --enable-gpl \
+%endif
+    --disable-debug \
+    --disable-stripping \
     --shlibdir=%{_libdir} \
-%if 0%{?_without_tools:1}
+%if %{without tools}
     --disable-doc \
     --disable-ffmpeg --disable-ffplay --disable-ffprobe \
 %endif
@@ -453,8 +749,12 @@ export LDFLAGS+=' -Wl,-z,notext'
 %ifarch %{ix86}
     --cpu=%{_target_cpu} \
 %endif
-    %{?_with_mfx:--enable-libmfx} \
-    %{?_with_vpl:--enable-libvpl} \
+%if %{with mfx}
+    --enable-libmfx \
+%endif
+%if %{with vpl}
+    --enable-libvpl \
+%endif
 %ifarch %{ix86} x86_64 %{power64}
     --enable-runtime-cpudetect \
 %endif
@@ -514,7 +814,7 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 %ldconfig_scriptlets  libs
 %ldconfig_scriptlets -n libavdevice%{?flavor}
 
-%if 0%{!?_without_tools:1}
+%if %{with tools}
 %files
 %{_bindir}/ffmpeg%{?progs_suffix}
 %{_bindir}/ffplay%{?progs_suffix}
