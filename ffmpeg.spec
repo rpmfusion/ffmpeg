@@ -90,7 +90,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        8.1.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -107,6 +107,8 @@ Patch0:         ffmpeg-chromium.patch
 Patch2:         ffmpeg-allow-fdk-aac-free.patch
 # Add upstream commit to address firefox vulkan rendering issue with nvidia
 Patch3:         https://github.com/FFmpeg/FFmpeg/commit/25e187f8494966377a4b9d077260ce7b501a911c.patch
+# fix build with openapv >= 1.1
+Patch4:         https://code.ffmpeg.org/FFmpeg/FFmpeg/commit/0880196367273612c3113279438b4b999045d123.patch#/ffmpeg-openapv1.1.patch
 Conflicts:      %{name}-free
 Provides:       %{name}-bin = %{version}-%{release}
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
@@ -545,6 +547,9 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Tue Nov 03 2026 Dominik Mierzejewski <dominik@greysector.net> - 8.1.3-2
+- fix build with openapv >= 1.1
+
 * Mon Sep 21 2026 Leigh Scott <leigh123linux@gmail.com> - 8.1.3-1
 - Update to 8.1.3
 
