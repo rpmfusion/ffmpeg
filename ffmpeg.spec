@@ -133,7 +133,7 @@ ExclusiveArch: armv7hnl
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
 Version:        9.0.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -150,6 +150,8 @@ Patch0:         ffmpeg-chromium.patch
 Patch1:         ffmpeg-allow-fdk-aac-free.patch
 # Allow decklink
 Patch2:         ffmpeg-allow-decklink.patch
+# fix build with openapv >= 1.1
+Patch3:         https://code.ffmpeg.org/FFmpeg/FFmpeg/commit/a7502e5ff39ef53d475b9ee7dd6d4aeb48f047e6.patch#/ffmpeg-openapv1.1.patch
 Conflicts:      %{name}-free
 Provides:       %{name}-bin = %{version}-%{release}
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
@@ -857,6 +859,9 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Tue Nov 03 2026 Dominik Mierzejewski <dominik@greysector.net> - 9.0.2-4
+- fix build with openapv >= 1.1
+
 * Thu Oct 29 2026 Leigh Scott <leigh123linux@gmail.com> - 9.0.2-3
 - Restore sanity to the conditionals
 
