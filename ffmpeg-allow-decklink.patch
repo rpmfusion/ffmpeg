@@ -17,9 +17,9 @@ index 6cf4f08..5342e86 100755
  
  EXTERNAL_LIBRARY_NONFREE_LIST="
 -    decklink
+     libfdk_xhe_aac
      libmpeghdec
  "
- 
 @@ -2028,6 +2027,7 @@ EXTERNAL_LIBRARY_LIST="
      $EXTERNAL_LIBRARY_GPLV3_LIST
      cairo

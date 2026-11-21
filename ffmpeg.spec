@@ -42,7 +42,6 @@
 %bcond lv2 1
 %bcond openal 1
 %bcond opencl 1
-%bcond opengl 1
 %bcond opus 1
 %bcond pulse 1
 %bcond tools 1
@@ -132,8 +131,8 @@ ExclusiveArch: armv7hnl
 
 Summary:        Digital VCR and streaming server
 Name:           ffmpeg%{?flavor}
-Version:        9.0.2
-Release:        5%{?dist}
+Version:        9.1
+Release:        1%{?dist}
 License:        %{ffmpeg_license}
 URL:            https://ffmpeg.org/
 %if 0%{?date}
@@ -150,8 +149,6 @@ Patch0:         ffmpeg-chromium.patch
 Patch1:         ffmpeg-allow-fdk-aac-free.patch
 # Allow decklink
 Patch2:         ffmpeg-allow-decklink.patch
-# fix build with openapv >= 1.1
-Patch3:         https://code.ffmpeg.org/FFmpeg/FFmpeg/commit/a7502e5ff39ef53d475b9ee7dd6d4aeb48f047e6.patch#/ffmpeg-openapv1.1.patch
 Conflicts:      %{name}-free
 Provides:       %{name}-bin = %{version}-%{release}
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
@@ -635,9 +632,6 @@ export LDFLAGS+=' -Wl,-z,notext'
 %if %{with opencv}
     --enable-libopencv \
 %endif
-%if %{with opengl}
-    --enable-opengl \
-%endif
 %if %{with openh264}
     --enable-libopenh264 \
 %endif
@@ -859,6 +853,9 @@ cp -pa %{buildroot}%{_libdir}/libavcodec.so.* \
 
 
 %changelog
+* Fri Nov 20 2026 Leigh Scott <leigh123linux@gmail.com> - 9.1-1
+- Update to 9.1
+
 * Sat Nov 14 2026 Nicolas Chauvet <kwizart@gmail.com> - 9.0.2-5
 - Rebuilt for libplacebo
 

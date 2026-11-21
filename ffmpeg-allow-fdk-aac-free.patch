@@ -12,15 +12,15 @@ diff --git a/configure b/configure
 index 1759694..6cf4f08 100755
 --- a/configure
 +++ b/configure
-@@ -2003,7 +2003,6 @@ EXTERNAL_LIBRARY_GPL_LIST="
+@@ -2020,7 +2020,6 @@ EXTERNAL_LIBRARY_GPL_LIST="
  
  EXTERNAL_LIBRARY_NONFREE_LIST="
      decklink
 -    libfdk_aac
+     libfdk_xhe_aac
      libmpeghdec
  "
- 
-@@ -2044,6 +2043,7 @@ EXTERNAL_LIBRARY_LIST="
+@@ -2062,6 +2061,7 @@ EXTERNAL_LIBRARY_LIST="
      libcodec2
      libdav1d
      libdc1394
